@@ -18,16 +18,16 @@ import {
 } from '@mantine/core';
 import React, { FC, useEffect, useState } from 'react';
 
-import { MdReportProblem } from 'react-icons/md';
-import { TiLightbulb } from 'react-icons/ti';
-import { HiOutlinePresentationChartLine } from 'react-icons/hi';
-import { GrAchievement } from 'react-icons/gr';
-import { LiaGiftSolid } from 'react-icons/lia';
-import { BiNetworkChart } from 'react-icons/bi';
-import { AiOutlineGift } from 'react-icons/ai';
-import { GoPeople } from 'react-icons/go';
-import { FaMoneyBillTrendUp } from 'react-icons/fa6';
-import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
+// import { MdReportProblem } from 'react-icons/md';
+// import { TiLightbulb } from 'react-icons/ti';
+// import { HiOutlinePresentationChartLine } from 'react-icons/hi';
+// import { GrAchievement } from 'react-icons/gr';
+// import { LiaGiftSolid } from 'react-icons/lia';
+// import { BiNetworkChart } from 'react-icons/bi';
+// import { AiOutlineGift } from 'react-icons/ai';
+// import { GoPeople } from 'react-icons/go';
+// import { FaMoneyBillTrendUp } from 'react-icons/fa6';
+// import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
 import {
   Icon123,
   IconAlignLeft,
@@ -521,7 +521,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          <MdReportProblem size={20} />
+                          {/* <MdReportProblem size={20} /> */}
                           <Text align="center" weight={500} my={'auto'}>
                             Problem
                           </Text>
@@ -592,10 +592,10 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              <TiLightbulb
+                              {/* <TiLightbulb
                                 size={24}
                                 // color={'yellow'}
-                              />
+                              /> */}
                               <Text align="center" weight={500} my={'auto'}>
                                 Solution
                               </Text>
@@ -660,10 +660,10 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              <HiOutlinePresentationChartLine
+                              {/* <HiOutlinePresentationChartLine
                                 size={24}
                                 // color={'#FF0000'}
-                              />
+                              /> */}
                               <Text align="center" weight={500} my={'auto'}>
                                 Key Metrics
                               </Text>
@@ -729,7 +729,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          <AiOutlineGift size={24} />
+                          {/* <AiOutlineGift size={24} /> */}
                           <Text align="center" weight={500} my={'auto'}>
                             Unique Value Proposition
                           </Text>
@@ -800,7 +800,7 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              <GrAchievement size={24} />
+                              {/* <GrAchievement size={24} /> */}
                               <Text align="center" weight={500} my={'auto'}>
                                 Unfair Advantage
                               </Text>
@@ -865,7 +865,7 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              <BiNetworkChart size={24} />
+                              {/* <BiNetworkChart size={24} /> */}
                               <Text align="center" weight={500} my={'auto'}>
                                 Channels
                               </Text>
@@ -930,7 +930,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          <GoPeople size={24} />
+                          {/* <GoPeople size={24} /> */}
                           <Text align="center" weight={500} my={'auto'}>
                             Customer Segments
                           </Text>
@@ -996,7 +996,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          <LiaFileInvoiceDollarSolid size={24} />
+                          {/* <LiaFileInvoiceDollarSolid size={24} /> */}
                           <Text align="center" weight={500} my={'auto'}>
                             Cost Structure
                           </Text>
@@ -1060,7 +1060,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          <FaMoneyBillTrendUp size={24} />
+                          {/* <FaMoneyBillTrendUp size={24} /> */}
                           <Text align="center" weight={500} my={'auto'}>
                             Revenue Streams
                           </Text>
