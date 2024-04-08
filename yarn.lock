@@ -5017,11 +5017,6 @@
     "detect-node-es" "^1.1.0"
     "tslib" "^2.0.0"
 
-"use-timer@^2.0.1":
-  "integrity" "sha512-ESFkDYZluJZ+G/CaoOBFxg0TjuG7kgNFNhIFZhqv14ho2WIZwuxkRnEURhyLm9I4vNz+ea9ZowNaOkExDAM+6Q=="
-  "resolved" "https://registry.npmjs.org/use-timer/-/use-timer-2.0.1.tgz"
-  "version" "2.0.1"
-
 "util-deprecate@^1.0.1", "util-deprecate@~1.0.1":
   "integrity" "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="
   "resolved" "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
