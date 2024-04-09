@@ -18,16 +18,19 @@ import {
 } from '@mantine/core';
 import React, { FC, useEffect, useState } from 'react';
 
-// import { MdReportProblem } from 'react-icons/md';
-// import { TiLightbulb } from 'react-icons/ti';
-// import { HiOutlinePresentationChartLine } from 'react-icons/hi';
-// import { GrAchievement } from 'react-icons/gr';
-// import { LiaGiftSolid } from 'react-icons/lia';
-// import { BiNetworkChart } from 'react-icons/bi';
-// import { AiOutlineGift } from 'react-icons/ai';
-// import { GoPeople } from 'react-icons/go';
-// import { FaMoneyBillTrendUp } from 'react-icons/fa6';
-// import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
+import { MdReportProblem } from 'react-icons/md';
+import { TiLightbulb } from 'react-icons/ti';
+import { HiOutlinePresentationChartLine } from 'react-icons/hi';
+import { GrAchievement } from 'react-icons/gr';
+import { LiaGiftSolid } from 'react-icons/lia';
+import { BiNetworkChart } from 'react-icons/bi';
+import { AiOutlineGift } from 'react-icons/ai';
+import { GoPeople } from 'react-icons/go';
+import { FaMoneyBillTrendUp } from 'react-icons/fa6';
+import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
+
+import domtoimage from 'dom-to-image';
+
 import {
   Icon123,
   IconAlignLeft,
@@ -127,60 +130,17 @@ const LeanCanvasGenerator: FC = () => {
 
   const handleDownload = () => {
     try {
-      const html2canvas = require('html2canvas');
-      const box = canvasRef.current;
-      if (!box) {
-        console.error('Box ref not found');
-        return;
-      }
-
-      html2canvas(box, {
-        width: box.scrollWidth,
-        height: box.scrollHeight,
-        useCORS: true,
-        scale: 2,
-      }).then(async (canvas: HTMLCanvasElement) => {
-        // Convert canvas to image data URL
-        const imageDataUrl = canvas.toDataURL('image/png');
-
-        // Create a new PDF document
-        const pdfDoc = await PDFDocument.create();
-
-        // Add a new page to the PDF document
-        const page = pdfDoc.addPage([canvas.width, canvas.height]);
-
-        // Embed the canvas image as a PNG
-        const pngImage = await pdfDoc.embedPng(canvas.toDataURL('image/png'));
-
-        // Draw the embedded image on the PDF page
-        page.drawImage(pngImage, {
-          x: 0,
-          y: 0,
-          width: canvas.width,
-          height: canvas.height,
+      var node = document.getElementById('canvas');
+      domtoimage
+        .toPng(node as HTMLElement, {
+          bgcolor: 'white',
+        })
+        .then(function (dataUrl) {
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = 'lean_canvas.png';
+          a.click();
         });
-
-        // Serialize the PDF document to bytes
-        const pdfBytes = await pdfDoc.save();
-
-        // Create a blob containing the PDF bytes
-        const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-        // Create a URL for the blob
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-
-        // Create a temporary link element
-        const a = document.createElement('a');
-        a.href = pdfUrl;
-        a.download = 'canvas_pdf.pdf';
-
-        // Append the link to the body and trigger the download
-        document.body.appendChild(a);
-        a.click();
-
-        // Clean up: remove the temporary link
-        document.body.removeChild(a);
-      });
     } catch (err) {
       console.error(err);
     }
@@ -346,8 +306,8 @@ const LeanCanvasGenerator: FC = () => {
                   </Text>
                   <label
                     style={{
-                      fontSize: '18px',
-                      fontWeight: 500,
+                      fontSize: '16px',
+                      fontWeight: 400,
                     }}
                   >
                     Character Limits for Each Field
@@ -373,8 +333,8 @@ const LeanCanvasGenerator: FC = () => {
 
                   <label
                     style={{
-                      fontSize: '18px',
-                      fontWeight: 500,
+                      fontSize: '16px',
+                      fontWeight: 400,
                     }}
                   >
                     Font Size
@@ -398,8 +358,8 @@ const LeanCanvasGenerator: FC = () => {
 
                   <label
                     style={{
-                      fontSize: '18px',
-                      fontWeight: 500,
+                      fontSize: '16px',
+                      fontWeight: 400,
                     }}
                   >
                     Text Alignment
@@ -419,8 +379,8 @@ const LeanCanvasGenerator: FC = () => {
 
                   <label
                     style={{
-                      fontSize: '18px',
-                      fontWeight: 500,
+                      fontSize: '16px',
+                      fontWeight: 400,
                     }}
                   >
                     Canvas Width
@@ -490,6 +450,7 @@ const LeanCanvasGenerator: FC = () => {
                 }}
                 ref={canvasRef}
                 pos={'relative'}
+                id={'canvas'}
               >
                 <LoadingOverlay visible={loading} />
                 <Grid
@@ -521,7 +482,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          {/* <MdReportProblem size={20} /> */}
+                          <MdReportProblem size={20} />
                           <Text align="center" weight={500} my={'auto'}>
                             Problem
                           </Text>
@@ -549,23 +510,25 @@ const LeanCanvasGenerator: FC = () => {
                         />
                       </Grid.Col>
                     </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Button
-                        onClick={() => {
-                          handleRegenerate('problem');
-                        }}
-                        color="green"
-                        variant="light"
-                        leftIcon={<IconRefresh />}
-                        style={{
-                          width: '100%',
-                          border: '1px solid',
-                        }}
-                        loading={loading}
-                      >
-                        Regenerate This Field
-                      </Button>
-                    </HoverCard.Dropdown>
+                    {problem.length > 0 && (
+                      <HoverCard.Dropdown>
+                        <Button
+                          onClick={() => {
+                            handleRegenerate('problem');
+                          }}
+                          color="green"
+                          variant="light"
+                          leftIcon={<IconRefresh />}
+                          style={{
+                            width: '100%',
+                            border: '1px solid',
+                          }}
+                          loading={loading}
+                        >
+                          Regenerate This Field
+                        </Button>
+                      </HoverCard.Dropdown>
+                    )}
                   </HoverCard>
                   <Grid.Col
                     span={2}
@@ -592,10 +555,7 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              {/* <TiLightbulb
-                                size={24}
-                                // color={'yellow'}
-                              /> */}
+                              <TiLightbulb size={24} />
                               <Text align="center" weight={500} my={'auto'}>
                                 Solution
                               </Text>
@@ -623,23 +583,25 @@ const LeanCanvasGenerator: FC = () => {
                             />
                           </Grid.Col>
                         </HoverCard.Target>
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('solution');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
-                            style={{
-                              width: '100%',
-                              border: '1px solid',
-                            }}
-                            loading={loading}
-                          >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
+                        {solution.length > 0 && (
+                          <HoverCard.Dropdown>
+                            <Button
+                              onClick={() => {
+                                handleRegenerate('solution');
+                              }}
+                              color="green"
+                              variant="light"
+                              leftIcon={<IconRefresh />}
+                              style={{
+                                width: '100%',
+                                border: '1px solid',
+                              }}
+                              loading={loading}
+                            >
+                              Regenerate This Field
+                            </Button>
+                          </HoverCard.Dropdown>
+                        )}
                       </HoverCard>
                       <HoverCard>
                         <HoverCard.Target>
@@ -660,10 +622,7 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              {/* <HiOutlinePresentationChartLine
-                                size={24}
-                                // color={'#FF0000'}
-                              /> */}
+                              <HiOutlinePresentationChartLine size={24} />
                               <Text align="center" weight={500} my={'auto'}>
                                 Key Metrics
                               </Text>
@@ -691,23 +650,25 @@ const LeanCanvasGenerator: FC = () => {
                             />
                           </Grid.Col>
                         </HoverCard.Target>
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('key_metrics');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
-                            style={{
-                              width: '100%',
-                              border: '1px solid',
-                            }}
-                            loading={loading}
-                          >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
+                        {keyMetrics.length > 0 && (
+                          <HoverCard.Dropdown>
+                            <Button
+                              onClick={() => {
+                                handleRegenerate('key_metrics');
+                              }}
+                              color="green"
+                              variant="light"
+                              leftIcon={<IconRefresh />}
+                              style={{
+                                width: '100%',
+                                border: '1px solid',
+                              }}
+                              loading={loading}
+                            >
+                              Regenerate This Field
+                            </Button>
+                          </HoverCard.Dropdown>
+                        )}
                       </HoverCard>
                     </Grid>
                   </Grid.Col>
@@ -729,7 +690,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          {/* <AiOutlineGift size={24} /> */}
+                          <AiOutlineGift size={24} />
                           <Text align="center" weight={500} my={'auto'}>
                             Unique Value Proposition
                           </Text>
@@ -757,23 +718,25 @@ const LeanCanvasGenerator: FC = () => {
                         />
                       </Grid.Col>
                     </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Button
-                        onClick={() => {
-                          handleRegenerate('unique_value_proposition');
-                        }}
-                        color="green"
-                        variant="light"
-                        leftIcon={<IconRefresh />}
-                        style={{
-                          width: '100%',
-                          border: '1px solid',
-                        }}
-                        loading={loading}
-                      >
-                        Regenerate This Field
-                      </Button>
-                    </HoverCard.Dropdown>
+                    {uniqueValueProposition.length > 0 && (
+                      <HoverCard.Dropdown>
+                        <Button
+                          onClick={() => {
+                            handleRegenerate('unique_value_proposition');
+                          }}
+                          color="green"
+                          variant="light"
+                          leftIcon={<IconRefresh />}
+                          style={{
+                            width: '100%',
+                            border: '1px solid',
+                          }}
+                          loading={loading}
+                        >
+                          Regenerate This Field
+                        </Button>
+                      </HoverCard.Dropdown>
+                    )}
                   </HoverCard>
                   <Grid.Col
                     span={2}
@@ -800,7 +763,7 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              {/* <GrAchievement size={24} /> */}
+                              <GrAchievement size={24} />
                               <Text align="center" weight={500} my={'auto'}>
                                 Unfair Advantage
                               </Text>
@@ -828,23 +791,25 @@ const LeanCanvasGenerator: FC = () => {
                             />
                           </Grid.Col>
                         </HoverCard.Target>
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('unfair_advantage');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
-                            style={{
-                              width: '100%',
-                              border: '1px solid',
-                            }}
-                            loading={loading}
-                          >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
+                        {unfairAdvantage.length > 0 && (
+                          <HoverCard.Dropdown>
+                            <Button
+                              onClick={() => {
+                                handleRegenerate('unfair_advantage');
+                              }}
+                              color="green"
+                              variant="light"
+                              leftIcon={<IconRefresh />}
+                              style={{
+                                width: '100%',
+                                border: '1px solid',
+                              }}
+                              loading={loading}
+                            >
+                              Regenerate This Field
+                            </Button>
+                          </HoverCard.Dropdown>
+                        )}
                       </HoverCard>
                       <HoverCard>
                         <HoverCard.Target>
@@ -865,7 +830,7 @@ const LeanCanvasGenerator: FC = () => {
                               mt={4}
                               h={'60px'}
                             >
-                              {/* <BiNetworkChart size={24} /> */}
+                              <BiNetworkChart size={24} />
                               <Text align="center" weight={500} my={'auto'}>
                                 Channels
                               </Text>
@@ -893,23 +858,25 @@ const LeanCanvasGenerator: FC = () => {
                             />
                           </Grid.Col>
                         </HoverCard.Target>
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('channels');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
-                            style={{
-                              width: '100%',
-                              border: '1px solid',
-                            }}
-                            loading={loading}
-                          >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
+                        {channels.length > 0 && (
+                          <HoverCard.Dropdown>
+                            <Button
+                              onClick={() => {
+                                handleRegenerate('channels');
+                              }}
+                              color="green"
+                              variant="light"
+                              leftIcon={<IconRefresh />}
+                              style={{
+                                width: '100%',
+                                border: '1px solid',
+                              }}
+                              loading={loading}
+                            >
+                              Regenerate This Field
+                            </Button>
+                          </HoverCard.Dropdown>
+                        )}
                       </HoverCard>
                     </Grid>
                   </Grid.Col>
@@ -930,7 +897,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          {/* <GoPeople size={24} /> */}
+                          <GoPeople size={24} />
                           <Text align="center" weight={500} my={'auto'}>
                             Customer Segments
                           </Text>
@@ -958,23 +925,25 @@ const LeanCanvasGenerator: FC = () => {
                         />
                       </Grid.Col>
                     </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Button
-                        onClick={() => {
-                          handleRegenerate('customer_segments');
-                        }}
-                        color="green"
-                        variant="light"
-                        leftIcon={<IconRefresh />}
-                        style={{
-                          width: '100%',
-                          border: '1px solid',
-                        }}
-                        loading={loading}
-                      >
-                        Regenerate This Field
-                      </Button>
-                    </HoverCard.Dropdown>
+                    {customerSegments.length > 0 && (
+                      <HoverCard.Dropdown>
+                        <Button
+                          onClick={() => {
+                            handleRegenerate('customer_segments');
+                          }}
+                          color="green"
+                          variant="light"
+                          leftIcon={<IconRefresh />}
+                          style={{
+                            width: '100%',
+                            border: '1px solid',
+                          }}
+                          loading={loading}
+                        >
+                          Regenerate This Field
+                        </Button>
+                      </HoverCard.Dropdown>
+                    )}
                   </HoverCard>
                   <HoverCard>
                     <HoverCard.Target>
@@ -996,7 +965,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          {/* <LiaFileInvoiceDollarSolid size={24} /> */}
+                          <LiaFileInvoiceDollarSolid size={24} />
                           <Text align="center" weight={500} my={'auto'}>
                             Cost Structure
                           </Text>
@@ -1024,23 +993,25 @@ const LeanCanvasGenerator: FC = () => {
                         />
                       </Grid.Col>
                     </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Button
-                        onClick={() => {
-                          handleRegenerate('cost_structure');
-                        }}
-                        color="green"
-                        variant="light"
-                        leftIcon={<IconRefresh />}
-                        style={{
-                          width: '100%',
-                          border: '1px solid',
-                        }}
-                        loading={loading}
-                      >
-                        Regenerate This Field
-                      </Button>
-                    </HoverCard.Dropdown>
+                    {costStructure.length > 0 && (
+                      <HoverCard.Dropdown>
+                        <Button
+                          onClick={() => {
+                            handleRegenerate('cost_structure');
+                          }}
+                          color="green"
+                          variant="light"
+                          leftIcon={<IconRefresh />}
+                          style={{
+                            width: '100%',
+                            border: '1px solid',
+                          }}
+                          loading={loading}
+                        >
+                          Regenerate This Field
+                        </Button>
+                      </HoverCard.Dropdown>
+                    )}
                   </HoverCard>
                   <HoverCard>
                     <HoverCard.Target>
@@ -1060,7 +1031,7 @@ const LeanCanvasGenerator: FC = () => {
                           mt={4}
                           h={'60px'}
                         >
-                          {/* <FaMoneyBillTrendUp size={24} /> */}
+                          <FaMoneyBillTrendUp size={24} />
                           <Text align="center" weight={500} my={'auto'}>
                             Revenue Streams
                           </Text>
@@ -1088,23 +1059,25 @@ const LeanCanvasGenerator: FC = () => {
                         />
                       </Grid.Col>
                     </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                      <Button
-                        onClick={() => {
-                          handleRegenerate('revenue_streams');
-                        }}
-                        color="green"
-                        variant="light"
-                        leftIcon={<IconRefresh />}
-                        style={{
-                          width: '100%',
-                          border: '1px solid',
-                        }}
-                        loading={loading}
-                      >
-                        Regenerate This Field
-                      </Button>
-                    </HoverCard.Dropdown>
+                    {revenueStreams.length > 0 && (
+                      <HoverCard.Dropdown>
+                        <Button
+                          onClick={() => {
+                            handleRegenerate('revenue_streams');
+                          }}
+                          color="green"
+                          variant="light"
+                          leftIcon={<IconRefresh />}
+                          style={{
+                            width: '100%',
+                            border: '1px solid',
+                          }}
+                          loading={loading}
+                        >
+                          Regenerate This Field
+                        </Button>
+                      </HoverCard.Dropdown>
+                    )}
                   </HoverCard>
                 </Grid>
               </Box>
