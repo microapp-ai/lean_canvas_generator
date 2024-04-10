@@ -135,11 +135,22 @@ const LeanCanvasGenerator: FC = () => {
         .toPng(node as HTMLElement, {
           bgcolor: 'white',
         })
-        .then(function (dataUrl) {
-          const a = document.createElement('a');
-          a.href = dataUrl;
-          a.download = 'lean_canvas.png';
-          a.click();
+        .then(async function (dataUrl) {
+          // convert it to pdf
+          const pdfDoc = await PDFDocument.create();
+          const pdfImage = await pdfDoc.embedPng(dataUrl);
+          const page = pdfDoc.addPage([width, pdfImage.height]);
+          page.drawImage(pdfImage, {
+            x: 0,
+            y: 0,
+            width: width,
+          });
+          const pdfBytes = await pdfDoc.save();
+          const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = 'lean_canvas.pdf';
+          link.click();
         });
     } catch (err) {
       console.error(err);
@@ -389,16 +400,15 @@ const LeanCanvasGenerator: FC = () => {
                     defaultValue={width}
                     w={'100%'}
                     min={700}
-                    max={2100}
+                    max={1500}
                     step={100}
                     label={`${width}px`}
                     onChange={(value) => setWidth(value)}
                     color="violet"
                     marks={[
                       { value: 700, label: '700px' },
-                      { value: 1200, label: '1200px' },
+                      { value: 1000, label: '1000px' },
                       { value: 1500, label: '1500px' },
-                      { value: 2100, label: '2000px' },
                     ]}
                     mb={16}
                   />
