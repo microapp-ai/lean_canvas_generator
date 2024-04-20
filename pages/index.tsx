@@ -53,14 +53,14 @@ const LeanCanvasGenerator: FC = () => {
   const [companyDescription, setCompanyDescription] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [industry, setIndustry] = useState('');
-  const [prodOrService, setProdOrService] = useState('');
+  const [prodOrService, setProdOrService] = useState('product');
   const [prodOrServiceDesc, setProdOrServiceDesc] = useState('');
   const [problems, setProblems] = useState('');
   const [targetMarket, setTargetMarket] = useState('');
   const [communicationChannels, setCommunicationChannels] = useState('');
   const [existingAlternatives, setExistingAlternatives] = useState('');
 
-  const [minChars, setMinChars] = useState(100);
+  const [minChars, setMinChars] = useState(200);
   const [maxChars, setMaxChars] = useState(500);
 
   // output fields
@@ -104,20 +104,29 @@ const LeanCanvasGenerator: FC = () => {
   const handleGenerateLeanCanvas = async () => {
     setLoading(true);
     try {
-      const resp = await fetch(
-        'https://lean-canvas-generator.vercel.app/api/lean_canvas',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            companyDescription,
-            minChars,
-            maxChars,
-          }),
-        }
-      );
+      const resp = await fetch('/api/lean_canvas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          companyDescription: !advanced
+            ? companyDescription
+            : JSON.stringify({
+                industry,
+                prodOrService,
+                prodOrServiceDesc,
+                problems,
+                targetMarket,
+                existingAlternatives,
+                // add optional fields if they are not empty
+                ...(communicationChannels && { communicationChannels }),
+                ...(companyName && { companyName }),
+              }),
+          minChars,
+          maxChars,
+        }),
+      });
       const data = await resp.json();
       console.log(data);
       writeData(data.problem, setProblem);
@@ -180,7 +189,19 @@ const LeanCanvasGenerator: FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            companyDescription,
+            companyDescription: !advanced
+              ? companyDescription
+              : JSON.stringify({
+                  industry,
+                  prodOrService,
+                  prodOrServiceDesc,
+                  problems,
+                  targetMarket,
+                  existingAlternatives,
+                  // add optional fields if they are not empty
+                  ...(communicationChannels && { communicationChannels }),
+                  ...(companyName && { companyName }),
+                }),
             fieldToBeRegenerated: field,
             previousResponse: {
               problem,
@@ -267,21 +288,44 @@ const LeanCanvasGenerator: FC = () => {
     'Travel',
     'Utilities',
   ];
+  const [valid, setValid] = useState(false);
   const checkRequiredFields = () => {
     if (advanced) {
       return (
+        console.log('companyName', companyName),
+        console.log('industry', industry),
+        console.log('prodOrService', prodOrService),
+        console.log('prodOrServiceDesc', prodOrServiceDesc),
+        console.log('problems', problems),
+        console.log('targetMarket', targetMarket),
+        console.log('existingAlternatives', existingAlternatives),
         companyName === '' ||
-        industry === '' ||
-        prodOrService === '' ||
-        prodOrServiceDesc === '' ||
-        problems === '' ||
-        targetMarket === '' ||
-        existingAlternatives === ''
+          industry === '' ||
+          prodOrService === '' ||
+          prodOrServiceDesc === '' ||
+          problems === '' ||
+          targetMarket === '' ||
+          existingAlternatives === ''
       );
     } else {
       return companyDescription === '';
     }
   };
+  useEffect(() => {
+    setValid(!checkRequiredFields());
+  }, [
+    companyName,
+    industry,
+    prodOrService,
+    prodOrServiceDesc,
+    problems,
+    targetMarket,
+    existingAlternatives,
+    companyDescription,
+    advanced,
+    companyDescription,
+  ]);
+
   return (
     <>
       <Grid h={'100%'} m={0}>
@@ -356,30 +400,25 @@ const LeanCanvasGenerator: FC = () => {
                       {` * `}
                     </span>
                   </Text>
-                  <Radio.Group>
+                  <Radio.Group
+                    value={prodOrService}
+                    onChange={(value) => setProdOrService(value)}
+                  >
                     <Radio
-                      value="product"
+                      value={'product'}
                       checked={prodOrService === 'product'}
-                      onChange={() => {
-                        if (prodOrService === 'product') {
-                          setProdOrService('');
-                        } else {
-                          setProdOrService('product');
-                        }
+                      onClick={() => {
+                        setProdOrService('product');
                       }}
                       label="Product based"
                       m={8}
                       color="violet"
                     />
                     <Radio
-                      value="service"
+                      value={'service'}
                       checked={prodOrService === 'service'}
-                      onChange={() => {
-                        if (prodOrService === 'service') {
-                          setProdOrService('');
-                        } else {
-                          setProdOrService('service');
-                        }
+                      onClick={() => {
+                        setProdOrService('service');
                       }}
                       label="Service based"
                       m={8}
@@ -445,10 +484,6 @@ const LeanCanvasGenerator: FC = () => {
                       setCommunicationChannels(event.currentTarget.value)
                     }
                     minRows={5}
-                    required
-                    classNames={{
-                      required: classes.required,
-                    }}
                   />
                 </Flex>
               )}
@@ -462,7 +497,7 @@ const LeanCanvasGenerator: FC = () => {
                   }}
                   onClick={handleGenerateLeanCanvas}
                   loading={loading}
-                  disabled={checkRequiredFields()}
+                  disabled={!valid}
                 >
                   Generate
                 </Button>
