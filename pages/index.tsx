@@ -15,9 +15,13 @@ import {
   RangeSlider,
   LoadingOverlay,
   HoverCard,
+  TextInput,
+  Autocomplete,
+  Radio,
+  Drawer,
 } from '@mantine/core';
 import React, { FC, useEffect, useState } from 'react';
-
+import classes from 'styles/index.module.css';
 import { MdReportProblem } from 'react-icons/md';
 import { TiLightbulb } from 'react-icons/ti';
 import { HiOutlinePresentationChartLine } from 'react-icons/hi';
@@ -47,6 +51,14 @@ import { PDFDocument } from 'pdf-lib';
 const LeanCanvasGenerator: FC = () => {
   // input fields
   const [companyDescription, setCompanyDescription] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [prodOrService, setProdOrService] = useState('');
+  const [prodOrServiceDesc, setProdOrServiceDesc] = useState('');
+  const [problems, setProblems] = useState('');
+  const [targetMarket, setTargetMarket] = useState('');
+  const [communicationChannels, setCommunicationChannels] = useState('');
+  const [existingAlternatives, setExistingAlternatives] = useState('');
 
   const [minChars, setMinChars] = useState(100);
   const [maxChars, setMaxChars] = useState(500);
@@ -230,7 +242,46 @@ const LeanCanvasGenerator: FC = () => {
   };
 
   const [loading, setLoading] = useState(false);
-
+  const [advancedStyling, setAdvancedStyling] = useState(false);
+  const listOfIndustries = [
+    'Agriculture',
+    'Automotive',
+    'Banking',
+    'Construction',
+    'Education',
+    'Energy',
+    'Entertainment',
+    'Fashion',
+    'Finance',
+    'Food',
+    'Healthcare',
+    'Hospitality',
+    'Insurance',
+    'Manufacturing',
+    'Media',
+    'Real Estate',
+    'Retail',
+    'Technology',
+    'Telecommunications',
+    'Transportation',
+    'Travel',
+    'Utilities',
+  ];
+  const checkRequiredFields = () => {
+    if (advanced) {
+      return (
+        companyName === '' ||
+        industry === '' ||
+        prodOrService === '' ||
+        prodOrServiceDesc === '' ||
+        problems === '' ||
+        targetMarket === '' ||
+        existingAlternatives === ''
+      );
+    } else {
+      return companyDescription === '';
+    }
+  };
   return (
     <>
       <Grid h={'100%'} m={0}>
@@ -242,7 +293,7 @@ const LeanCanvasGenerator: FC = () => {
             borderColor: '#D9D9D9',
           })}
           sm={12} // On small screens, take the full width
-          md={sideBar ? 4 : 0} // On medium screens, take half of the width
+          md={sideBar ? 6 : 0} // On medium screens, take half of the width
         >
           {sideBar && (
             <Box py={24} px={'16px'} w={{ base: '100%' }}>
@@ -252,15 +303,155 @@ const LeanCanvasGenerator: FC = () => {
                 icon={ComputerIcon}
                 onToggle={() => setAdvanced(!advanced)}
               />
-              <Textarea
-                label="Enter a description of your company"
-                placeholder="Company Description"
-                value={companyDescription}
-                onChange={(event) =>
-                  setCompanyDescription(event.currentTarget.value)
-                }
-                minRows={8}
-              />
+              {!advanced && (
+                <Textarea
+                  label="Enter a description of your company"
+                  placeholder="Company Description"
+                  value={companyDescription}
+                  onChange={(event) =>
+                    setCompanyDescription(event.currentTarget.value)
+                  }
+                  minRows={8}
+                  required
+                  classNames={{
+                    required: classes.required,
+                  }}
+                />
+              )}
+              {advanced && (
+                <Flex direction={'column'} gap={8} my={8}>
+                  <TextInput
+                    label="Company Name (Optional)"
+                    placeholder="Company Name"
+                    value={companyName}
+                    onChange={(event) =>
+                      setCompanyName(event.currentTarget.value)
+                    }
+                  />
+                  <Autocomplete
+                    label="Industry"
+                    placeholder="Industry"
+                    data={listOfIndustries}
+                    value={industry}
+                    required
+                    classNames={{
+                      required: classes.required,
+                    }}
+                    onChange={(value) => setIndustry(value)}
+                  />
+                  <Text
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 400,
+                    }}
+                  >
+                    Is your company product or service based?
+                    <span
+                      style={{
+                        color: 'red',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {` * `}
+                    </span>
+                  </Text>
+                  <Radio.Group>
+                    <Radio
+                      value="product"
+                      checked={prodOrService === 'product'}
+                      onChange={() => {
+                        if (prodOrService === 'product') {
+                          setProdOrService('');
+                        } else {
+                          setProdOrService('product');
+                        }
+                      }}
+                      label="Product based"
+                      m={8}
+                      color="violet"
+                    />
+                    <Radio
+                      value="service"
+                      checked={prodOrService === 'service'}
+                      onChange={() => {
+                        if (prodOrService === 'service') {
+                          setProdOrService('');
+                        } else {
+                          setProdOrService('service');
+                        }
+                      }}
+                      label="Service based"
+                      m={8}
+                      color="violet"
+                    />
+                  </Radio.Group>
+                  <Textarea
+                    label="Product or Service Description"
+                    placeholder="Briefly describe your product or service. What problem does it solve?"
+                    value={prodOrServiceDesc}
+                    onChange={(event) =>
+                      setProdOrServiceDesc(event.currentTarget.value)
+                    }
+                    minRows={5}
+                    required
+                    classNames={{
+                      required: classes.required,
+                    }}
+                  />
+                  <Textarea
+                    label="Problems"
+                    placeholder="What are the main problems or pain points your company is addressing?"
+                    value={problems}
+                    onChange={(event) => setProblems(event.currentTarget.value)}
+                    minRows={5}
+                    required
+                    classNames={{
+                      required: classes.required,
+                    }}
+                  />
+                  <Textarea
+                    label="Target Market"
+                    placeholder="Who is your target market? Describe your ideal customer."
+                    value={targetMarket}
+                    onChange={(event) =>
+                      setTargetMarket(event.currentTarget.value)
+                    }
+                    minRows={5}
+                    required
+                    classNames={{
+                      required: classes.required,
+                    }}
+                  />
+
+                  <Textarea
+                    label="Existing Alternatives"
+                    placeholder="What are the existing alternatives to your product or service? Briefly describe them."
+                    value={existingAlternatives}
+                    onChange={(event) =>
+                      setExistingAlternatives(event.currentTarget.value)
+                    }
+                    minRows={5}
+                    required
+                    classNames={{
+                      required: classes.required,
+                    }}
+                  />
+                  <Textarea
+                    label="Communication Channels (Optional)"
+                    placeholder="How do you communicate with your customers? List your communication channels."
+                    value={communicationChannels}
+                    onChange={(event) =>
+                      setCommunicationChannels(event.currentTarget.value)
+                    }
+                    minRows={5}
+                    required
+                    classNames={{
+                      required: classes.required,
+                    }}
+                  />
+                </Flex>
+              )}
               <Flex my={8} justify={'space-between'} gap={8}>
                 <Button
                   color="violet"
@@ -271,6 +462,7 @@ const LeanCanvasGenerator: FC = () => {
                   }}
                   onClick={handleGenerateLeanCanvas}
                   loading={loading}
+                  disabled={checkRequiredFields()}
                 >
                   Generate
                 </Button>
@@ -298,7 +490,7 @@ const LeanCanvasGenerator: FC = () => {
                   Download as PDF
                 </Button>
               </Flex>
-              {advanced && (
+              {advancedStyling && (
                 <Flex
                   my={16}
                   justify={'space-between'}
@@ -313,7 +505,7 @@ const LeanCanvasGenerator: FC = () => {
                       marginBottom: '16px',
                     }}
                   >
-                    Advanced Options
+                    Canvas styles
                   </Text>
                   <label
                     style={{
@@ -386,6 +578,7 @@ const LeanCanvasGenerator: FC = () => {
                       { value: 'right', label: 'Right' },
                     ]}
                     mb={20}
+                    size="sm"
                   />
 
                   <label
@@ -417,682 +610,803 @@ const LeanCanvasGenerator: FC = () => {
             </Box>
           )}
         </Grid.Col>
-        <Grid.Col
-          sm={12}
-          md={sideBar ? 8 : 12}
-          style={{
-            overflow: 'auto',
-          }}
-        >
-          <Box
-            w={'100%'}
-            // ref={canvasRef}
-          >
-            <Flex
-              align={'center'}
+        <Grid.Col sm={12} md={sideBar ? 6 : 12}>
+          <Flex justify={'flex-end'}>
+            <Button
+              onClick={() => setAdvancedStyling(true)}
+              color="violet"
+              variant="light"
               style={{
-                width: '100%',
+                margin: '16px',
+                border: '1px solid',
               }}
             >
-              <div
-                onClick={() => setSideBar(!sideBar)}
+              Show advanced styling options
+            </Button>
+          </Flex>
+          <Drawer
+            opened={advancedStyling}
+            onClose={() => setAdvancedStyling(false)}
+            title="Advanced Styling Options"
+          >
+            <Flex my={16} justify={'space-between'} direction={'column'} mx={8}>
+              <label
                 style={{
-                  cursor: 'pointer',
-                  height: '100px',
-                  width: '20px',
-                  backgroundColor: '#a0aaff',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: '0px 10px 10px 0px',
+                  fontSize: '16px',
+                  fontWeight: 400,
                 }}
               >
-                {sideBar ? (
-                  <IconArrowLeft size={24} color="#ffffff" />
-                ) : (
-                  <IconArrowRight size={24} color="#ffffff" />
-                )}
-              </div>
-              <Box
-                style={{
-                  width: 'calc(100% - 20px)',
-                  // overflow: 'auto',
+                Character Limits for Each Field
+              </label>
+              <RangeSlider
+                defaultValue={[minChars, maxChars]}
+                min={0}
+                max={1000}
+                step={100}
+                label={(value) => `${value} characters`}
+                onChange={(value) => {
+                  setMinChars(value[0]);
+                  setMaxChars(value[1]);
                 }}
-                ref={canvasRef}
-                pos={'relative'}
-                id={'canvas'}
+                color="violet"
+                marks={[
+                  { value: 0, label: '0' },
+                  { value: 500, label: '500' },
+                  { value: 1000, label: '1000' },
+                ]}
+                mb={20}
+              />
+
+              <label
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 400,
+                }}
               >
-                <LoadingOverlay visible={loading} />
-                <Grid
-                  columns={10}
-                  mx={24}
-                  my={24}
-                  w={width}
-                  style={{
-                    border: '2px solid',
-                  }}
-                  // ref={canvasRef}
-                >
-                  <HoverCard>
-                    <HoverCard.Target>
-                      <Grid.Col
-                        span={2}
-                        mih={400}
-                        style={{
-                          padding: '0px',
-                          borderRight: '1px solid',
-                        }}
-                      >
-                        <Flex
-                          justify={'start'}
-                          gap={4}
-                          align={'center'}
-                          w={'100%'}
-                          mx={4}
-                          mt={4}
-                          h={'60px'}
-                        >
-                          <MdReportProblem size={20} />
-                          <Text align="center" weight={500} my={'auto'}>
-                            Problem
-                          </Text>
-                        </Flex>
-                        <textarea
-                          value={problem}
-                          onChange={(event) =>
-                            setProblem(event.currentTarget.value)
-                          }
-                          style={{
-                            width: '100%',
-                            height: 'calc(100% - 64px)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            border: 'none',
-                            padding: '10px',
-                            fontSize: fontSize + 'px',
-                            resize: 'vertical',
-                            textAlign: textAlignment as
-                              | 'center'
-                              | 'left'
-                              | 'right',
-                          }}
-                        />
-                      </Grid.Col>
-                    </HoverCard.Target>
-                    {problem.length > 0 && (
-                      <HoverCard.Dropdown>
-                        <Button
-                          onClick={() => {
-                            handleRegenerate('problem');
-                          }}
-                          color="green"
-                          variant="light"
-                          leftIcon={<IconRefresh />}
-                          style={{
-                            width: '100%',
-                            border: '1px solid',
-                          }}
-                          loading={loading}
-                        >
-                          Regenerate This Field
-                        </Button>
-                      </HoverCard.Dropdown>
-                    )}
-                  </HoverCard>
-                  <Grid.Col
-                    span={2}
-                    style={{
-                      borderRight: '1px solid',
-                    }}
-                  >
-                    <Grid>
-                      <HoverCard>
-                        <HoverCard.Target>
-                          <Grid.Col
-                            span={12}
-                            mih={200}
-                            style={{
-                              padding: '0px',
-                            }}
-                          >
-                            <Flex
-                              justify={'start'}
-                              gap={4}
-                              align={'center'}
-                              w={'100%'}
-                              mx={4}
-                              mt={4}
-                              h={'60px'}
-                            >
-                              <TiLightbulb size={24} />
-                              <Text align="center" weight={500} my={'auto'}>
-                                Solution
-                              </Text>
-                            </Flex>
-                            <textarea
-                              value={solution}
-                              onChange={(event) =>
-                                setSolution(event.currentTarget.value)
-                              }
-                              style={{
-                                width: '100%',
-                                height: 'calc(100% - 64px)',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                border: 'none',
-                                padding: '10px',
-                                resize: 'vertical',
-                                fontSize: fontSize + 'px',
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                              }}
-                            />
-                          </Grid.Col>
-                        </HoverCard.Target>
-                        {solution.length > 0 && (
-                          <HoverCard.Dropdown>
-                            <Button
-                              onClick={() => {
-                                handleRegenerate('solution');
-                              }}
-                              color="green"
-                              variant="light"
-                              leftIcon={<IconRefresh />}
-                              style={{
-                                width: '100%',
-                                border: '1px solid',
-                              }}
-                              loading={loading}
-                            >
-                              Regenerate This Field
-                            </Button>
-                          </HoverCard.Dropdown>
-                        )}
-                      </HoverCard>
-                      <HoverCard>
-                        <HoverCard.Target>
-                          <Grid.Col
-                            span={12}
-                            mih={200}
-                            style={{
-                              padding: '0px',
-                              borderTop: '1px solid',
-                            }}
-                          >
-                            <Flex
-                              justify={'start'}
-                              gap={4}
-                              align={'center'}
-                              w={'100%'}
-                              mx={4}
-                              mt={4}
-                              h={'60px'}
-                            >
-                              <HiOutlinePresentationChartLine size={24} />
-                              <Text align="center" weight={500} my={'auto'}>
-                                Key Metrics
-                              </Text>
-                            </Flex>
-                            <textarea
-                              value={keyMetrics}
-                              onChange={(event) =>
-                                setKeyMetrics(event.currentTarget.value)
-                              }
-                              style={{
-                                width: '100%',
-                                height: 'calc(100% - 64px)',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                border: 'none',
-                                padding: '10px',
-                                fontSize: fontSize + 'px',
-                                resize: 'vertical',
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                              }}
-                            />
-                          </Grid.Col>
-                        </HoverCard.Target>
-                        {keyMetrics.length > 0 && (
-                          <HoverCard.Dropdown>
-                            <Button
-                              onClick={() => {
-                                handleRegenerate('key_metrics');
-                              }}
-                              color="green"
-                              variant="light"
-                              leftIcon={<IconRefresh />}
-                              style={{
-                                width: '100%',
-                                border: '1px solid',
-                              }}
-                              loading={loading}
-                            >
-                              Regenerate This Field
-                            </Button>
-                          </HoverCard.Dropdown>
-                        )}
-                      </HoverCard>
-                    </Grid>
-                  </Grid.Col>
-                  <HoverCard>
-                    <HoverCard.Target>
-                      <Grid.Col
-                        span={2}
-                        style={{
-                          borderRight: '1px solid',
-                          padding: '0px',
-                        }}
-                      >
-                        <Flex
-                          justify={'start'}
-                          gap={4}
-                          align={'center'}
-                          w={'100%'}
-                          mx={4}
-                          mt={4}
-                          h={'60px'}
-                        >
-                          <AiOutlineGift size={24} />
-                          <Text align="center" weight={500} my={'auto'}>
-                            Unique Value Proposition
-                          </Text>
-                        </Flex>
-                        <textarea
-                          value={uniqueValueProposition}
-                          onChange={(event) =>
-                            setUniqueValueProposition(event.currentTarget.value)
-                          }
-                          style={{
-                            width: '100%',
-                            height: 'calc(100% - 64px)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            border: 'none',
-                            padding: '10px',
-                            fontSize: fontSize + 'px',
-                            resize: 'vertical',
-                            textAlign: textAlignment as
-                              | 'center'
-                              | 'left'
-                              | 'right',
-                          }}
-                        />
-                      </Grid.Col>
-                    </HoverCard.Target>
-                    {uniqueValueProposition.length > 0 && (
-                      <HoverCard.Dropdown>
-                        <Button
-                          onClick={() => {
-                            handleRegenerate('unique_value_proposition');
-                          }}
-                          color="green"
-                          variant="light"
-                          leftIcon={<IconRefresh />}
-                          style={{
-                            width: '100%',
-                            border: '1px solid',
-                          }}
-                          loading={loading}
-                        >
-                          Regenerate This Field
-                        </Button>
-                      </HoverCard.Dropdown>
-                    )}
-                  </HoverCard>
-                  <Grid.Col
-                    span={2}
-                    style={{
-                      borderRight: '1px solid',
-                    }}
-                  >
-                    <Grid>
-                      <HoverCard>
-                        <HoverCard.Target>
-                          <Grid.Col
-                            span={12}
-                            mih={200}
-                            style={{
-                              padding: '0px',
-                            }}
-                          >
-                            <Flex
-                              justify={'start'}
-                              gap={4}
-                              align={'center'}
-                              w={'100%'}
-                              mx={4}
-                              mt={4}
-                              h={'60px'}
-                            >
-                              <GrAchievement size={24} />
-                              <Text align="center" weight={500} my={'auto'}>
-                                Unfair Advantage
-                              </Text>
-                            </Flex>
-                            <textarea
-                              value={unfairAdvantage}
-                              onChange={(event) =>
-                                setUnfairAdvantage(event.currentTarget.value)
-                              }
-                              style={{
-                                width: '100%',
-                                height: 'calc(100% - 64px)',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                border: 'none',
-                                padding: '10px',
-                                fontSize: fontSize + 'px',
-                                resize: 'vertical',
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                              }}
-                            />
-                          </Grid.Col>
-                        </HoverCard.Target>
-                        {unfairAdvantage.length > 0 && (
-                          <HoverCard.Dropdown>
-                            <Button
-                              onClick={() => {
-                                handleRegenerate('unfair_advantage');
-                              }}
-                              color="green"
-                              variant="light"
-                              leftIcon={<IconRefresh />}
-                              style={{
-                                width: '100%',
-                                border: '1px solid',
-                              }}
-                              loading={loading}
-                            >
-                              Regenerate This Field
-                            </Button>
-                          </HoverCard.Dropdown>
-                        )}
-                      </HoverCard>
-                      <HoverCard>
-                        <HoverCard.Target>
-                          <Grid.Col
-                            span={12}
-                            mih={200}
-                            style={{
-                              borderTop: '1px solid',
-                              padding: '0px',
-                            }}
-                          >
-                            <Flex
-                              justify={'start'}
-                              gap={4}
-                              align={'center'}
-                              w={'100%'}
-                              mx={4}
-                              mt={4}
-                              h={'60px'}
-                            >
-                              <BiNetworkChart size={24} />
-                              <Text align="center" weight={500} my={'auto'}>
-                                Channels
-                              </Text>
-                            </Flex>
-                            <textarea
-                              value={channels}
-                              onChange={(event) =>
-                                setChannels(event.currentTarget.value)
-                              }
-                              style={{
-                                width: '100%',
-                                height: 'calc(100% - 64px)',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                border: 'none',
-                                padding: '10px',
-                                fontSize: fontSize + 'px',
-                                resize: 'vertical',
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                              }}
-                            />
-                          </Grid.Col>
-                        </HoverCard.Target>
-                        {channels.length > 0 && (
-                          <HoverCard.Dropdown>
-                            <Button
-                              onClick={() => {
-                                handleRegenerate('channels');
-                              }}
-                              color="green"
-                              variant="light"
-                              leftIcon={<IconRefresh />}
-                              style={{
-                                width: '100%',
-                                border: '1px solid',
-                              }}
-                              loading={loading}
-                            >
-                              Regenerate This Field
-                            </Button>
-                          </HoverCard.Dropdown>
-                        )}
-                      </HoverCard>
-                    </Grid>
-                  </Grid.Col>
-                  <HoverCard>
-                    <HoverCard.Target>
-                      <Grid.Col
-                        span={2}
-                        style={{
-                          padding: '0px',
-                        }}
-                      >
-                        <Flex
-                          justify={'start'}
-                          gap={4}
-                          align={'center'}
-                          w={'100%'}
-                          mx={4}
-                          mt={4}
-                          h={'60px'}
-                        >
-                          <GoPeople size={24} />
-                          <Text align="center" weight={500} my={'auto'}>
-                            Customer Segments
-                          </Text>
-                        </Flex>
-                        <textarea
-                          value={customerSegments}
-                          onChange={(event) =>
-                            setCustomerSegments(event.currentTarget.value)
-                          }
-                          style={{
-                            width: '100%',
-                            height: 'calc(100% - 64px)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            border: 'none',
-                            padding: '10px',
-                            fontSize: fontSize + 'px',
-                            resize: 'vertical',
-                            textAlign: textAlignment as
-                              | 'center'
-                              | 'left'
-                              | 'right',
-                          }}
-                        />
-                      </Grid.Col>
-                    </HoverCard.Target>
-                    {customerSegments.length > 0 && (
-                      <HoverCard.Dropdown>
-                        <Button
-                          onClick={() => {
-                            handleRegenerate('customer_segments');
-                          }}
-                          color="green"
-                          variant="light"
-                          leftIcon={<IconRefresh />}
-                          style={{
-                            width: '100%',
-                            border: '1px solid',
-                          }}
-                          loading={loading}
-                        >
-                          Regenerate This Field
-                        </Button>
-                      </HoverCard.Dropdown>
-                    )}
-                  </HoverCard>
-                  <HoverCard>
-                    <HoverCard.Target>
-                      <Grid.Col
-                        span={5}
-                        style={{
-                          borderRight: '1px solid',
-                          borderTop: '1px solid',
-                          padding: '0px',
-                        }}
-                        mih={200}
-                      >
-                        <Flex
-                          justify={'start'}
-                          gap={4}
-                          align={'center'}
-                          w={'100%'}
-                          mx={4}
-                          mt={4}
-                          h={'60px'}
-                        >
-                          <LiaFileInvoiceDollarSolid size={24} />
-                          <Text align="center" weight={500} my={'auto'}>
-                            Cost Structure
-                          </Text>
-                        </Flex>
-                        <textarea
-                          value={costStructure}
-                          onChange={(event) =>
-                            setCostStructure(event.currentTarget.value)
-                          }
-                          style={{
-                            width: '100%',
-                            height: 'calc(100% - 64px)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            border: 'none',
-                            padding: '10px',
-                            fontSize: fontSize + 'px',
-                            resize: 'vertical',
-                            textAlign: textAlignment as
-                              | 'center'
-                              | 'left'
-                              | 'right',
-                          }}
-                        />
-                      </Grid.Col>
-                    </HoverCard.Target>
-                    {costStructure.length > 0 && (
-                      <HoverCard.Dropdown>
-                        <Button
-                          onClick={() => {
-                            handleRegenerate('cost_structure');
-                          }}
-                          color="green"
-                          variant="light"
-                          leftIcon={<IconRefresh />}
-                          style={{
-                            width: '100%',
-                            border: '1px solid',
-                          }}
-                          loading={loading}
-                        >
-                          Regenerate This Field
-                        </Button>
-                      </HoverCard.Dropdown>
-                    )}
-                  </HoverCard>
-                  <HoverCard>
-                    <HoverCard.Target>
-                      <Grid.Col
-                        span={5}
-                        style={{
-                          borderTop: '1px solid',
-                          padding: '0px',
-                        }}
-                      >
-                        <Flex
-                          justify={'start'}
-                          gap={4}
-                          align={'center'}
-                          w={'100%'}
-                          mx={4}
-                          mt={4}
-                          h={'60px'}
-                        >
-                          <FaMoneyBillTrendUp size={24} />
-                          <Text align="center" weight={500} my={'auto'}>
-                            Revenue Streams
-                          </Text>
-                        </Flex>
-                        <textarea
-                          value={revenueStreams}
-                          onChange={(event) =>
-                            setRevenueStreams(event.currentTarget.value)
-                          }
-                          style={{
-                            width: '100%',
-                            height: 'calc(100% - 64px)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            border: 'none',
-                            padding: '10px',
-                            fontSize: fontSize + 'px',
-                            resize: 'vertical',
-                            textAlign: textAlignment as
-                              | 'center'
-                              | 'left'
-                              | 'right',
-                          }}
-                        />
-                      </Grid.Col>
-                    </HoverCard.Target>
-                    {revenueStreams.length > 0 && (
-                      <HoverCard.Dropdown>
-                        <Button
-                          onClick={() => {
-                            handleRegenerate('revenue_streams');
-                          }}
-                          color="green"
-                          variant="light"
-                          leftIcon={<IconRefresh />}
-                          style={{
-                            width: '100%',
-                            border: '1px solid',
-                          }}
-                          loading={loading}
-                        >
-                          Regenerate This Field
-                        </Button>
-                      </HoverCard.Dropdown>
-                    )}
-                  </HoverCard>
-                </Grid>
-              </Box>
+                Font Size
+              </label>
+              <Slider
+                defaultValue={fontSize}
+                w={'100%'}
+                min={12}
+                max={24}
+                step={2}
+                label={`${fontSize}px`}
+                onChange={(value) => setFontSize(value)}
+                color="violet"
+                marks={[
+                  { value: 12, label: '12px' },
+                  { value: 16, label: '16px' },
+                  { value: 24, label: '24px' },
+                ]}
+                mb={20}
+              />
+
+              <label
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 400,
+                }}
+              >
+                Text Alignment
+              </label>
+              <SegmentedControl
+                fullWidth
+                color="violet"
+                value={textAlignment}
+                onChange={setTextAlignment}
+                data={[
+                  { value: 'left', label: 'Left' },
+                  { value: 'center', label: 'Center' },
+                  { value: 'right', label: 'Right' },
+                ]}
+                mb={20}
+                size="sm"
+              />
+
+              <label
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 400,
+                }}
+              >
+                Canvas Width
+              </label>
+              <Slider
+                defaultValue={width}
+                w={'100%'}
+                min={700}
+                max={1500}
+                step={100}
+                label={`${width}px`}
+                onChange={(value) => setWidth(value)}
+                color="violet"
+                marks={[
+                  { value: 700, label: '700px' },
+                  { value: 1000, label: '1000px' },
+                  { value: 1500, label: '1500px' },
+                ]}
+                mb={16}
+              />
             </Flex>
-          </Box>
+          </Drawer>
+          <Flex>
+            <div
+              onClick={() => setSideBar(!sideBar)}
+              style={{
+                cursor: 'pointer',
+                height: '100px',
+                width: '20px',
+                backgroundColor: '#a0aaff',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: '0px 10px 10px 0px',
+                margin: 'auto 0',
+              }}
+            >
+              {sideBar ? (
+                <IconArrowLeft size={24} color="#ffffff" />
+              ) : (
+                <IconArrowRight size={24} color="#ffffff" />
+              )}
+            </div>
+            <Box
+              w={'100%'}
+              // ref={canvasRef}
+              style={{
+                overflow: 'auto',
+              }}
+            >
+              <Flex
+                align={'center'}
+                style={{
+                  width: '100%',
+                }}
+              >
+                <Box
+                  style={{
+                    width: 'calc(100% - 20px)',
+                    // overflow: 'auto',
+                  }}
+                  ref={canvasRef}
+                  pos={'relative'}
+                  id={'canvas'}
+                >
+                  <LoadingOverlay visible={loading} />
+                  <Grid
+                    columns={10}
+                    mx={24}
+                    my={24}
+                    w={width}
+                    style={{
+                      border: '2px solid',
+                    }}
+                    // ref={canvasRef}
+                  >
+                    <HoverCard>
+                      <HoverCard.Target>
+                        <Grid.Col
+                          span={2}
+                          mih={400}
+                          style={{
+                            padding: '0px',
+                            borderRight: '1px solid',
+                          }}
+                        >
+                          <Flex
+                            justify={'start'}
+                            gap={4}
+                            align={'center'}
+                            w={'100%'}
+                            mx={4}
+                            mt={4}
+                            h={'60px'}
+                          >
+                            <MdReportProblem size={20} />
+                            <Text align="center" weight={500} my={'auto'}>
+                              Problem
+                            </Text>
+                          </Flex>
+                          <textarea
+                            value={problem}
+                            onChange={(event) =>
+                              setProblem(event.currentTarget.value)
+                            }
+                            style={{
+                              width: '100%',
+                              height: 'calc(100% - 64px)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              border: 'none',
+                              padding: '10px',
+                              fontSize: fontSize + 'px',
+                              resize: 'vertical',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                            }}
+                          />
+                        </Grid.Col>
+                      </HoverCard.Target>
+                      {problem.length > 0 && (
+                        <HoverCard.Dropdown>
+                          <Button
+                            onClick={() => {
+                              handleRegenerate('problem');
+                            }}
+                            color="green"
+                            variant="light"
+                            leftIcon={<IconRefresh />}
+                            style={{
+                              width: '100%',
+                              border: '1px solid',
+                            }}
+                            loading={loading}
+                          >
+                            Regenerate This Field
+                          </Button>
+                        </HoverCard.Dropdown>
+                      )}
+                    </HoverCard>
+                    <Grid.Col
+                      span={2}
+                      style={{
+                        borderRight: '1px solid',
+                      }}
+                    >
+                      <Grid>
+                        <HoverCard>
+                          <HoverCard.Target>
+                            <Grid.Col
+                              span={12}
+                              mih={200}
+                              style={{
+                                padding: '0px',
+                              }}
+                            >
+                              <Flex
+                                justify={'start'}
+                                gap={4}
+                                align={'center'}
+                                w={'100%'}
+                                mx={4}
+                                mt={4}
+                                h={'60px'}
+                              >
+                                <TiLightbulb size={24} />
+                                <Text align="center" weight={500} my={'auto'}>
+                                  Solution
+                                </Text>
+                              </Flex>
+                              <textarea
+                                value={solution}
+                                onChange={(event) =>
+                                  setSolution(event.currentTarget.value)
+                                }
+                                style={{
+                                  width: '100%',
+                                  height: 'calc(100% - 64px)',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  border: 'none',
+                                  padding: '10px',
+                                  resize: 'vertical',
+                                  fontSize: fontSize + 'px',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                }}
+                              />
+                            </Grid.Col>
+                          </HoverCard.Target>
+                          {solution.length > 0 && (
+                            <HoverCard.Dropdown>
+                              <Button
+                                onClick={() => {
+                                  handleRegenerate('solution');
+                                }}
+                                color="green"
+                                variant="light"
+                                leftIcon={<IconRefresh />}
+                                style={{
+                                  width: '100%',
+                                  border: '1px solid',
+                                }}
+                                loading={loading}
+                              >
+                                Regenerate This Field
+                              </Button>
+                            </HoverCard.Dropdown>
+                          )}
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCard.Target>
+                            <Grid.Col
+                              span={12}
+                              mih={200}
+                              style={{
+                                padding: '0px',
+                                borderTop: '1px solid',
+                              }}
+                            >
+                              <Flex
+                                justify={'start'}
+                                gap={4}
+                                align={'center'}
+                                w={'100%'}
+                                mx={4}
+                                mt={4}
+                                h={'60px'}
+                              >
+                                <HiOutlinePresentationChartLine size={24} />
+                                <Text align="center" weight={500} my={'auto'}>
+                                  Key Metrics
+                                </Text>
+                              </Flex>
+                              <textarea
+                                value={keyMetrics}
+                                onChange={(event) =>
+                                  setKeyMetrics(event.currentTarget.value)
+                                }
+                                style={{
+                                  width: '100%',
+                                  height: 'calc(100% - 64px)',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  border: 'none',
+                                  padding: '10px',
+                                  fontSize: fontSize + 'px',
+                                  resize: 'vertical',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                }}
+                              />
+                            </Grid.Col>
+                          </HoverCard.Target>
+                          {keyMetrics.length > 0 && (
+                            <HoverCard.Dropdown>
+                              <Button
+                                onClick={() => {
+                                  handleRegenerate('key_metrics');
+                                }}
+                                color="green"
+                                variant="light"
+                                leftIcon={<IconRefresh />}
+                                style={{
+                                  width: '100%',
+                                  border: '1px solid',
+                                }}
+                                loading={loading}
+                              >
+                                Regenerate This Field
+                              </Button>
+                            </HoverCard.Dropdown>
+                          )}
+                        </HoverCard>
+                      </Grid>
+                    </Grid.Col>
+                    <HoverCard>
+                      <HoverCard.Target>
+                        <Grid.Col
+                          span={2}
+                          style={{
+                            borderRight: '1px solid',
+                            padding: '0px',
+                          }}
+                        >
+                          <Flex
+                            justify={'start'}
+                            gap={4}
+                            align={'center'}
+                            w={'100%'}
+                            mx={4}
+                            mt={4}
+                            h={'60px'}
+                          >
+                            <AiOutlineGift size={24} />
+                            <Text align="center" weight={500} my={'auto'}>
+                              Unique Value Proposition
+                            </Text>
+                          </Flex>
+                          <textarea
+                            value={uniqueValueProposition}
+                            onChange={(event) =>
+                              setUniqueValueProposition(
+                                event.currentTarget.value
+                              )
+                            }
+                            style={{
+                              width: '100%',
+                              height: 'calc(100% - 64px)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              border: 'none',
+                              padding: '10px',
+                              fontSize: fontSize + 'px',
+                              resize: 'vertical',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                            }}
+                          />
+                        </Grid.Col>
+                      </HoverCard.Target>
+                      {uniqueValueProposition.length > 0 && (
+                        <HoverCard.Dropdown>
+                          <Button
+                            onClick={() => {
+                              handleRegenerate('unique_value_proposition');
+                            }}
+                            color="green"
+                            variant="light"
+                            leftIcon={<IconRefresh />}
+                            style={{
+                              width: '100%',
+                              border: '1px solid',
+                            }}
+                            loading={loading}
+                          >
+                            Regenerate This Field
+                          </Button>
+                        </HoverCard.Dropdown>
+                      )}
+                    </HoverCard>
+                    <Grid.Col
+                      span={2}
+                      style={{
+                        borderRight: '1px solid',
+                      }}
+                    >
+                      <Grid>
+                        <HoverCard>
+                          <HoverCard.Target>
+                            <Grid.Col
+                              span={12}
+                              mih={200}
+                              style={{
+                                padding: '0px',
+                              }}
+                            >
+                              <Flex
+                                justify={'start'}
+                                gap={4}
+                                align={'center'}
+                                w={'100%'}
+                                mx={4}
+                                mt={4}
+                                h={'60px'}
+                              >
+                                <GrAchievement size={24} />
+                                <Text align="center" weight={500} my={'auto'}>
+                                  Unfair Advantage
+                                </Text>
+                              </Flex>
+                              <textarea
+                                value={unfairAdvantage}
+                                onChange={(event) =>
+                                  setUnfairAdvantage(event.currentTarget.value)
+                                }
+                                style={{
+                                  width: '100%',
+                                  height: 'calc(100% - 64px)',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  border: 'none',
+                                  padding: '10px',
+                                  fontSize: fontSize + 'px',
+                                  resize: 'vertical',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                }}
+                              />
+                            </Grid.Col>
+                          </HoverCard.Target>
+                          {unfairAdvantage.length > 0 && (
+                            <HoverCard.Dropdown>
+                              <Button
+                                onClick={() => {
+                                  handleRegenerate('unfair_advantage');
+                                }}
+                                color="green"
+                                variant="light"
+                                leftIcon={<IconRefresh />}
+                                style={{
+                                  width: '100%',
+                                  border: '1px solid',
+                                }}
+                                loading={loading}
+                              >
+                                Regenerate This Field
+                              </Button>
+                            </HoverCard.Dropdown>
+                          )}
+                        </HoverCard>
+                        <HoverCard>
+                          <HoverCard.Target>
+                            <Grid.Col
+                              span={12}
+                              mih={200}
+                              style={{
+                                borderTop: '1px solid',
+                                padding: '0px',
+                              }}
+                            >
+                              <Flex
+                                justify={'start'}
+                                gap={4}
+                                align={'center'}
+                                w={'100%'}
+                                mx={4}
+                                mt={4}
+                                h={'60px'}
+                              >
+                                <BiNetworkChart size={24} />
+                                <Text align="center" weight={500} my={'auto'}>
+                                  Channels
+                                </Text>
+                              </Flex>
+                              <textarea
+                                value={channels}
+                                onChange={(event) =>
+                                  setChannels(event.currentTarget.value)
+                                }
+                                style={{
+                                  width: '100%',
+                                  height: 'calc(100% - 64px)',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  border: 'none',
+                                  padding: '10px',
+                                  fontSize: fontSize + 'px',
+                                  resize: 'vertical',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                }}
+                              />
+                            </Grid.Col>
+                          </HoverCard.Target>
+                          {channels.length > 0 && (
+                            <HoverCard.Dropdown>
+                              <Button
+                                onClick={() => {
+                                  handleRegenerate('channels');
+                                }}
+                                color="green"
+                                variant="light"
+                                leftIcon={<IconRefresh />}
+                                style={{
+                                  width: '100%',
+                                  border: '1px solid',
+                                }}
+                                loading={loading}
+                              >
+                                Regenerate This Field
+                              </Button>
+                            </HoverCard.Dropdown>
+                          )}
+                        </HoverCard>
+                      </Grid>
+                    </Grid.Col>
+                    <HoverCard>
+                      <HoverCard.Target>
+                        <Grid.Col
+                          span={2}
+                          style={{
+                            padding: '0px',
+                          }}
+                        >
+                          <Flex
+                            justify={'start'}
+                            gap={4}
+                            align={'center'}
+                            w={'100%'}
+                            mx={4}
+                            mt={4}
+                            h={'60px'}
+                          >
+                            <GoPeople size={24} />
+                            <Text align="center" weight={500} my={'auto'}>
+                              Customer Segments
+                            </Text>
+                          </Flex>
+                          <textarea
+                            value={customerSegments}
+                            onChange={(event) =>
+                              setCustomerSegments(event.currentTarget.value)
+                            }
+                            style={{
+                              width: '100%',
+                              height: 'calc(100% - 64px)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              border: 'none',
+                              padding: '10px',
+                              fontSize: fontSize + 'px',
+                              resize: 'vertical',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                            }}
+                          />
+                        </Grid.Col>
+                      </HoverCard.Target>
+                      {customerSegments.length > 0 && (
+                        <HoverCard.Dropdown>
+                          <Button
+                            onClick={() => {
+                              handleRegenerate('customer_segments');
+                            }}
+                            color="green"
+                            variant="light"
+                            leftIcon={<IconRefresh />}
+                            style={{
+                              width: '100%',
+                              border: '1px solid',
+                            }}
+                            loading={loading}
+                          >
+                            Regenerate This Field
+                          </Button>
+                        </HoverCard.Dropdown>
+                      )}
+                    </HoverCard>
+                    <HoverCard>
+                      <HoverCard.Target>
+                        <Grid.Col
+                          span={5}
+                          style={{
+                            borderRight: '1px solid',
+                            borderTop: '1px solid',
+                            padding: '0px',
+                          }}
+                          mih={200}
+                        >
+                          <Flex
+                            justify={'start'}
+                            gap={4}
+                            align={'center'}
+                            w={'100%'}
+                            mx={4}
+                            mt={4}
+                            h={'60px'}
+                          >
+                            <LiaFileInvoiceDollarSolid size={24} />
+                            <Text align="center" weight={500} my={'auto'}>
+                              Cost Structure
+                            </Text>
+                          </Flex>
+                          <textarea
+                            value={costStructure}
+                            onChange={(event) =>
+                              setCostStructure(event.currentTarget.value)
+                            }
+                            style={{
+                              width: '100%',
+                              height: 'calc(100% - 64px)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              border: 'none',
+                              padding: '10px',
+                              fontSize: fontSize + 'px',
+                              resize: 'vertical',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                            }}
+                          />
+                        </Grid.Col>
+                      </HoverCard.Target>
+                      {costStructure.length > 0 && (
+                        <HoverCard.Dropdown>
+                          <Button
+                            onClick={() => {
+                              handleRegenerate('cost_structure');
+                            }}
+                            color="green"
+                            variant="light"
+                            leftIcon={<IconRefresh />}
+                            style={{
+                              width: '100%',
+                              border: '1px solid',
+                            }}
+                            loading={loading}
+                          >
+                            Regenerate This Field
+                          </Button>
+                        </HoverCard.Dropdown>
+                      )}
+                    </HoverCard>
+                    <HoverCard>
+                      <HoverCard.Target>
+                        <Grid.Col
+                          span={5}
+                          style={{
+                            borderTop: '1px solid',
+                            padding: '0px',
+                          }}
+                        >
+                          <Flex
+                            justify={'start'}
+                            gap={4}
+                            align={'center'}
+                            w={'100%'}
+                            mx={4}
+                            mt={4}
+                            h={'60px'}
+                          >
+                            <FaMoneyBillTrendUp size={24} />
+                            <Text align="center" weight={500} my={'auto'}>
+                              Revenue Streams
+                            </Text>
+                          </Flex>
+                          <textarea
+                            value={revenueStreams}
+                            onChange={(event) =>
+                              setRevenueStreams(event.currentTarget.value)
+                            }
+                            style={{
+                              width: '100%',
+                              height: 'calc(100% - 64px)',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              border: 'none',
+                              padding: '10px',
+                              fontSize: fontSize + 'px',
+                              resize: 'vertical',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                            }}
+                          />
+                        </Grid.Col>
+                      </HoverCard.Target>
+                      {revenueStreams.length > 0 && (
+                        <HoverCard.Dropdown>
+                          <Button
+                            onClick={() => {
+                              handleRegenerate('revenue_streams');
+                            }}
+                            color="green"
+                            variant="light"
+                            leftIcon={<IconRefresh />}
+                            style={{
+                              width: '100%',
+                              border: '1px solid',
+                            }}
+                            loading={loading}
+                          >
+                            Regenerate This Field
+                          </Button>
+                        </HoverCard.Dropdown>
+                      )}
+                    </HoverCard>
+                  </Grid>
+                </Box>
+              </Flex>
+            </Box>
+          </Flex>
         </Grid.Col>
       </Grid>
     </>
