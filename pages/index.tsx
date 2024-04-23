@@ -104,29 +104,32 @@ const LeanCanvasGenerator: FC = () => {
   const handleGenerateLeanCanvas = async () => {
     setLoading(true);
     try {
-      const resp = await fetch('/api/lean_canvas', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          companyDescription: !advanced
-            ? companyDescription
-            : JSON.stringify({
-                industry,
-                prodOrService,
-                prodOrServiceDesc,
-                problems,
-                targetMarket,
-                existingAlternatives,
-                // add optional fields if they are not empty
-                ...(communicationChannels && { communicationChannels }),
-                ...(companyName && { companyName }),
-              }),
-          minChars,
-          maxChars,
-        }),
-      });
+      const resp = await fetch(
+        'https://lean-canvas-generator.vercel.app/api/lean_canvas',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            companyDescription: !advanced
+              ? companyDescription
+              : JSON.stringify({
+                  industry,
+                  prodOrService,
+                  prodOrServiceDesc,
+                  problems,
+                  targetMarket,
+                  existingAlternatives,
+                  // add optional fields if they are not empty
+                  ...(communicationChannels && { communicationChannels }),
+                  ...(companyName && { companyName }),
+                }),
+            minChars,
+            maxChars,
+          }),
+        }
+      );
       const data = await resp.json();
       console.log(data);
       writeData(data.problem, setProblem);
