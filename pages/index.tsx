@@ -552,6 +552,7 @@ const LeanCanvasGenerator: FC = () => {
                       { value: 1000, label: '1000' },
                     ]}
                     mb={20}
+                    w={'100%'}
                   />
 
                   <label
@@ -565,7 +566,6 @@ const LeanCanvasGenerator: FC = () => {
                   <Slider
                     defaultValue={fontSize}
                     w={'100%'}
-                    mx={16}
                     min={12}
                     max={24}
                     step={2}
@@ -600,8 +600,6 @@ const LeanCanvasGenerator: FC = () => {
                     ]}
                     mb={20}
                     size="sm"
-                    w={'100%'}
-                    mx={16}
                   />
 
                   <label
@@ -615,7 +613,6 @@ const LeanCanvasGenerator: FC = () => {
                   <Slider
                     defaultValue={width}
                     w={'100%'}
-                    mx={16}
                     min={700}
                     max={1500}
                     step={100}
@@ -686,11 +683,6 @@ const LeanCanvasGenerator: FC = () => {
               Show advanced styling options
             </Button> */}
           </Flex>
-          <Drawer
-            opened={advancedStyling}
-            onClose={() => setAdvancedStyling(false)}
-            title="Advanced Styling Options"
-          ></Drawer>
           <Flex justify={'center'}>
             {/* <div
               onClick={() => setSideBar(!sideBar)}
@@ -734,7 +726,7 @@ const LeanCanvasGenerator: FC = () => {
                   pos={'relative'}
                   id={'canvas'}
                 >
-                  <LoadingOverlay visible={loading} />
+                  <LoadingOverlay visible={loading} color="violet" />
                   <Grid
                     columns={10}
                     mx={24}
