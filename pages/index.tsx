@@ -337,211 +337,193 @@ const LeanCanvasGenerator: FC = () => {
             borderColor: '#D9D9D9',
           })}
           sm={12} // On small screens, take the full width
-          md={sideBar ? 6 : 0} // On medium screens, take half of the width
+          md={sideBar ? 12 : 12} // On medium screens, take half of the width
+          m={0}
         >
-          {sideBar && (
-            <Box py={24} px={'16px'} w={{ base: '100%' }}>
-              <QuestionsGroupHeader
-                title={'Lean Canvas Generator'}
-                subtitle={'Generate a Lean Canvas for your company'}
-                icon={ComputerIcon}
-                onToggle={() => setAdvanced(!advanced)}
-              />
-              {!advanced && (
-                <Textarea
-                  label="Enter a description of your company"
-                  placeholder="Company Description"
-                  value={companyDescription}
-                  onChange={(event) =>
-                    setCompanyDescription(event.currentTarget.value)
-                  }
-                  minRows={8}
-                  required
-                  classNames={{
-                    required: classes.required,
+          <Grid w={'100%'} m={0} p={0}>
+            <Grid.Col sm={12} md={7}>
+              {
+                // sideBar &&
+                <Box
+                  py={24}
+                  px={'16px'}
+                  w={{ base: '100%' }}
+                  mx={'auto'}
+                  maw={{
+                    md: '700px',
                   }}
-                />
-              )}
-              {advanced && (
-                <Flex direction={'column'} gap={8} my={8}>
-                  <TextInput
-                    label="Company Name (Optional)"
-                    placeholder="Company Name"
-                    value={companyName}
-                    onChange={(event) =>
-                      setCompanyName(event.currentTarget.value)
-                    }
+                >
+                  <QuestionsGroupHeader
+                    title={'Lean Canvas Generator'}
+                    subtitle={'Generate a Lean Canvas for your company'}
+                    icon={ComputerIcon}
+                    onToggle={() => setAdvanced(!advanced)}
                   />
-                  <Autocomplete
-                    label="Industry"
-                    placeholder="Industry"
-                    data={listOfIndustries}
-                    value={industry}
-                    required
-                    classNames={{
-                      required: classes.required,
-                    }}
-                    onChange={(value) => setIndustry(value)}
-                  />
-                  <Text
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 400,
-                    }}
-                  >
-                    Is your company product or service based?
-                    <span
-                      style={{
-                        color: 'red',
-                        fontSize: '16px',
-                        fontWeight: 600,
+                  {!advanced && (
+                    <Textarea
+                      label="Enter a description of your company"
+                      placeholder="Company Description"
+                      value={companyDescription}
+                      onChange={(event) =>
+                        setCompanyDescription(event.currentTarget.value)
+                      }
+                      minRows={4}
+                      required
+                      classNames={{
+                        required: classes.required,
                       }}
-                    >
-                      {` * `}
-                    </span>
-                  </Text>
-                  <Radio.Group
-                    value={prodOrService}
-                    onChange={(value) => setProdOrService(value)}
-                  >
-                    <Radio
-                      value={'product'}
-                      checked={prodOrService === 'product'}
-                      onClick={() => {
-                        setProdOrService('product');
-                      }}
-                      label="Product based"
-                      m={8}
-                      color="violet"
                     />
-                    <Radio
-                      value={'service'}
-                      checked={prodOrService === 'service'}
-                      onClick={() => {
-                        setProdOrService('service');
-                      }}
-                      label="Service based"
-                      m={8}
-                      color="violet"
-                    />
-                  </Radio.Group>
-                  <Textarea
-                    label="Product or Service Description"
-                    placeholder="Briefly describe your product or service. What problem does it solve?"
-                    value={prodOrServiceDesc}
-                    onChange={(event) =>
-                      setProdOrServiceDesc(event.currentTarget.value)
-                    }
-                    minRows={5}
-                    required
-                    classNames={{
-                      required: classes.required,
-                    }}
-                  />
-                  <Textarea
-                    label="Problems"
-                    placeholder="What are the main problems or pain points your company is addressing?"
-                    value={problems}
-                    onChange={(event) => setProblems(event.currentTarget.value)}
-                    minRows={5}
-                    required
-                    classNames={{
-                      required: classes.required,
-                    }}
-                  />
-                  <Textarea
-                    label="Target Market"
-                    placeholder="Who is your target market? Describe your ideal customer."
-                    value={targetMarket}
-                    onChange={(event) =>
-                      setTargetMarket(event.currentTarget.value)
-                    }
-                    minRows={5}
-                    required
-                    classNames={{
-                      required: classes.required,
-                    }}
-                  />
+                  )}
+                  {advanced && (
+                    <Flex direction={'column'} gap={8} my={8}>
+                      <TextInput
+                        label="Company Name (Optional)"
+                        placeholder="Company Name"
+                        value={companyName}
+                        onChange={(event) =>
+                          setCompanyName(event.currentTarget.value)
+                        }
+                      />
+                      <Autocomplete
+                        label="Industry"
+                        placeholder="Industry"
+                        data={listOfIndustries}
+                        value={industry}
+                        required
+                        classNames={{
+                          required: classes.required,
+                        }}
+                        onChange={(value) => setIndustry(value)}
+                      />
+                      <Text
+                        style={{
+                          fontSize: '16px',
+                          fontWeight: 400,
+                        }}
+                      >
+                        Is your company product or service based?
+                        <span
+                          style={{
+                            color: 'red',
+                            fontSize: '16px',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {` * `}
+                        </span>
+                      </Text>
+                      <Radio.Group
+                        value={prodOrService}
+                        onChange={(value) => setProdOrService(value)}
+                      >
+                        <Radio
+                          value={'product'}
+                          checked={prodOrService === 'product'}
+                          onClick={() => {
+                            setProdOrService('product');
+                          }}
+                          label="Product based"
+                          m={8}
+                          color="violet"
+                        />
+                        <Radio
+                          value={'service'}
+                          checked={prodOrService === 'service'}
+                          onClick={() => {
+                            setProdOrService('service');
+                          }}
+                          label="Service based"
+                          m={8}
+                          color="violet"
+                        />
+                      </Radio.Group>
+                      <Textarea
+                        label="Product or Service Description"
+                        placeholder="Briefly describe your product or service. What problem does it solve?"
+                        value={prodOrServiceDesc}
+                        onChange={(event) =>
+                          setProdOrServiceDesc(event.currentTarget.value)
+                        }
+                        minRows={2}
+                        autosize
+                        required
+                        classNames={{
+                          required: classes.required,
+                        }}
+                      />
+                      <Textarea
+                        label="Problems"
+                        placeholder="What are the main problems or pain points your company is addressing?"
+                        value={problems}
+                        onChange={(event) =>
+                          setProblems(event.currentTarget.value)
+                        }
+                        minRows={2}
+                        autosize
+                        required
+                        classNames={{
+                          required: classes.required,
+                        }}
+                      />
+                      <Textarea
+                        label="Target Market"
+                        placeholder="Who is your target market? Describe your ideal customer."
+                        value={targetMarket}
+                        onChange={(event) =>
+                          setTargetMarket(event.currentTarget.value)
+                        }
+                        minRows={2}
+                        autosize
+                        required
+                        classNames={{
+                          required: classes.required,
+                        }}
+                      />
 
-                  <Textarea
-                    label="Existing Alternatives"
-                    placeholder="What are the existing alternatives to your product or service? Briefly describe them."
-                    value={existingAlternatives}
-                    onChange={(event) =>
-                      setExistingAlternatives(event.currentTarget.value)
-                    }
-                    minRows={5}
-                    required
-                    classNames={{
-                      required: classes.required,
-                    }}
-                  />
-                  <Textarea
-                    label="Communication Channels (Optional)"
-                    placeholder="How do you communicate with your customers? List your communication channels."
-                    value={communicationChannels}
-                    onChange={(event) =>
-                      setCommunicationChannels(event.currentTarget.value)
-                    }
-                    minRows={5}
-                  />
-                </Flex>
-              )}
-              <Flex my={8} justify={'space-between'} gap={8}>
-                <Button
-                  color="violet"
-                  variant="light"
-                  style={{
-                    margin: '0 auto',
-                    border: '1px solid',
-                  }}
-                  onClick={handleGenerateLeanCanvas}
-                  loading={loading}
-                  disabled={!valid}
-                >
-                  Generate
-                </Button>
-                <Button
-                  color="green"
-                  variant="light"
-                  style={{
-                    margin: '0 auto',
-                    border: '1px solid',
-                  }}
-                  onClick={handleDownload}
-                  disabled={
-                    problem === '' ||
-                    solution === '' ||
-                    keyMetrics === '' ||
-                    uniqueValueProposition === '' ||
-                    unfairAdvantage === '' ||
-                    channels === '' ||
-                    customerSegments === '' ||
-                    costStructure === '' ||
-                    revenueStreams === '' ||
-                    loading
-                  }
-                >
-                  Download as PDF
-                </Button>
-              </Flex>
-              {advancedStyling && (
+                      <Textarea
+                        label="Existing Alternatives"
+                        placeholder="What are the existing alternatives to your product or service? Briefly describe them."
+                        value={existingAlternatives}
+                        onChange={(event) =>
+                          setExistingAlternatives(event.currentTarget.value)
+                        }
+                        minRows={2}
+                        autosize
+                        required
+                        classNames={{
+                          required: classes.required,
+                        }}
+                      />
+                      <Textarea
+                        label="Communication Channels (Optional)"
+                        placeholder="How do you communicate with your customers? List your communication channels."
+                        value={communicationChannels}
+                        onChange={(event) =>
+                          setCommunicationChannels(event.currentTarget.value)
+                        }
+                        minRows={2}
+                        autosize
+                      />
+                    </Flex>
+                  )}
+                </Box>
+              }
+            </Grid.Col>
+            <Grid.Col sm={12} md={5}>
+              <Box
+                py={24}
+                w={{ base: '100%' }}
+                maw={{ md: '500px' }}
+                mx={'auto'}
+              >
                 <Flex
+                  // w={'95%'}
                   my={16}
-                  justify={'space-between'}
+                  // justify={'space-between'}
                   direction={'column'}
-                  mx={8}
+                  mx={24}
+                  gap={12}
                 >
-                  <Divider my={16} />
-                  <Text
-                    style={{
-                      fontSize: '24px',
-                      fontWeight: 500,
-                      marginBottom: '16px',
-                    }}
-                  >
-                    Canvas styles
-                  </Text>
                   <label
                     style={{
                       fontSize: '16px',
@@ -580,6 +562,7 @@ const LeanCanvasGenerator: FC = () => {
                   <Slider
                     defaultValue={fontSize}
                     w={'100%'}
+                    mx={16}
                     min={12}
                     max={24}
                     step={2}
@@ -614,6 +597,8 @@ const LeanCanvasGenerator: FC = () => {
                     ]}
                     mb={20}
                     size="sm"
+                    w={'100%'}
+                    mx={16}
                   />
 
                   <label
@@ -627,6 +612,7 @@ const LeanCanvasGenerator: FC = () => {
                   <Slider
                     defaultValue={width}
                     w={'100%'}
+                    mx={16}
                     min={700}
                     max={1500}
                     step={100}
@@ -640,14 +626,52 @@ const LeanCanvasGenerator: FC = () => {
                     ]}
                     mb={16}
                   />
+                  <Flex my={8} justify={'space-between'} gap={8}>
+                    <Button
+                      color="violet"
+                      variant="light"
+                      style={{
+                        margin: '0 auto',
+                        border: '1px solid',
+                      }}
+                      onClick={handleGenerateLeanCanvas}
+                      loading={loading}
+                      disabled={!valid}
+                    >
+                      Generate
+                    </Button>
+                    <Button
+                      color="green"
+                      variant="light"
+                      style={{
+                        margin: '0 auto',
+                        border: '1px solid',
+                      }}
+                      onClick={handleDownload}
+                      disabled={
+                        problem === '' ||
+                        solution === '' ||
+                        keyMetrics === '' ||
+                        uniqueValueProposition === '' ||
+                        unfairAdvantage === '' ||
+                        channels === '' ||
+                        customerSegments === '' ||
+                        costStructure === '' ||
+                        revenueStreams === '' ||
+                        loading
+                      }
+                    >
+                      Download as PDF
+                    </Button>
+                  </Flex>
                 </Flex>
-              )}
-            </Box>
-          )}
+              </Box>
+            </Grid.Col>
+          </Grid>
         </Grid.Col>
-        <Grid.Col sm={12} md={sideBar ? 6 : 12}>
+        <Grid.Col sm={12} md={12}>
           <Flex justify={'flex-end'}>
-            <Button
+            {/* <Button
               onClick={() => setAdvancedStyling(true)}
               color="violet"
               variant="light"
@@ -657,116 +681,15 @@ const LeanCanvasGenerator: FC = () => {
               }}
             >
               Show advanced styling options
-            </Button>
+            </Button> */}
           </Flex>
           <Drawer
             opened={advancedStyling}
             onClose={() => setAdvancedStyling(false)}
             title="Advanced Styling Options"
-          >
-            <Flex my={16} justify={'space-between'} direction={'column'} mx={8}>
-              <label
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 400,
-                }}
-              >
-                Character Limits for Each Field
-              </label>
-              <RangeSlider
-                defaultValue={[minChars, maxChars]}
-                min={0}
-                max={1000}
-                step={100}
-                label={(value) => `${value} characters`}
-                onChange={(value) => {
-                  setMinChars(value[0]);
-                  setMaxChars(value[1]);
-                }}
-                color="violet"
-                marks={[
-                  { value: 0, label: '0' },
-                  { value: 500, label: '500' },
-                  { value: 1000, label: '1000' },
-                ]}
-                mb={20}
-              />
-
-              <label
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 400,
-                }}
-              >
-                Font Size
-              </label>
-              <Slider
-                defaultValue={fontSize}
-                w={'100%'}
-                min={12}
-                max={24}
-                step={2}
-                label={`${fontSize}px`}
-                onChange={(value) => setFontSize(value)}
-                color="violet"
-                marks={[
-                  { value: 12, label: '12px' },
-                  { value: 16, label: '16px' },
-                  { value: 24, label: '24px' },
-                ]}
-                mb={20}
-              />
-
-              <label
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 400,
-                }}
-              >
-                Text Alignment
-              </label>
-              <SegmentedControl
-                fullWidth
-                color="violet"
-                value={textAlignment}
-                onChange={setTextAlignment}
-                data={[
-                  { value: 'left', label: 'Left' },
-                  { value: 'center', label: 'Center' },
-                  { value: 'right', label: 'Right' },
-                ]}
-                mb={20}
-                size="sm"
-              />
-
-              <label
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 400,
-                }}
-              >
-                Canvas Width
-              </label>
-              <Slider
-                defaultValue={width}
-                w={'100%'}
-                min={700}
-                max={1500}
-                step={100}
-                label={`${width}px`}
-                onChange={(value) => setWidth(value)}
-                color="violet"
-                marks={[
-                  { value: 700, label: '700px' },
-                  { value: 1000, label: '1000px' },
-                  { value: 1500, label: '1500px' },
-                ]}
-                mb={16}
-              />
-            </Flex>
-          </Drawer>
-          <Flex>
-            <div
+          ></Drawer>
+          <Flex justify={'center'}>
+            {/* <div
               onClick={() => setSideBar(!sideBar)}
               style={{
                 cursor: 'pointer',
@@ -785,9 +708,9 @@ const LeanCanvasGenerator: FC = () => {
               ) : (
                 <IconArrowRight size={24} color="#ffffff" />
               )}
-            </div>
+            </div> */}
             <Box
-              w={'100%'}
+              // w={'100%'}
               // ref={canvasRef}
               style={{
                 overflow: 'auto',
