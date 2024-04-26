@@ -20,31 +20,7 @@ export default async function handler(
   try {
     const { companyDescription, minChars, maxChars } = req.body;
     const prompt = `Generate a Lean Canvas for a company with the following description:\n\n"${companyDescription}"\n\n
-  ##Frames and contents:
-  ##- Problem:
-  ##Top 3 problems
-  ##- Solution:
-  ##Top 3 features
-  ##- Unique Value Proposition:
-  ##Single, clear and compelling message that states why you are different and worth buying
-  ##- Unfair Advantage:
-  ##Can’t be easily copied or bought
-  ##- Customer Segments:
-  ##Target Customers
-  ## - Key Metrics:
-  ##Key activities you measure
-  ##- Channels:
-  ##Path to customers
-  ##- Cost Structure:
-  ##List your fixed and variable costs.
-  ##Customer acquisition costs
-  ##Distribution costs
-  ##Hosting
-  ##People
-  ##Etc.
-  ##- Revenue Structure:
-  ##ways that we will make money
-  #####################################
+  Please understand the company with given description you can add/modify other points as well if you think it is necessary.\n\n
   \n\nResponse should be in form of json string with the following fields with max ${maxChars} characters and min ${minChars} characters each
     :\n\n- problem\n- solution\n- key_metrics\n- unique_value_proposition\n- unfair_advantage\n- channels\n- customer_segments\n- cost_structure\n- revenue_streams\n\n`;
     console.log(prompt);
@@ -79,3 +55,29 @@ export default async function handler(
     });
   }
 }
+
+/*`##Frames and contents:
+  ##- Problem:
+  ##Top 3 problems
+  ##- Solution:
+  ##Top 3 features
+  ##- Unique Value Proposition:
+  ##Single, clear and compelling message that states why you are different and worth buying
+  ##- Unfair Advantage:
+  ##Can’t be easily copied or bought
+  ##- Customer Segments:
+  ##Target Customers
+  ## - Key Metrics:
+  ##Key activities you measure
+  ##- Channels:
+  ##Path to customers
+  ##- Cost Structure:
+  ##List your fixed and variable costs.
+  ##Customer acquisition costs
+  ##Distribution costs
+  ##Hosting
+  ##People
+  ##Etc.
+  ##- Revenue Structure:
+  ##ways that we will make money
+  #####################################` */

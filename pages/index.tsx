@@ -19,6 +19,7 @@ import {
   Autocomplete,
   Radio,
   Drawer,
+  Checkbox,
 } from '@mantine/core';
 import React, { FC, useEffect, useState } from 'react';
 import classes from 'styles/index.module.css';
@@ -49,16 +50,17 @@ import ComputerIcon from 'public/images/computer.svg';
 import { PDFDocument } from 'pdf-lib';
 
 const LeanCanvasGenerator: FC = () => {
-  // input fields
+  // input fields advanced =  (Industry, Company Description, Problem, Advantage, Communication channels (optional can  be filled by AI)
   const [companyDescription, setCompanyDescription] = useState('');
-  const [companyName, setCompanyName] = useState('');
+  // const [companyName, setCompanyName] = useState('');
   const [industry, setIndustry] = useState('');
-  const [prodOrService, setProdOrService] = useState('product');
-  const [prodOrServiceDesc, setProdOrServiceDesc] = useState('');
+  // const [prodOrService, setProdOrService] = useState('product');
+  // const [prodOrServiceDesc, setProdOrServiceDesc] = useState('');
   const [problems, setProblems] = useState('');
-  const [targetMarket, setTargetMarket] = useState('');
+  // const [targetMarket, setTargetMarket] = useState('');
+  const [advantage, setAdvantage] = useState('');
   const [communicationChannels, setCommunicationChannels] = useState('');
-  const [existingAlternatives, setExistingAlternatives] = useState('');
+  // const [existingAlternatives, setExistingAlternatives] = useState('');
 
   const [minChars, setMinChars] = useState(200);
   const [maxChars, setMaxChars] = useState(500);
@@ -80,6 +82,7 @@ const LeanCanvasGenerator: FC = () => {
   const [fontSize, setFontSize] = useState(16);
   const [textAlignment, setTextAlignment] = useState('left');
   const [sideBar, setSideBar] = useState(true);
+  const [useBoxData, setUseBoxData] = useState(false);
   const [advanced, setAdvanced] = useState(false);
 
   const writeData = async (
@@ -113,17 +116,43 @@ const LeanCanvasGenerator: FC = () => {
           },
           body: JSON.stringify({
             companyDescription: !advanced
-              ? companyDescription
+              ? JSON.stringify({
+                  companyDescription,
+                  ...(useBoxData && {
+                    problem,
+                    solution,
+                    keyMetrics,
+                    uniqueValueProposition,
+                    unfairAdvantage,
+                    channels,
+                    customerSegments,
+                    costStructure,
+                    revenueStreams,
+                  }),
+                })
               : JSON.stringify({
                   industry,
-                  prodOrService,
-                  prodOrServiceDesc,
+                  companyDescription,
                   problems,
-                  targetMarket,
-                  existingAlternatives,
+                  advantage,
                   // add optional fields if they are not empty
-                  ...(communicationChannels && { communicationChannels }),
-                  ...(companyName && { companyName }),
+                  ...(communicationChannels
+                    ? { communicationChannels }
+                    : {
+                        communicationChannels:
+                          'Please assume the communication channels as per requirement and other fields as well.',
+                      }),
+                  ...(useBoxData && {
+                    problem,
+                    solution,
+                    keyMetrics,
+                    uniqueValueProposition,
+                    unfairAdvantage,
+                    channels,
+                    customerSegments,
+                    costStructure,
+                    revenueStreams,
+                  }),
                 }),
             minChars,
             maxChars,
@@ -196,14 +225,16 @@ const LeanCanvasGenerator: FC = () => {
               ? companyDescription
               : JSON.stringify({
                   industry,
-                  prodOrService,
-                  prodOrServiceDesc,
                   problems,
-                  targetMarket,
-                  existingAlternatives,
+                  advantage,
+                  companyDescription,
                   // add optional fields if they are not empty
-                  ...(communicationChannels && { communicationChannels }),
-                  ...(companyName && { companyName }),
+                  ...(communicationChannels
+                    ? { communicationChannels }
+                    : {
+                        communicationChannels:
+                          'Please assume the communication channels as per requirement and other fields as well.',
+                      }),
                 }),
             fieldToBeRegenerated: field,
             previousResponse: {
@@ -295,20 +326,16 @@ const LeanCanvasGenerator: FC = () => {
   const checkRequiredFields = () => {
     if (advanced) {
       return (
-        console.log('companyName', companyName),
+        // console.log('companyName', companyName),
         console.log('industry', industry),
-        console.log('prodOrService', prodOrService),
-        console.log('prodOrServiceDesc', prodOrServiceDesc),
+        // console.log('prodOrService', prodOrService),
+        // console.log('prodOrServiceDesc', prodOrServiceDesc),
         console.log('problems', problems),
-        console.log('targetMarket', targetMarket),
-        console.log('existingAlternatives', existingAlternatives),
-        companyName === '' ||
-          industry === '' ||
-          prodOrService === '' ||
-          prodOrServiceDesc === '' ||
-          problems === '' ||
-          targetMarket === '' ||
-          existingAlternatives === ''
+        // console.log('targetMarket', targetMarket),
+        // console.log('existingAlternatives', existingAlternatives),
+        companyDescription === ''
+        // targetMarket === '' ||
+        // existingAlternatives === ''
       );
     } else {
       return companyDescription === '';
@@ -317,13 +344,9 @@ const LeanCanvasGenerator: FC = () => {
   useEffect(() => {
     setValid(!checkRequiredFields());
   }, [
-    companyName,
     industry,
-    prodOrService,
-    prodOrServiceDesc,
     problems,
-    targetMarket,
-    existingAlternatives,
+    advantage,
     companyDescription,
     advanced,
     companyDescription,
@@ -379,26 +402,26 @@ const LeanCanvasGenerator: FC = () => {
                   )}
                   {advanced && (
                     <Flex direction={'column'} gap={8} my={8}>
-                      <TextInput
+                      {/* <TextInput
                         label="Company Name (Optional)"
                         placeholder="Company Name"
                         value={companyName}
                         onChange={(event) =>
                           setCompanyName(event.currentTarget.value)
                         }
-                      />
+                      /> */}
                       <Autocomplete
                         label="Industry"
                         placeholder="Industry"
                         data={listOfIndustries}
                         value={industry}
-                        required
+                        // required
                         classNames={{
                           required: classes.required,
                         }}
                         onChange={(value) => setIndustry(value)}
                       />
-                      <Text
+                      {/* <Text
                         style={{
                           fontSize: '16px',
                           fontWeight: 400,
@@ -439,8 +462,8 @@ const LeanCanvasGenerator: FC = () => {
                           m={8}
                           color="violet"
                         />
-                      </Radio.Group>
-                      <Textarea
+                      </Radio.Group> */}
+                      {/* <Textarea
                         label="Product or Service Description"
                         placeholder="Briefly describe your product or service. What problem does it solve?"
                         value={prodOrServiceDesc}
@@ -453,15 +476,15 @@ const LeanCanvasGenerator: FC = () => {
                         classNames={{
                           required: classes.required,
                         }}
-                      />
+                      /> */}
                       <Textarea
-                        label="Problems"
-                        placeholder="What are the main problems or pain points your company is addressing?"
-                        value={problems}
+                        label="Company Description"
+                        placeholder="Briefly describe your company, its products, or services. (Required)"
+                        value={companyDescription}
                         onChange={(event) =>
-                          setProblems(event.currentTarget.value)
+                          setCompanyDescription(event.currentTarget.value)
                         }
-                        minRows={2}
+                        minRows={3}
                         autosize
                         required
                         classNames={{
@@ -469,6 +492,34 @@ const LeanCanvasGenerator: FC = () => {
                         }}
                       />
                       <Textarea
+                        label="Problems"
+                        placeholder="Describe the existing problems in the market that your company seeks to solve."
+                        value={problems}
+                        onChange={(event) =>
+                          setProblems(event.currentTarget.value)
+                        }
+                        minRows={2}
+                        autosize
+                        // required
+                        classNames={{
+                          required: classes.required,
+                        }}
+                      />
+                      <Textarea
+                        label="Advantage"
+                        placeholder="Does your company have any exclusivity, something that only it will do/possess in the market? If yes, what?"
+                        value={advantage}
+                        onChange={(event) =>
+                          setAdvantage(event.currentTarget.value)
+                        }
+                        minRows={2}
+                        autosize
+                        // required
+                        classNames={{
+                          required: classes.required,
+                        }}
+                      />
+                      {/* <Textarea
                         label="Target Market"
                         placeholder="Who is your target market? Describe your ideal customer."
                         value={targetMarket}
@@ -481,9 +532,9 @@ const LeanCanvasGenerator: FC = () => {
                         classNames={{
                           required: classes.required,
                         }}
-                      />
+                      /> */}
 
-                      <Textarea
+                      {/* <Textarea
                         label="Existing Alternatives"
                         placeholder="What are the existing alternatives to your product or service? Briefly describe them."
                         value={existingAlternatives}
@@ -496,7 +547,7 @@ const LeanCanvasGenerator: FC = () => {
                         classNames={{
                           required: classes.required,
                         }}
-                      />
+                      /> */}
                       <Textarea
                         label="Communication Channels (Optional)"
                         placeholder="How do you communicate with your customers? List your communication channels."
@@ -625,6 +676,14 @@ const LeanCanvasGenerator: FC = () => {
                       { value: 1500, label: '1500px' },
                     ]}
                     mb={16}
+                  />
+                  <Checkbox
+                    label="Use Data in Boxes as Inputs"
+                    checked={useBoxData}
+                    onChange={() => setUseBoxData(!useBoxData)}
+                    mb={16}
+                    mt={12}
+                    color="violet"
                   />
                   <Flex my={8} justify={'space-between'} gap={8}>
                     <Button
