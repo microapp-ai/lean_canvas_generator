@@ -933,7 +933,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={problem}
+                            value={problem.replaceAll('\n', '\n\n')}
                             onChange={(event) =>
                               setProblem(event.currentTarget.value)
                             }
@@ -1007,7 +1007,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={solution}
+                                value={solution.replaceAll('\n', '\n\n')}
                                 onChange={(event) =>
                                   setSolution(event.currentTarget.value)
                                 }
@@ -1075,7 +1075,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={keyMetrics}
+                                value={keyMetrics.replaceAll('\n', '\n\n')}
                                 onChange={(event) =>
                                   setKeyMetrics(event.currentTarget.value)
                                 }
@@ -1145,7 +1145,10 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={uniqueValueProposition}
+                            value={uniqueValueProposition.replaceAll(
+                              '\n',
+                              '\n\n'
+                            )}
                             onChange={(event) =>
                               setUniqueValueProposition(
                                 event.currentTarget.value
@@ -1221,7 +1224,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={unfairAdvantage}
+                                value={unfairAdvantage.replaceAll('\n', '\n\n')}
                                 onChange={(event) =>
                                   setUnfairAdvantage(event.currentTarget.value)
                                 }
@@ -1289,7 +1292,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={channels}
+                                value={channels.replaceAll('\n', '\n\n')}
                                 onChange={(event) =>
                                   setChannels(event.currentTarget.value)
                                 }
@@ -1358,7 +1361,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={customerSegments}
+                            value={customerSegments.replaceAll('\n', '\n\n')}
                             onChange={(event) =>
                               setCustomerSegments(event.currentTarget.value)
                             }
@@ -1427,7 +1430,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={costStructure}
+                            value={costStructure.replaceAll('\n', '\n\n')}
                             onChange={(event) =>
                               setCostStructure(event.currentTarget.value)
                             }
@@ -1495,7 +1498,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={revenueStreams}
+                            value={revenueStreams.replaceAll('\n', '\n\n')}
                             onChange={(event) =>
                               setRevenueStreams(event.currentTarget.value)
                             }
