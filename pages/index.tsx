@@ -50,6 +50,9 @@ import ComputerIcon from 'public/images/computer.svg';
 import { PDFDocument } from 'pdf-lib';
 
 const LeanCanvasGenerator: FC = () => {
+  const [title, setTitle] = useState('Lean Canvas');
+  const [author, setAuthor] = useState('John Doe');
+  const [date, setDate] = useState('2021-09-01');
   // input fields advanced =  (Industry, Company Description, Problem, Advantage, Communication channels (optional can  be filled by AI)
   const [companyDescription, setCompanyDescription] = useState('');
   // const [companyName, setCompanyName] = useState('');
@@ -79,9 +82,11 @@ const LeanCanvasGenerator: FC = () => {
 
   // styling parameters
   const [width, setWidth] = useState(1000);
+  const [height, setHeight] = useState(600);
   const [fontSize, setFontSize] = useState(16);
   const [textAlignment, setTextAlignment] = useState('left');
   const [sideBar, setSideBar] = useState(true);
+  const [padding, setPadding] = useState(8);
   const [useBoxData, setUseBoxData] = useState(false);
   const [advanced, setAdvanced] = useState(false);
 
@@ -387,8 +392,8 @@ const LeanCanvasGenerator: FC = () => {
                   />
                   {!advanced && (
                     <Textarea
-                      label="Enter a description of your company"
-                      placeholder="Company Description"
+                      label="Company Description"
+                      placeholder="Briefly describe your company and its products or services"
                       value={companyDescription}
                       onChange={(event) =>
                         setCompanyDescription(event.currentTarget.value)
@@ -412,7 +417,7 @@ const LeanCanvasGenerator: FC = () => {
                       /> */}
                       <Autocomplete
                         label="Industry"
-                        placeholder="Industry"
+                        placeholder="Which industry sector does your company belong to?"
                         data={listOfIndustries}
                         value={industry}
                         // required
@@ -479,7 +484,7 @@ const LeanCanvasGenerator: FC = () => {
                       /> */}
                       <Textarea
                         label="Company Description"
-                        placeholder="Briefly describe your company, its products, or services. (Required)"
+                        placeholder="Briefly describe your company and its products or services."
                         value={companyDescription}
                         onChange={(event) =>
                           setCompanyDescription(event.currentTarget.value)
@@ -550,7 +555,7 @@ const LeanCanvasGenerator: FC = () => {
                       /> */}
                       <Textarea
                         label="Communication Channels (Optional)"
-                        placeholder="How do you communicate with your customers? List your communication channels."
+                        placeholder="How do your company communicates with your customers? List your Communication Channels."
                         value={communicationChannels}
                         onChange={(event) =>
                           setCommunicationChannels(event.currentTarget.value)
@@ -652,6 +657,30 @@ const LeanCanvasGenerator: FC = () => {
                     mb={20}
                     size="sm"
                   />
+                  <label
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 400,
+                    }}
+                  >
+                    Padding inside the boxes
+                  </label>
+                  <Slider
+                    defaultValue={padding}
+                    w={'100%'}
+                    min={4}
+                    max={16}
+                    step={4}
+                    label={`${padding}px`}
+                    onChange={(value) => setPadding(value)}
+                    color="violet"
+                    marks={[
+                      { value: 4, label: '4px' },
+                      { value: 8, label: '8px' },
+                      { value: 16, label: '16px' },
+                    ]}
+                    mb={20}
+                  />
 
                   <label
                     style={{
@@ -664,11 +693,35 @@ const LeanCanvasGenerator: FC = () => {
                   <Slider
                     defaultValue={width}
                     w={'100%'}
-                    min={700}
-                    max={1500}
+                    min={500}
+                    max={1000}
                     step={100}
                     label={`${width}px`}
                     onChange={(value) => setWidth(value)}
+                    color="violet"
+                    marks={[
+                      { value: 500, label: '500px' },
+                      { value: 700, label: '700px' },
+                      { value: 1000, label: '1000px' },
+                    ]}
+                    mb={16}
+                  />
+                  <label
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 400,
+                    }}
+                  >
+                    Canvas Height
+                  </label>
+                  <Slider
+                    defaultValue={height}
+                    w={'100%'}
+                    min={700}
+                    max={1500}
+                    step={100}
+                    label={`${height}px`}
+                    onChange={(value) => setHeight(value)}
                     color="violet"
                     marks={[
                       { value: 700, label: '700px' },
@@ -758,9 +811,9 @@ const LeanCanvasGenerator: FC = () => {
               }}
             >
               {sideBar ? (
-                <IconArrowLeft size={24} color="#ffffff" />
+                <IconArrowLeft size={31} color="#ffffff" />
               ) : (
-                <IconArrowRight size={24} color="#ffffff" />
+                <IconArrowRight size={31} color="#ffffff" />
               )}
             </div> */}
             <Box
@@ -786,10 +839,65 @@ const LeanCanvasGenerator: FC = () => {
                   id={'canvas'}
                 >
                   <LoadingOverlay visible={loading} color="violet" />
+                  <Text
+                    // align="center"
+                    weight={700}
+                    style={{
+                      fontSize: '32px',
+                      // padding: '16px',
+                    }}
+                    mt={24}
+                    mx={24}
+                  >
+                    {title}
+                  </Text>
+                  <Flex
+                    w={width}
+                    mx={24}
+                    justify={'space-between'}
+                    bg={'#f0f0f0'}
+                    p={8}
+                  >
+                    <Flex align={'center'} gap={8}>
+                      <label>Author:</label>
+                      <input
+                        value={author}
+                        onChange={(event) =>
+                          setAuthor(event.currentTarget.value)
+                        }
+                        placeholder="Author"
+                        style={{
+                          border: 'none',
+                          padding: '8px',
+                          fontSize: '16px',
+                          width: width / 3,
+                          textAlign: 'center',
+                          backgroundColor: '#f0f0f0',
+                        }}
+                      />
+                    </Flex>
+                    <Flex align={'center'} gap={8}>
+                      <label>Date:</label>
+                      <input
+                        value={date}
+                        onChange={(event) => setDate(event.currentTarget.value)}
+                        placeholder="Date"
+                        style={{
+                          border: 'none',
+                          padding: '8px',
+                          fontSize: '16px',
+                          width: width / 3,
+                          textAlign: 'center',
+                          backgroundColor: '#f0f0f0',
+                        }}
+                      />
+                    </Flex>
+                  </Flex>
                   <Grid
                     columns={10}
                     mx={24}
-                    my={24}
+                    mt={16}
+                    mb={24}
                     w={width}
                     style={{
                       border: '2px solid',
@@ -800,7 +908,7 @@ const LeanCanvasGenerator: FC = () => {
                       <HoverCard.Target>
                         <Grid.Col
                           span={2}
-                          mih={400}
+                          mih={(height * 2) / 3}
                           style={{
                             padding: '0px',
                             borderRight: '1px solid',
@@ -809,14 +917,18 @@ const LeanCanvasGenerator: FC = () => {
                           <Flex
                             justify={'start'}
                             gap={4}
-                            align={'center'}
+                            align={'start'}
                             w={'100%'}
-                            mx={4}
+                            // mx={8}
+                            p={padding}
                             mt={4}
                             h={'60px'}
                           >
-                            <MdReportProblem size={20} />
-                            <Text align="center" weight={500} my={'auto'}>
+                            <MdReportProblem
+                              size={31}
+                              // color='#006eff'
+                            />
+                            <Text weight={500} my={'auto'}>
                               Problem
                             </Text>
                           </Flex>
@@ -832,9 +944,9 @@ const LeanCanvasGenerator: FC = () => {
                               justifyContent: 'center',
                               alignItems: 'center',
                               border: 'none',
-                              padding: '10px',
+                              padding: padding,
                               fontSize: fontSize + 'px',
-                              resize: 'vertical',
+                              resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
@@ -874,7 +986,7 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={200}
+                              mih={(height * 1) / 3}
                               style={{
                                 padding: '0px',
                               }}
@@ -887,8 +999,9 @@ const LeanCanvasGenerator: FC = () => {
                                 mx={4}
                                 mt={4}
                                 h={'60px'}
+                                p={padding}
                               >
-                                <TiLightbulb size={24} />
+                                <TiLightbulb size={31} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Solution
                                 </Text>
@@ -905,8 +1018,8 @@ const LeanCanvasGenerator: FC = () => {
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                   border: 'none',
-                                  padding: '10px',
-                                  resize: 'vertical',
+                                  padding: padding,
+                                  resize: 'none',
                                   fontSize: fontSize + 'px',
                                   textAlign: textAlignment as
                                     | 'center'
@@ -940,7 +1053,7 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={200}
+                              mih={height / 3}
                               style={{
                                 padding: '0px',
                                 borderTop: '1px solid',
@@ -954,8 +1067,9 @@ const LeanCanvasGenerator: FC = () => {
                                 mx={4}
                                 mt={4}
                                 h={'60px'}
+                                p={padding}
                               >
-                                <HiOutlinePresentationChartLine size={24} />
+                                <HiOutlinePresentationChartLine size={31} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Key Metrics
                                 </Text>
@@ -972,9 +1086,9 @@ const LeanCanvasGenerator: FC = () => {
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                   border: 'none',
-                                  padding: '10px',
+                                  padding: padding,
                                   fontSize: fontSize + 'px',
-                                  resize: 'vertical',
+                                  resize: 'none',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
@@ -1013,6 +1127,7 @@ const LeanCanvasGenerator: FC = () => {
                             borderRight: '1px solid',
                             padding: '0px',
                           }}
+                          mih={(height * 2) / 3}
                         >
                           <Flex
                             justify={'start'}
@@ -1022,9 +1137,10 @@ const LeanCanvasGenerator: FC = () => {
                             mx={4}
                             mt={4}
                             h={'60px'}
+                            p={padding}
                           >
-                            <AiOutlineGift size={24} />
-                            <Text align="center" weight={500} my={'auto'}>
+                            <AiOutlineGift size={31} />
+                            <Text align="start" weight={500} my={'auto'}>
                               Unique Value Proposition
                             </Text>
                           </Flex>
@@ -1042,9 +1158,9 @@ const LeanCanvasGenerator: FC = () => {
                               justifyContent: 'center',
                               alignItems: 'center',
                               border: 'none',
-                              padding: '10px',
+                              padding: padding,
                               fontSize: fontSize + 'px',
-                              resize: 'vertical',
+                              resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
@@ -1084,7 +1200,7 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={200}
+                              mih={height / 3}
                               style={{
                                 padding: '0px',
                               }}
@@ -1097,8 +1213,9 @@ const LeanCanvasGenerator: FC = () => {
                                 mx={4}
                                 mt={4}
                                 h={'60px'}
+                                p={padding}
                               >
-                                <GrAchievement size={24} />
+                                <GrAchievement size={31} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Unfair Advantage
                                 </Text>
@@ -1115,9 +1232,9 @@ const LeanCanvasGenerator: FC = () => {
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                   border: 'none',
-                                  padding: '10px',
+                                  padding: padding,
                                   fontSize: fontSize + 'px',
-                                  resize: 'vertical',
+                                  resize: 'none',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
@@ -1150,7 +1267,7 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={200}
+                              mih={height / 3}
                               style={{
                                 borderTop: '1px solid',
                                 padding: '0px',
@@ -1164,8 +1281,9 @@ const LeanCanvasGenerator: FC = () => {
                                 mx={4}
                                 mt={4}
                                 h={'60px'}
+                                p={padding}
                               >
-                                <BiNetworkChart size={24} />
+                                <BiNetworkChart size={31} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Channels
                                 </Text>
@@ -1182,9 +1300,9 @@ const LeanCanvasGenerator: FC = () => {
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                   border: 'none',
-                                  padding: '10px',
+                                  padding: padding,
                                   fontSize: fontSize + 'px',
-                                  resize: 'vertical',
+                                  resize: 'none',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
@@ -1222,6 +1340,7 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             padding: '0px',
                           }}
+                          mih={(height * 2) / 3}
                         >
                           <Flex
                             justify={'start'}
@@ -1231,8 +1350,9 @@ const LeanCanvasGenerator: FC = () => {
                             mx={4}
                             mt={4}
                             h={'60px'}
+                            p={padding}
                           >
-                            <GoPeople size={24} />
+                            <GoPeople size={31} />
                             <Text align="center" weight={500} my={'auto'}>
                               Customer Segments
                             </Text>
@@ -1249,9 +1369,9 @@ const LeanCanvasGenerator: FC = () => {
                               justifyContent: 'center',
                               alignItems: 'center',
                               border: 'none',
-                              padding: '10px',
+                              padding: padding,
                               fontSize: fontSize + 'px',
-                              resize: 'vertical',
+                              resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
@@ -1289,7 +1409,7 @@ const LeanCanvasGenerator: FC = () => {
                             borderTop: '1px solid',
                             padding: '0px',
                           }}
-                          mih={200}
+                          mih={height / 3}
                         >
                           <Flex
                             justify={'start'}
@@ -1299,8 +1419,9 @@ const LeanCanvasGenerator: FC = () => {
                             mx={4}
                             mt={4}
                             h={'60px'}
+                            p={padding}
                           >
-                            <LiaFileInvoiceDollarSolid size={24} />
+                            <LiaFileInvoiceDollarSolid size={31} />
                             <Text align="center" weight={500} my={'auto'}>
                               Cost Structure
                             </Text>
@@ -1317,9 +1438,9 @@ const LeanCanvasGenerator: FC = () => {
                               justifyContent: 'center',
                               alignItems: 'center',
                               border: 'none',
-                              padding: '10px',
+                              padding: padding,
                               fontSize: fontSize + 'px',
-                              resize: 'vertical',
+                              resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
@@ -1356,6 +1477,7 @@ const LeanCanvasGenerator: FC = () => {
                             borderTop: '1px solid',
                             padding: '0px',
                           }}
+                          mih={height / 3}
                         >
                           <Flex
                             justify={'start'}
@@ -1365,8 +1487,9 @@ const LeanCanvasGenerator: FC = () => {
                             mx={4}
                             mt={4}
                             h={'60px'}
+                            p={padding}
                           >
-                            <FaMoneyBillTrendUp size={24} />
+                            <FaMoneyBillTrendUp size={31} />
                             <Text align="center" weight={500} my={'auto'}>
                               Revenue Streams
                             </Text>
@@ -1383,9 +1506,9 @@ const LeanCanvasGenerator: FC = () => {
                               justifyContent: 'center',
                               alignItems: 'center',
                               border: 'none',
-                              padding: '10px',
+                              padding: padding,
                               fontSize: fontSize + 'px',
-                              resize: 'vertical',
+                              resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
