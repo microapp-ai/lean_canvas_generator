@@ -663,7 +663,7 @@ const LeanCanvasGenerator: FC = () => {
                       fontWeight: 400,
                     }}
                   >
-                    Padding inside the boxes
+                    Padding Inside Boxes
                   </label>
                   <Slider
                     defaultValue={padding}
@@ -693,16 +693,16 @@ const LeanCanvasGenerator: FC = () => {
                   <Slider
                     defaultValue={width}
                     w={'100%'}
-                    min={500}
-                    max={1000}
+                    min={700}
+                    max={1500}
                     step={100}
                     label={`${width}px`}
                     onChange={(value) => setWidth(value)}
                     color="violet"
                     marks={[
-                      { value: 500, label: '500px' },
                       { value: 700, label: '700px' },
                       { value: 1000, label: '1000px' },
+                      { value: 1500, label: '1500px' },
                     ]}
                     mb={16}
                   />
@@ -717,16 +717,16 @@ const LeanCanvasGenerator: FC = () => {
                   <Slider
                     defaultValue={height}
                     w={'100%'}
-                    min={700}
-                    max={1500}
-                    step={100}
+                    min={500}
+                    max={1000}
+                    step={50}
                     label={`${height}px`}
                     onChange={(value) => setHeight(value)}
                     color="violet"
                     marks={[
+                      { value: 500, label: '500px' },
                       { value: 700, label: '700px' },
                       { value: 1000, label: '1000px' },
-                      { value: 1500, label: '1500px' },
                     ]}
                     mb={16}
                   />
