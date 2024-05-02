@@ -1024,7 +1024,7 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <TiLightbulb size={31} />
+                                <TiLightbulb size={35} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Solution
                                 </Text>
@@ -1042,7 +1042,8 @@ const LeanCanvasGenerator: FC = () => {
                                   alignItems: 'center',
                                   border: 'none',
                                   padding: padding,
-                                  resize: 'none',
+                                  resize: 'vertical',
+
                                   fontSize: fontSize + 'px',
                                   backgroundColor: fillColor
                                     ? '#ff8e82'
@@ -1171,7 +1172,7 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <AiOutlineGift size={31} />
+                            <AiOutlineGift size={38} />
                             <Text align="start" weight={500} my={'auto'}>
                               Unique Value Proposition
                             </Text>
