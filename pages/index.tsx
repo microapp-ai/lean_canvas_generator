@@ -88,6 +88,7 @@ const LeanCanvasGenerator: FC = () => {
   const [sideBar, setSideBar] = useState(true);
   const [padding, setPadding] = useState(8);
   const [useBoxData, setUseBoxData] = useState(false);
+  const [fillColor, setFillColor] = useState(false);
   const [advanced, setAdvanced] = useState(false);
 
   const writeData = async (
@@ -731,6 +732,13 @@ const LeanCanvasGenerator: FC = () => {
                     mb={16}
                   />
                   <Checkbox
+                    label="Fill Color in Boxes"
+                    checked={fillColor}
+                    onChange={() => setFillColor(!fillColor)}
+                    mb={16}
+                    color="violet"
+                  />
+                  <Checkbox
                     label="Use Data in Boxes as Inputs"
                     checked={useBoxData}
                     onChange={() => setUseBoxData(!useBoxData)}
@@ -738,6 +746,7 @@ const LeanCanvasGenerator: FC = () => {
                     mt={12}
                     color="violet"
                   />
+
                   <Flex my={8} justify={'space-between'} gap={8}>
                     <Button
                       color="violet"
@@ -851,14 +860,15 @@ const LeanCanvasGenerator: FC = () => {
                   >
                     {title}
                   </Text>
-                  <Flex
-                    w={width}
-                    mx={24}
-                    justify={'space-between'}
-                    bg={'#f0f0f0'}
-                    p={8}
-                  >
-                    <Flex align={'center'} gap={8}>
+                  <Flex w={width} mx={24} justify={'space-between'} gap={12}>
+                    <Flex
+                      p={8}
+                      align={'center'}
+                      gap={8}
+                      bg={'#f0f0f0'}
+                      w={'100%'}
+                      justify={'center'}
+                    >
                       <label>Author:</label>
                       <input
                         value={author}
@@ -870,13 +880,20 @@ const LeanCanvasGenerator: FC = () => {
                           border: 'none',
                           padding: '8px',
                           fontSize: '16px',
-                          width: width / 3,
+                          width: '200px',
                           textAlign: 'center',
                           backgroundColor: '#f0f0f0',
                         }}
                       />
                     </Flex>
-                    <Flex align={'center'} gap={8}>
+                    <Flex
+                      p={8}
+                      align={'center'}
+                      gap={8}
+                      bg={'#f0f0f0'}
+                      w={'100%'}
+                      justify={'center'}
+                    >
                       <label>Date:</label>
                       <input
                         value={date}
@@ -886,7 +903,7 @@ const LeanCanvasGenerator: FC = () => {
                           border: 'none',
                           padding: '8px',
                           fontSize: '16px',
-                          width: width / 3,
+                          width: '200px',
                           textAlign: 'center',
                           backgroundColor: '#f0f0f0',
                         }}
@@ -900,7 +917,7 @@ const LeanCanvasGenerator: FC = () => {
                     mb={24}
                     w={width}
                     style={{
-                      border: '2px solid',
+                      border: fillColor ? 'none' : '1px solid',
                     }}
                     // ref={canvasRef}
                   >
@@ -911,8 +928,9 @@ const LeanCanvasGenerator: FC = () => {
                           mih={(height * 2) / 3}
                           style={{
                             padding: '0px',
-                            borderRight: '1px solid',
+                            border: fillColor ? '5px solid #ffff' : '1px solid',
                           }}
+                          bg={fillColor ? '#ff8e82' : 'none'}
                         >
                           <Flex
                             justify={'start'}
@@ -947,6 +965,9 @@ const LeanCanvasGenerator: FC = () => {
                               padding: padding,
                               fontSize: fontSize + 'px',
                               resize: 'none',
+                              backgroundColor: fillColor
+                                ? '#ff8e82'
+                                : 'transparent',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
@@ -977,9 +998,8 @@ const LeanCanvasGenerator: FC = () => {
                     </HoverCard>
                     <Grid.Col
                       span={2}
-                      style={{
-                        borderRight: '1px solid',
-                      }}
+                      style={{}}
+                      bg={fillColor ? '#ff8e82' : 'transparent'}
                     >
                       <Grid>
                         <HoverCard>
@@ -989,6 +1009,9 @@ const LeanCanvasGenerator: FC = () => {
                               mih={(height * 1) / 3}
                               style={{
                                 padding: '0px',
+                                border: fillColor
+                                  ? '5px solid #ffff'
+                                  : '1px solid',
                               }}
                             >
                               <Flex
@@ -1021,6 +1044,9 @@ const LeanCanvasGenerator: FC = () => {
                                   padding: padding,
                                   resize: 'none',
                                   fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#ff8e82'
+                                    : 'transparent',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
@@ -1056,7 +1082,9 @@ const LeanCanvasGenerator: FC = () => {
                               mih={height / 3}
                               style={{
                                 padding: '0px',
-                                borderTop: '1px solid',
+                                border: fillColor
+                                  ? '5px solid #ffff'
+                                  : '1px solid',
                               }}
                             >
                               <Flex
@@ -1089,6 +1117,9 @@ const LeanCanvasGenerator: FC = () => {
                                   padding: padding,
                                   fontSize: fontSize + 'px',
                                   resize: 'none',
+                                  backgroundColor: fillColor
+                                    ? '#ff8e82'
+                                    : 'transparent',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
@@ -1124,10 +1155,11 @@ const LeanCanvasGenerator: FC = () => {
                         <Grid.Col
                           span={2}
                           style={{
-                            borderRight: '1px solid',
+                            border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
                           }}
                           mih={(height * 2) / 3}
+                          bg={fillColor ? '#ffdd7e' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1163,6 +1195,9 @@ const LeanCanvasGenerator: FC = () => {
                               border: 'none',
                               padding: padding,
                               fontSize: fontSize + 'px',
+                              backgroundColor: fillColor
+                                ? '#ffdd7e'
+                                : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
@@ -1194,18 +1229,20 @@ const LeanCanvasGenerator: FC = () => {
                     </HoverCard>
                     <Grid.Col
                       span={2}
-                      style={{
-                        borderRight: '1px solid',
-                      }}
+                      style={{}}
+                      bg={fillColor ? '#7add8f' : 'transparent'}
                     >
                       <Grid>
                         <HoverCard>
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={height / 3}
+                              mih={(height * 1) / 3}
                               style={{
                                 padding: '0px',
+                                border: fillColor
+                                  ? '5px solid #ffff'
+                                  : '1px solid',
                               }}
                             >
                               <Flex
@@ -1237,6 +1274,9 @@ const LeanCanvasGenerator: FC = () => {
                                   border: 'none',
                                   padding: padding,
                                   fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#7add8f'
+                                    : 'transparent',
                                   resize: 'none',
                                   textAlign: textAlignment as
                                     | 'center'
@@ -1272,9 +1312,12 @@ const LeanCanvasGenerator: FC = () => {
                               span={12}
                               mih={height / 3}
                               style={{
-                                borderTop: '1px solid',
+                                border: fillColor
+                                  ? '5px solid #ffff'
+                                  : '1px solid',
                                 padding: '0px',
                               }}
+                              bg={fillColor ? '#7add8f' : 'transparent'}
                             >
                               <Flex
                                 justify={'start'}
@@ -1305,6 +1348,9 @@ const LeanCanvasGenerator: FC = () => {
                                   border: 'none',
                                   padding: padding,
                                   fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#7add8f'
+                                    : 'transparent',
                                   resize: 'none',
                                   textAlign: textAlignment as
                                     | 'center'
@@ -1342,8 +1388,10 @@ const LeanCanvasGenerator: FC = () => {
                           span={2}
                           style={{
                             padding: '0px',
+                            border: fillColor ? '5px solid #ffff' : '1px solid',
                           }}
                           mih={(height * 2) / 3}
+                          bg={fillColor ? '#7add8f' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1374,6 +1422,9 @@ const LeanCanvasGenerator: FC = () => {
                               border: 'none',
                               padding: padding,
                               fontSize: fontSize + 'px',
+                              backgroundColor: fillColor
+                                ? '#7add8f'
+                                : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
@@ -1408,11 +1459,11 @@ const LeanCanvasGenerator: FC = () => {
                         <Grid.Col
                           span={5}
                           style={{
-                            borderRight: '1px solid',
-                            borderTop: '1px solid',
+                            border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
                           }}
                           mih={height / 3}
+                          bg={fillColor ? '#858cff' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1443,6 +1494,9 @@ const LeanCanvasGenerator: FC = () => {
                               border: 'none',
                               padding: padding,
                               fontSize: fontSize + 'px',
+                              backgroundColor: fillColor
+                                ? '#858cff'
+                                : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
@@ -1477,10 +1531,11 @@ const LeanCanvasGenerator: FC = () => {
                         <Grid.Col
                           span={5}
                           style={{
-                            borderTop: '1px solid',
+                            border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
                           }}
                           mih={height / 3}
+                          bg={fillColor ? '#858cff' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1511,6 +1566,9 @@ const LeanCanvasGenerator: FC = () => {
                               border: 'none',
                               padding: padding,
                               fontSize: fontSize + 'px',
+                              backgroundColor: fillColor
+                                ? '#858cff'
+                                : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
