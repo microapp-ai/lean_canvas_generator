@@ -263,31 +263,46 @@ const LeanCanvasGenerator: FC = () => {
         const data = await response.json();
         switch (field) {
           case 'problem':
-            writeData(data.problem, setProblem);
+            writeData(data.problem.replaceAll('\n', '\n\n'), setProblem);
             break;
           case 'solution':
-            writeData(data.solution, setSolution);
+            writeData(data.solution.replaceAll('\n', '\n\n'), setSolution);
             break;
           case 'key_metrics':
-            writeData(data.key_metrics, setKeyMetrics);
+            writeData(data.key_metrics.replaceAll('\n', '\n\n'), setKeyMetrics);
             break;
           case 'unique_value_proposition':
-            writeData(data.unique_value_proposition, setUniqueValueProposition);
+            writeData(
+              data.unique_value_proposition.replaceAll('\n', '\n\n'),
+              setUniqueValueProposition
+            );
             break;
           case 'unfair_advantage':
-            writeData(data.unfair_advantage, setUnfairAdvantage);
+            writeData(
+              data.unfair_advantage.replaceAll('\n', '\n\n'),
+              setUnfairAdvantage
+            );
             break;
           case 'channels':
-            writeData(data.channels, setChannels);
+            writeData(data.channels.replaceAll('\n', '\n\n'), setChannels);
             break;
           case 'customer_segments':
-            writeData(data.customer_segments, setCustomerSegments);
+            writeData(
+              data.customer_segments.replaceAll('\n', '\n\n'),
+              setCustomerSegments
+            );
             break;
           case 'cost_structure':
-            writeData(data.cost_structure, setCostStructure);
+            writeData(
+              data.cost_structure.replaceAll('\n', '\n\n'),
+              setCostStructure
+            );
             break;
           case 'revenue_streams':
-            writeData(data.revenue_streams, setRevenueStreams);
+            writeData(
+              data.revenue_streams.replaceAll('\n', '\n\n'),
+              setRevenueStreams
+            );
             break;
           default:
             break;
@@ -951,7 +966,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={problem.replaceAll('\n', '\n\n')}
+                            value={problem}
                             onChange={(event) =>
                               setProblem(event.currentTarget.value)
                             }
@@ -1030,7 +1045,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={solution.replaceAll('\n', '\n\n')}
+                                value={solution}
                                 onChange={(event) =>
                                   setSolution(event.currentTarget.value)
                                 }
@@ -1104,7 +1119,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={keyMetrics.replaceAll('\n', '\n\n')}
+                                value={keyMetrics}
                                 onChange={(event) =>
                                   setKeyMetrics(event.currentTarget.value)
                                 }
@@ -1262,7 +1277,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={unfairAdvantage.replaceAll('\n', '\n\n')}
+                                value={unfairAdvantage}
                                 onChange={(event) =>
                                   setUnfairAdvantage(event.currentTarget.value)
                                 }
@@ -1336,7 +1351,7 @@ const LeanCanvasGenerator: FC = () => {
                                 </Text>
                               </Flex>
                               <textarea
-                                value={channels.replaceAll('\n', '\n\n')}
+                                value={channels}
                                 onChange={(event) =>
                                   setChannels(event.currentTarget.value)
                                 }
@@ -1410,7 +1425,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={customerSegments.replaceAll('\n', '\n\n')}
+                            value={customerSegments}
                             onChange={(event) =>
                               setCustomerSegments(event.currentTarget.value)
                             }
@@ -1482,7 +1497,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={costStructure.replaceAll('\n', '\n\n')}
+                            value={costStructure}
                             onChange={(event) =>
                               setCostStructure(event.currentTarget.value)
                             }
@@ -1554,7 +1569,7 @@ const LeanCanvasGenerator: FC = () => {
                             </Text>
                           </Flex>
                           <textarea
-                            value={revenueStreams.replaceAll('\n', '\n\n')}
+                            value={revenueStreams}
                             onChange={(event) =>
                               setRevenueStreams(event.currentTarget.value)
                             }
