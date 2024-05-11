@@ -48,6 +48,8 @@ import QuestionsGroupHeader from '@/components/QuestionGroupHeader';
 import ComputerIcon from 'public/images/computer.svg';
 
 import { PDFDocument } from 'pdf-lib';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const LeanCanvasGenerator: FC = () => {
   const [title, setTitle] = useState('Lean Canvas');
@@ -190,19 +192,28 @@ const LeanCanvasGenerator: FC = () => {
   const handleDownload = () => {
     try {
       var node = document.getElementById('canvas');
+      if (!node) {
+        return;
+      }
+      let scale = 4;
       domtoimage
         .toPng(node as HTMLElement, {
-          bgcolor: 'white',
+          width: node.scrollWidth * scale,
+          height: node.clientHeight * scale,
+          style: {
+            transform: 'scale(' + scale + ')',
+            transformOrigin: 'top left',
+          },
         })
         .then(async function (dataUrl) {
           // convert it to pdf
           const pdfDoc = await PDFDocument.create();
           const pdfImage = await pdfDoc.embedPng(dataUrl);
-          const page = pdfDoc.addPage([width, pdfImage.height]);
+          const page = pdfDoc.addPage([pdfImage.width, pdfImage.height]);
           page.drawImage(pdfImage, {
             x: 0,
             y: 0,
-            width: width,
+            width: pdfImage.width,
           });
           const pdfBytes = await pdfDoc.save();
           const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -784,18 +795,7 @@ const LeanCanvasGenerator: FC = () => {
                         border: '1px solid',
                       }}
                       onClick={handleDownload}
-                      disabled={
-                        problem === '' ||
-                        solution === '' ||
-                        keyMetrics === '' ||
-                        uniqueValueProposition === '' ||
-                        unfairAdvantage === '' ||
-                        channels === '' ||
-                        customerSegments === '' ||
-                        costStructure === '' ||
-                        revenueStreams === '' ||
-                        loading
-                      }
+                      disabled={loading || problem === ''}
                     >
                       Download as PDF
                     </Button>
@@ -854,10 +854,7 @@ const LeanCanvasGenerator: FC = () => {
                 }}
               >
                 <Box
-                  style={{
-                    width: 'calc(100% - 20px)',
-                    // overflow: 'auto',
-                  }}
+                  w={width + 48}
                   ref={canvasRef}
                   pos={'relative'}
                   id={'canvas'}
@@ -1057,7 +1054,7 @@ const LeanCanvasGenerator: FC = () => {
                                   alignItems: 'center',
                                   border: 'none',
                                   padding: padding,
-                                  resize: 'vertical',
+                                  resize: 'none',
 
                                   fontSize: fontSize + 'px',
                                   backgroundColor: fillColor
