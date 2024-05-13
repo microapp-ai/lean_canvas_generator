@@ -835,9 +835,9 @@ const LeanCanvasGenerator: FC = () => {
               }}
             >
               {sideBar ? (
-                <IconArrowLeft size={31} color="#ffffff" />
+                <IconArrowLeft size={24} color="#ffffff" />
               ) : (
-                <IconArrowRight size={31} color="#ffffff" />
+                <IconArrowRight size={24} color="#ffffff" />
               )}
             </div> */}
             <Box
@@ -869,9 +869,12 @@ const LeanCanvasGenerator: FC = () => {
                     }}
                     mt={24}
                     mx={24}
+                    mb={0}
+                    pb={0}
                   >
                     {title}
                   </Text>
+                  <Box h={'8px'} w={'150px'} bg={'blue'} mx={24} mb={16}></Box>
                   <Flex w={width} mx={24} justify={'space-between'} gap={12}>
                     <Flex
                       p={8}
@@ -941,8 +944,11 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             padding: '0px',
                             border: fillColor ? '5px solid #ffff' : '1px solid',
+                            ...(fillColor && {
+                              borderRadius: '20px',
+                            }),
                           }}
-                          bg={fillColor ? '#ff8e82' : 'none'}
+                          bg={fillColor ? '#dd052e' : 'none'}
                         >
                           <Flex
                             justify={'start'}
@@ -955,7 +961,7 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                           >
                             <MdReportProblem
-                              size={31}
+                              size={24}
                               // color='#006eff'
                             />
                             <Text weight={500} my={'auto'}>
@@ -978,12 +984,16 @@ const LeanCanvasGenerator: FC = () => {
                               fontSize: fontSize + 'px',
                               resize: 'none',
                               backgroundColor: fillColor
-                                ? '#ff8e82'
+                                ? '#dd052e'
                                 : 'transparent',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
                                 | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                              }),
                             }}
                           />
                         </Grid.Col>
@@ -1008,11 +1018,7 @@ const LeanCanvasGenerator: FC = () => {
                         </HoverCard.Dropdown>
                       )}
                     </HoverCard>
-                    <Grid.Col
-                      span={2}
-                      style={{}}
-                      bg={fillColor ? '#ff8e82' : 'transparent'}
-                    >
+                    <Grid.Col span={2} style={{}}>
                       <Grid>
                         <HoverCard>
                           <HoverCard.Target>
@@ -1024,7 +1030,11 @@ const LeanCanvasGenerator: FC = () => {
                                 border: fillColor
                                   ? '5px solid #ffff'
                                   : '1px solid',
+                                ...(fillColor && {
+                                  borderRadius: '20px',
+                                }),
                               }}
+                              bg={fillColor ? '#ff9a02' : 'transparent'}
                             >
                               <Flex
                                 justify={'start'}
@@ -1036,7 +1046,7 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <TiLightbulb size={35} />
+                                <TiLightbulb size={24} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Solution
                                 </Text>
@@ -1058,12 +1068,16 @@ const LeanCanvasGenerator: FC = () => {
 
                                   fontSize: fontSize + 'px',
                                   backgroundColor: fillColor
-                                    ? '#ff8e82'
+                                    ? '#ff9a02'
                                     : 'transparent',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
                                     | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                  }),
                                 }}
                               />
                             </Grid.Col>
@@ -1098,7 +1112,11 @@ const LeanCanvasGenerator: FC = () => {
                                 border: fillColor
                                   ? '5px solid #ffff'
                                   : '1px solid',
+                                ...(fillColor && {
+                                  borderRadius: '20px',
+                                }),
                               }}
+                              bg={fillColor ? '#fb6b25' : 'transparent'}
                             >
                               <Flex
                                 justify={'start'}
@@ -1110,7 +1128,7 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <HiOutlinePresentationChartLine size={31} />
+                                <HiOutlinePresentationChartLine size={24} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Key Metrics
                                 </Text>
@@ -1131,12 +1149,16 @@ const LeanCanvasGenerator: FC = () => {
                                   fontSize: fontSize + 'px',
                                   resize: 'none',
                                   backgroundColor: fillColor
-                                    ? '#ff8e82'
+                                    ? '#fb6b25'
                                     : 'transparent',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
                                     | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                  }),
                                 }}
                               />
                             </Grid.Col>
@@ -1170,9 +1192,12 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
+                            ...(fillColor && {
+                              borderRadius: '20px',
+                            }),
                           }}
                           mih={(height * 2) / 3}
-                          bg={fillColor ? '#ffdd7e' : 'transparent'}
+                          bg={fillColor ? '#00aa44' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1184,7 +1209,7 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <AiOutlineGift size={38} />
+                            <AiOutlineGift size={31} />
                             <Text align="start" weight={500} my={'auto'}>
                               Unique Value Proposition
                             </Text>
@@ -1209,13 +1234,17 @@ const LeanCanvasGenerator: FC = () => {
                               padding: padding,
                               fontSize: fontSize + 'px',
                               backgroundColor: fillColor
-                                ? '#ffdd7e'
+                                ? '#00aa44'
                                 : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
                                 | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                              }),
                             }}
                           />
                         </Grid.Col>
@@ -1240,11 +1269,7 @@ const LeanCanvasGenerator: FC = () => {
                         </HoverCard.Dropdown>
                       )}
                     </HoverCard>
-                    <Grid.Col
-                      span={2}
-                      style={{}}
-                      bg={fillColor ? '#7add8f' : 'transparent'}
-                    >
+                    <Grid.Col span={2} style={{}}>
                       <Grid>
                         <HoverCard>
                           <HoverCard.Target>
@@ -1256,7 +1281,11 @@ const LeanCanvasGenerator: FC = () => {
                                 border: fillColor
                                   ? '5px solid #ffff'
                                   : '1px solid',
+                                ...(fillColor && {
+                                  borderRadius: '20px',
+                                }),
                               }}
+                              bg={fillColor ? '#7fcf2e' : 'transparent'}
                             >
                               <Flex
                                 justify={'start'}
@@ -1268,7 +1297,7 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <GrAchievement size={31} />
+                                <GrAchievement size={24} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Unfair Advantage
                                 </Text>
@@ -1288,13 +1317,17 @@ const LeanCanvasGenerator: FC = () => {
                                   padding: padding,
                                   fontSize: fontSize + 'px',
                                   backgroundColor: fillColor
-                                    ? '#7add8f'
+                                    ? '#7fcf2e'
                                     : 'transparent',
                                   resize: 'none',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
                                     | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                  }),
                                 }}
                               />
                             </Grid.Col>
@@ -1329,8 +1362,11 @@ const LeanCanvasGenerator: FC = () => {
                                   ? '5px solid #ffff'
                                   : '1px solid',
                                 padding: '0px',
+                                ...(fillColor && {
+                                  borderRadius: '20px',
+                                }),
                               }}
-                              bg={fillColor ? '#7add8f' : 'transparent'}
+                              bg={fillColor ? '#00b9a9' : 'transparent'}
                             >
                               <Flex
                                 justify={'start'}
@@ -1342,7 +1378,7 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <BiNetworkChart size={31} />
+                                <BiNetworkChart size={24} />
                                 <Text align="center" weight={500} my={'auto'}>
                                   Channels
                                 </Text>
@@ -1362,13 +1398,17 @@ const LeanCanvasGenerator: FC = () => {
                                   padding: padding,
                                   fontSize: fontSize + 'px',
                                   backgroundColor: fillColor
-                                    ? '#7add8f'
+                                    ? '#00b9a9'
                                     : 'transparent',
                                   resize: 'none',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
                                     | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                  }),
                                 }}
                               />
                             </Grid.Col>
@@ -1402,9 +1442,12 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             padding: '0px',
                             border: fillColor ? '5px solid #ffff' : '1px solid',
+                            ...(fillColor && {
+                              borderRadius: '20px',
+                            }),
                           }}
                           mih={(height * 2) / 3}
-                          bg={fillColor ? '#7add8f' : 'transparent'}
+                          bg={fillColor ? '#029fc8' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1416,7 +1459,7 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <GoPeople size={31} />
+                            <GoPeople size={24} />
                             <Text align="center" weight={500} my={'auto'}>
                               Customer Segments
                             </Text>
@@ -1436,13 +1479,17 @@ const LeanCanvasGenerator: FC = () => {
                               padding: padding,
                               fontSize: fontSize + 'px',
                               backgroundColor: fillColor
-                                ? '#7add8f'
+                                ? '#029fc8'
                                 : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
                                 | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                              }),
                             }}
                           />
                         </Grid.Col>
@@ -1474,9 +1521,12 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
+                            ...(fillColor && {
+                              borderRadius: '20px',
+                            }),
                           }}
                           mih={height / 3}
-                          bg={fillColor ? '#858cff' : 'transparent'}
+                          bg={fillColor ? '#5d51cf' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1488,7 +1538,7 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <LiaFileInvoiceDollarSolid size={31} />
+                            <LiaFileInvoiceDollarSolid size={24} />
                             <Text align="center" weight={500} my={'auto'}>
                               Cost Structure
                             </Text>
@@ -1508,13 +1558,17 @@ const LeanCanvasGenerator: FC = () => {
                               padding: padding,
                               fontSize: fontSize + 'px',
                               backgroundColor: fillColor
-                                ? '#858cff'
+                                ? '#5d51cf'
                                 : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
                                 | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                              }),
                             }}
                           />
                         </Grid.Col>
@@ -1546,9 +1600,12 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
+                            ...(fillColor && {
+                              borderRadius: '20px',
+                            }),
                           }}
                           mih={height / 3}
-                          bg={fillColor ? '#858cff' : 'transparent'}
+                          bg={fillColor ? '#670fb9' : 'transparent'}
                         >
                           <Flex
                             justify={'start'}
@@ -1560,7 +1617,7 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <FaMoneyBillTrendUp size={31} />
+                            <FaMoneyBillTrendUp size={24} />
                             <Text align="center" weight={500} my={'auto'}>
                               Revenue Streams
                             </Text>
@@ -1580,13 +1637,17 @@ const LeanCanvasGenerator: FC = () => {
                               padding: padding,
                               fontSize: fontSize + 'px',
                               backgroundColor: fillColor
-                                ? '#858cff'
+                                ? '#670fb9'
                                 : 'transparent',
                               resize: 'none',
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
                                 | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                              }),
                             }}
                           />
                         </Grid.Col>
