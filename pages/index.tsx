@@ -383,6 +383,49 @@ const LeanCanvasGenerator: FC = () => {
     advanced,
     companyDescription,
   ]);
+  const [smallerRows, setSmallerRows] = useState(5);
+  const [largerRows, setLargerRows] = useState(13);
+
+  const getHeight = (str: string) => {
+    let charWidth = 0.55 * fontSize;
+    const lines = str.split('\n');
+    let numRows = lines.length;
+    let boxWidth = width / 5 - padding * 2;
+    let charPerLine = boxWidth / charWidth;
+    lines.forEach((line) => {
+      numRows += Math.ceil(line.length / charPerLine) - 1;
+    });
+    return numRows;
+  };
+
+  const getUpperRows = () => {
+    let smallerBoxRows = 5,
+      largerBoxRows = 13;
+    largerBoxRows = Math.max(largerBoxRows, getHeight(problem));
+    smallerBoxRows = Math.max(smallerBoxRows, getHeight(solution));
+    smallerBoxRows = Math.max(smallerBoxRows, getHeight(keyMetrics));
+    largerBoxRows = Math.max(largerBoxRows, getHeight(uniqueValueProposition));
+    smallerBoxRows = Math.max(smallerBoxRows, getHeight(unfairAdvantage));
+    smallerBoxRows = Math.max(smallerBoxRows, getHeight(channels));
+    largerBoxRows = Math.max(largerBoxRows, getHeight(customerSegments));
+
+    largerBoxRows = Math.max(largerBoxRows, smallerBoxRows * 2 + 3);
+
+    setSmallerRows(smallerBoxRows);
+    setLargerRows(largerBoxRows);
+  };
+
+  useEffect(() => {
+    getUpperRows();
+  }, [
+    problem,
+    solution,
+    keyMetrics,
+    uniqueValueProposition,
+    unfairAdvantage,
+    channels,
+    customerSegments,
+  ]);
 
   return (
     <>
@@ -733,7 +776,7 @@ const LeanCanvasGenerator: FC = () => {
                     ]}
                     mb={16}
                   />
-                  <label
+                  {/* <label
                     style={{
                       fontSize: '16px',
                       fontWeight: 400,
@@ -756,7 +799,7 @@ const LeanCanvasGenerator: FC = () => {
                       { value: 1000, label: '1000px' },
                     ]}
                     mb={16}
-                  />
+                  /> */}
                   <Checkbox
                     label="Fill Color in Boxes"
                     checked={fillColor}
@@ -869,12 +912,9 @@ const LeanCanvasGenerator: FC = () => {
                     }}
                     mt={24}
                     mx={24}
-                    mb={0}
-                    pb={0}
                   >
                     {title}
                   </Text>
-                  <Box h={'8px'} w={'150px'} bg={'blue'} mx={24} mb={16}></Box>
                   <Flex w={width} mx={24} justify={'space-between'} gap={12}>
                     <Flex
                       p={8}
@@ -940,7 +980,6 @@ const LeanCanvasGenerator: FC = () => {
                       <HoverCard.Target>
                         <Grid.Col
                           span={2}
-                          mih={(height * 2) / 3}
                           style={{
                             padding: '0px',
                             border: fillColor ? '5px solid #ffff' : '1px solid',
@@ -968,7 +1007,7 @@ const LeanCanvasGenerator: FC = () => {
                               Problem
                             </Text>
                           </Flex>
-                          <textarea
+                          {/* <textarea
                             value={problem}
                             onChange={(event) =>
                               setProblem(event.currentTarget.value)
@@ -993,7 +1032,33 @@ const LeanCanvasGenerator: FC = () => {
                               ...(fillColor && {
                                 borderBottomRightRadius: '20px',
                                 borderBottomLeftRadius: '20px',
-                              }),
+                              })
+                            }}
+                          /> */}
+                          <Textarea
+                            value={problem}
+                            onChange={(event) =>
+                              setProblem(event.currentTarget.value)
+                            }
+                            id="problem"
+                            minRows={largerRows}
+                            autosize
+                            styles={{
+                              input: {
+                                border: 'none',
+                                fontSize: fontSize + 'px',
+                                backgroundColor: fillColor
+                                  ? '#dd052e'
+                                  : 'transparent',
+                                textAlign: textAlignment as
+                                  | 'center'
+                                  | 'left'
+                                  | 'right',
+                                ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                }),
+                              },
                             }}
                           />
                         </Grid.Col>
@@ -1018,21 +1083,29 @@ const LeanCanvasGenerator: FC = () => {
                         </HoverCard.Dropdown>
                       )}
                     </HoverCard>
-                    <Grid.Col span={2} style={{}}>
+                    <Grid.Col
+                      span={2}
+                      style={{
+                        ...(!fillColor && {
+                          border: '1px solid',
+                        }),
+                      }}
+                    >
                       <Grid>
                         <HoverCard>
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={(height * 1) / 3}
                               style={{
                                 padding: '0px',
-                                border: fillColor
-                                  ? '5px solid #ffff'
-                                  : '1px solid',
-                                ...(fillColor && {
-                                  borderRadius: '20px',
-                                }),
+                                ...(fillColor
+                                  ? {
+                                      borderRadius: '20px',
+                                      border: '5px solid #ffff',
+                                    }
+                                  : {
+                                      borderBottom: '1px solid',
+                                    }),
                               }}
                               bg={fillColor ? '#ff9a02' : 'transparent'}
                             >
@@ -1051,7 +1124,7 @@ const LeanCanvasGenerator: FC = () => {
                                   Solution
                                 </Text>
                               </Flex>
-                              <textarea
+                              {/* <textarea
                                 value={solution}
                                 onChange={(event) =>
                                   setSolution(event.currentTarget.value)
@@ -1073,11 +1146,36 @@ const LeanCanvasGenerator: FC = () => {
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
-                                    | 'right',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                  }),
+                                    | 'right', ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    })
+                                }}
+                              /> */}
+                              <Textarea
+                                value={solution}
+                                onChange={(event) =>
+                                  setSolution(event.currentTarget.value)
+                                }
+                                id="solution"
+                                minRows={smallerRows}
+                                autosize
+                                styles={{
+                                  input: {
+                                    border: 'none',
+                                    fontSize: fontSize + 'px',
+                                    backgroundColor: fillColor
+                                      ? '#ff9a02'
+                                      : 'transparent',
+                                    textAlign: textAlignment as
+                                      | 'center'
+                                      | 'left'
+                                      | 'right',
+                                    ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    }),
+                                  },
                                 }}
                               />
                             </Grid.Col>
@@ -1106,15 +1204,16 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={height / 3}
                               style={{
                                 padding: '0px',
-                                border: fillColor
-                                  ? '5px solid #ffff'
-                                  : '1px solid',
-                                ...(fillColor && {
-                                  borderRadius: '20px',
-                                }),
+                                ...(fillColor
+                                  ? {
+                                      borderRadius: '20px',
+                                      border: '5px solid #ffff',
+                                    }
+                                  : {
+                                      borderTop: '1px solid',
+                                    }),
                               }}
                               bg={fillColor ? '#fb6b25' : 'transparent'}
                             >
@@ -1133,7 +1232,7 @@ const LeanCanvasGenerator: FC = () => {
                                   Key Metrics
                                 </Text>
                               </Flex>
-                              <textarea
+                              {/* <textarea
                                 value={keyMetrics}
                                 onChange={(event) =>
                                   setKeyMetrics(event.currentTarget.value)
@@ -1154,11 +1253,35 @@ const LeanCanvasGenerator: FC = () => {
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
-                                    | 'right',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                  }),
+                                    | 'right', ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    })
+                                }}
+                              /> */}
+                              <Textarea
+                                value={keyMetrics}
+                                onChange={(event) =>
+                                  setKeyMetrics(event.currentTarget.value)
+                                }
+                                minRows={smallerRows}
+                                autosize
+                                styles={{
+                                  input: {
+                                    border: 'none',
+                                    fontSize: fontSize + 'px',
+                                    backgroundColor: fillColor
+                                      ? '#fb6b25'
+                                      : 'transparent',
+                                    textAlign: textAlignment as
+                                      | 'center'
+                                      | 'left'
+                                      | 'right',
+                                    ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    }),
+                                  },
                                 }}
                               />
                             </Grid.Col>
@@ -1196,7 +1319,6 @@ const LeanCanvasGenerator: FC = () => {
                               borderRadius: '20px',
                             }),
                           }}
-                          mih={(height * 2) / 3}
                           bg={fillColor ? '#00aa44' : 'transparent'}
                         >
                           <Flex
@@ -1206,7 +1328,7 @@ const LeanCanvasGenerator: FC = () => {
                             w={'100%'}
                             mx={4}
                             mt={4}
-                            h={'60px'}
+                            h={'80px'}
                             p={padding}
                           >
                             <AiOutlineGift size={31} />
@@ -1214,7 +1336,7 @@ const LeanCanvasGenerator: FC = () => {
                               Unique Value Proposition
                             </Text>
                           </Flex>
-                          <textarea
+                          {/* <textarea
                             value={uniqueValueProposition.replaceAll(
                               '\n',
                               '\n\n'
@@ -1240,11 +1362,38 @@ const LeanCanvasGenerator: FC = () => {
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
-                                | 'right',
-                              ...(fillColor && {
-                                borderBottomRightRadius: '20px',
-                                borderBottomLeftRadius: '20px',
-                              }),
+                                | 'right', ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                })
+                            }}
+                          /> */}
+                          <Textarea
+                            value={uniqueValueProposition}
+                            onChange={(event) =>
+                              setUniqueValueProposition(
+                                event.currentTarget.value
+                              )
+                            }
+                            id="uniqueValueProposition"
+                            minRows={largerRows}
+                            autosize
+                            styles={{
+                              input: {
+                                border: 'none',
+                                fontSize: fontSize + 'px',
+                                backgroundColor: fillColor
+                                  ? '#00aa44'
+                                  : 'transparent',
+                                textAlign: textAlignment as
+                                  | 'center'
+                                  | 'left'
+                                  | 'right',
+                                ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                }),
+                              },
                             }}
                           />
                         </Grid.Col>
@@ -1269,21 +1418,27 @@ const LeanCanvasGenerator: FC = () => {
                         </HoverCard.Dropdown>
                       )}
                     </HoverCard>
-                    <Grid.Col span={2} style={{}}>
+                    <Grid.Col
+                      span={2}
+                      style={{
+                        border: !fillColor ? '1px solid' : 'none',
+                      }}
+                    >
                       <Grid>
                         <HoverCard>
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={(height * 1) / 3}
                               style={{
                                 padding: '0px',
-                                border: fillColor
-                                  ? '5px solid #ffff'
-                                  : '1px solid',
-                                ...(fillColor && {
-                                  borderRadius: '20px',
-                                }),
+                                ...(fillColor
+                                  ? {
+                                      borderRadius: '20px',
+                                      border: '5px solid #ffff',
+                                    }
+                                  : {
+                                      borderBottom: '1px solid',
+                                    }),
                               }}
                               bg={fillColor ? '#7fcf2e' : 'transparent'}
                             >
@@ -1302,7 +1457,7 @@ const LeanCanvasGenerator: FC = () => {
                                   Unfair Advantage
                                 </Text>
                               </Flex>
-                              <textarea
+                              {/* <textarea
                                 value={unfairAdvantage}
                                 onChange={(event) =>
                                   setUnfairAdvantage(event.currentTarget.value)
@@ -1323,11 +1478,36 @@ const LeanCanvasGenerator: FC = () => {
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
-                                    | 'right',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                  }),
+                                    | 'right', ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    })
+                                }}
+                              /> */}
+                              <Textarea
+                                value={unfairAdvantage}
+                                onChange={(event) =>
+                                  setUnfairAdvantage(event.currentTarget.value)
+                                }
+                                id="unfairAdvantage"
+                                minRows={smallerRows}
+                                autosize
+                                styles={{
+                                  input: {
+                                    border: 'none',
+                                    fontSize: fontSize + 'px',
+                                    backgroundColor: fillColor
+                                      ? '#7fcf2e'
+                                      : 'transparent',
+                                    textAlign: textAlignment as
+                                      | 'center'
+                                      | 'left'
+                                      | 'right',
+                                    ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    }),
+                                  },
                                 }}
                               />
                             </Grid.Col>
@@ -1356,15 +1536,16 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              mih={height / 3}
                               style={{
-                                border: fillColor
-                                  ? '5px solid #ffff'
-                                  : '1px solid',
+                                ...(fillColor
+                                  ? {
+                                      borderRadius: '20px',
+                                      border: '5px solid #ffff',
+                                    }
+                                  : {
+                                      borderTop: '1px solid',
+                                    }),
                                 padding: '0px',
-                                ...(fillColor && {
-                                  borderRadius: '20px',
-                                }),
                               }}
                               bg={fillColor ? '#00b9a9' : 'transparent'}
                             >
@@ -1383,7 +1564,7 @@ const LeanCanvasGenerator: FC = () => {
                                   Channels
                                 </Text>
                               </Flex>
-                              <textarea
+                              {/* <textarea
                                 value={channels}
                                 onChange={(event) =>
                                   setChannels(event.currentTarget.value)
@@ -1404,11 +1585,36 @@ const LeanCanvasGenerator: FC = () => {
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
-                                    | 'right',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                  }),
+                                    | 'right', ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    })
+                                }}
+                              /> */}
+                              <Textarea
+                                value={channels}
+                                onChange={(event) =>
+                                  setChannels(event.currentTarget.value)
+                                }
+                                id="channels"
+                                minRows={smallerRows}
+                                autosize
+                                styles={{
+                                  input: {
+                                    border: 'none',
+                                    fontSize: fontSize + 'px',
+                                    backgroundColor: fillColor
+                                      ? '#00b9a9'
+                                      : 'transparent',
+                                    textAlign: textAlignment as
+                                      | 'center'
+                                      | 'left'
+                                      | 'right',
+                                    ...(fillColor && {
+                                      borderBottomRightRadius: '20px',
+                                      borderBottomLeftRadius: '20px',
+                                    }),
+                                  },
                                 }}
                               />
                             </Grid.Col>
@@ -1446,7 +1652,6 @@ const LeanCanvasGenerator: FC = () => {
                               borderRadius: '20px',
                             }),
                           }}
-                          mih={(height * 2) / 3}
                           bg={fillColor ? '#029fc8' : 'transparent'}
                         >
                           <Flex
@@ -1464,7 +1669,7 @@ const LeanCanvasGenerator: FC = () => {
                               Customer Segments
                             </Text>
                           </Flex>
-                          <textarea
+                          {/* <textarea
                             value={customerSegments}
                             onChange={(event) =>
                               setCustomerSegments(event.currentTarget.value)
@@ -1485,11 +1690,36 @@ const LeanCanvasGenerator: FC = () => {
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
-                                | 'right',
-                              ...(fillColor && {
-                                borderBottomRightRadius: '20px',
-                                borderBottomLeftRadius: '20px',
-                              }),
+                                | 'right', ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                })
+                            }}
+                          /> */}
+                          <Textarea
+                            value={customerSegments}
+                            onChange={(event) =>
+                              setCustomerSegments(event.currentTarget.value)
+                            }
+                            id="customerSegments"
+                            minRows={largerRows}
+                            autosize
+                            styles={{
+                              input: {
+                                border: 'none',
+                                fontSize: fontSize + 'px',
+                                backgroundColor: fillColor
+                                  ? '#029fc8'
+                                  : 'transparent',
+                                textAlign: textAlignment as
+                                  | 'center'
+                                  | 'left'
+                                  | 'right',
+                                ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                }),
+                              },
                             }}
                           />
                         </Grid.Col>
@@ -1525,7 +1755,7 @@ const LeanCanvasGenerator: FC = () => {
                               borderRadius: '20px',
                             }),
                           }}
-                          mih={height / 3}
+                          mih={150}
                           bg={fillColor ? '#5d51cf' : 'transparent'}
                         >
                           <Flex
@@ -1543,7 +1773,8 @@ const LeanCanvasGenerator: FC = () => {
                               Cost Structure
                             </Text>
                           </Flex>
-                          <textarea
+                          {/* <textarea
+                          id='cost_structure'
                             value={costStructure}
                             onChange={(event) =>
                               setCostStructure(event.currentTarget.value)
@@ -1564,11 +1795,35 @@ const LeanCanvasGenerator: FC = () => {
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
-                                | 'right',
-                              ...(fillColor && {
-                                borderBottomRightRadius: '20px',
-                                borderBottomLeftRadius: '20px',
-                              }),
+                                | 'right', ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                })
+                            }}
+                          /> */}
+                          <Textarea
+                            minRows={4}
+                            value={costStructure}
+                            onChange={(event) =>
+                              setCostStructure(event.currentTarget.value)
+                            }
+                            autosize
+                            styles={{
+                              input: {
+                                border: 'none',
+                                fontSize: fontSize + 'px',
+                                padding: padding,
+                                textAlign: textAlignment as
+                                  | 'center'
+                                  | 'left'
+                                  | 'right',
+                                ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                  backgroundColor: '#5d51cf',
+                                  //color:'white'
+                                }),
+                              },
                             }}
                           />
                         </Grid.Col>
@@ -1604,7 +1859,7 @@ const LeanCanvasGenerator: FC = () => {
                               borderRadius: '20px',
                             }),
                           }}
-                          mih={height / 3}
+                          mih={150}
                           bg={fillColor ? '#670fb9' : 'transparent'}
                         >
                           <Flex
@@ -1622,7 +1877,7 @@ const LeanCanvasGenerator: FC = () => {
                               Revenue Streams
                             </Text>
                           </Flex>
-                          <textarea
+                          {/* <textarea
                             value={revenueStreams}
                             onChange={(event) =>
                               setRevenueStreams(event.currentTarget.value)
@@ -1643,11 +1898,35 @@ const LeanCanvasGenerator: FC = () => {
                               textAlign: textAlignment as
                                 | 'center'
                                 | 'left'
-                                | 'right',
-                              ...(fillColor && {
-                                borderBottomRightRadius: '20px',
-                                borderBottomLeftRadius: '20px',
-                              }),
+                                | 'right', ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                })
+                            }}
+                          /> */}
+                          <Textarea
+                            minRows={4}
+                            value={revenueStreams}
+                            onChange={(event) =>
+                              setRevenueStreams(event.currentTarget.value)
+                            }
+                            autosize
+                            styles={{
+                              input: {
+                                border: 'none',
+                                fontSize: fontSize + 'px',
+                                padding: padding,
+                                textAlign: textAlignment as
+                                  | 'center'
+                                  | 'left'
+                                  | 'right',
+                                ...(fillColor && {
+                                  borderBottomRightRadius: '20px',
+                                  borderBottomLeftRadius: '20px',
+                                  backgroundColor: '#670fb9',
+                                  //color:'white'
+                                }),
+                              },
                             }}
                           />
                         </Grid.Col>
