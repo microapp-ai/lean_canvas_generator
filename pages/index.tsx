@@ -1858,6 +1858,7 @@ const LeanCanvasGenerator: FC = () => {
                           onMouseEnter={() =>
                             setHoveredBox('customer_segments')
                           }
+                          onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
                             justify={'space-between'}
