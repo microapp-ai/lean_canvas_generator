@@ -385,15 +385,24 @@ const LeanCanvasGenerator: FC = () => {
   ]);
   const [smallerRows, setSmallerRows] = useState(5);
   const [largerRows, setLargerRows] = useState(13);
+  const getCount = (str: string) => {
+    let cnt = 0;
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] == '\n') {
+        cnt++;
+      }
+    }
+    return cnt;
+  };
 
   const getHeight = (str: string) => {
     let charWidth = 0.55 * fontSize;
     const lines = str.split('\n');
-    let numRows = lines.length;
+    let numRows = getCount(str) + 1;
     let boxWidth = width / 5 - padding * 2;
     let charPerLine = boxWidth / charWidth;
     lines.forEach((line) => {
-      numRows += Math.ceil(line.length / charPerLine) - 1;
+      numRows += Math.max(0, Math.ceil(line.length / charPerLine) - 1);
     });
     return numRows;
   };
@@ -410,7 +419,9 @@ const LeanCanvasGenerator: FC = () => {
     largerBoxRows = Math.max(largerBoxRows, getHeight(customerSegments));
 
     largerBoxRows = Math.max(largerBoxRows, smallerBoxRows * 2 + 3);
-
+    smallerBoxRows = Math.max(smallerBoxRows, (largerBoxRows - 3) / 2);
+    console.log('smallerBoxRows', smallerBoxRows);
+    console.log('largerBoxRows', largerBoxRows);
     setSmallerRows(smallerBoxRows);
     setLargerRows(largerBoxRows);
   };
@@ -426,7 +437,7 @@ const LeanCanvasGenerator: FC = () => {
     channels,
     customerSegments,
   ]);
-
+  const [hoveredBox, setHoveredBox] = useState('');
   return (
     <>
       <Grid h={'100%'} m={0}>
@@ -902,7 +913,13 @@ const LeanCanvasGenerator: FC = () => {
                   pos={'relative'}
                   id={'canvas'}
                 >
-                  <LoadingOverlay visible={loading} color="violet" />
+                  <LoadingOverlay
+                    visible={loading}
+                    loaderProps={{
+                      color: 'violet',
+                      variant: 'bars',
+                    }}
+                  />
                   <Text
                     // align="center"
                     weight={700}
@@ -915,12 +932,27 @@ const LeanCanvasGenerator: FC = () => {
                   >
                     {title}
                   </Text>
+                  <Box
+                    mx={{
+                      base: 24,
+                      md: 24,
+                    }}
+                    w={'150px'}
+                    h={'10px'}
+                    bg={'blue'}
+                    mb={16}
+                  ></Box>
                   <Flex w={width} mx={24} justify={'space-between'} gap={12}>
                     <Flex
                       p={8}
                       align={'center'}
                       gap={8}
                       bg={'#f0f0f0'}
+                      style={
+                        {
+                          // boxShadow: '-2px 0 rgba(0,0,0,0.1)',
+                        }
+                      }
                       w={'100%'}
                       justify={'center'}
                     >
@@ -971,9 +1003,7 @@ const LeanCanvasGenerator: FC = () => {
                     mt={16}
                     mb={24}
                     w={width}
-                    style={{
-                      border: fillColor ? 'none' : '1px solid',
-                    }}
+                    style={{}}
                     // ref={canvasRef}
                   >
                     <HoverCard>
@@ -983,30 +1013,61 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             padding: '0px',
                             border: fillColor ? '5px solid #ffff' : '1px solid',
-                            ...(fillColor && {
-                              borderRadius: '20px',
-                            }),
+                            ...(fillColor
+                              ? {
+                                  borderRadius: '20px',
+                                }
+                              : {
+                                  borderLeft: '2px solid',
+                                  borderTop: '2px solid',
+                                }),
                           }}
-                          bg={fillColor ? '#dd052e' : 'none'}
+                          bg={
+                            fillColor
+                              ? '#dd052e'
+                              : hoveredBox == 'problem'
+                              ? '#f7effe'
+                              : 'transparent'
+                          }
+                          onMouseEnter={() => setHoveredBox('problem')}
+                          onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'start'}
+                            justify={'space-between'}
                             gap={4}
                             align={'start'}
                             w={'100%'}
                             // mx={8}
                             p={padding}
                             mt={4}
-                            h={'60px'}
+                            // h={'60px'}
                           >
-                            <MdReportProblem
-                              size={24}
-                              // color='#006eff'
-                            />
-                            <Text weight={500} my={'auto'}>
+                            <Text
+                              weight={500}
+                              my={'auto'}
+                              color={fillColor ? 'white' : 'black'}
+                              style={{
+                                textDecoration: `underline solid ${
+                                  fillColor ? 'white' : '#dd052e'
+                                } 20%`,
+                                textUnderlinePosition: 'under',
+                              }}
+                            >
                               Problem
                             </Text>
+                            <MdReportProblem
+                              size={24}
+                              color={fillColor ? 'white' : 'black'}
+                            />
                           </Flex>
+                          {/* {!fillColor && (
+                            <Box
+                              w={'calc(40%)'}
+                              h={'4px'}
+                              bg='blue'
+                            >
+                            </Box>
+                          )} */}
                           {/* <textarea
                             value={problem}
                             onChange={(event) =>
@@ -1057,6 +1118,8 @@ const LeanCanvasGenerator: FC = () => {
                                 ...(fillColor && {
                                   borderBottomRightRadius: '20px',
                                   borderBottomLeftRadius: '20px',
+                                  color: 'white',
+                                  // fontWeight:'bold'
                                 }),
                               },
                             }}
@@ -1088,6 +1151,7 @@ const LeanCanvasGenerator: FC = () => {
                       style={{
                         ...(!fillColor && {
                           border: '1px solid',
+                          borderTop: '2px solid',
                         }),
                       }}
                     >
@@ -1107,10 +1171,18 @@ const LeanCanvasGenerator: FC = () => {
                                       borderBottom: '1px solid',
                                     }),
                               }}
-                              bg={fillColor ? '#ff9a02' : 'transparent'}
+                              bg={
+                                fillColor
+                                  ? '#ff9a02'
+                                  : hoveredBox == 'solution'
+                                  ? '#f7effe'
+                                  : 'transparent'
+                              }
+                              onMouseEnter={() => setHoveredBox('solution')}
+                              onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'start'}
+                                justify={'space-between'}
                                 gap={4}
                                 align={'center'}
                                 w={'100%'}
@@ -1119,11 +1191,26 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <TiLightbulb size={24} />
-                                <Text align="center" weight={500} my={'auto'}>
+                                <Text
+                                  align="center"
+                                  weight={500}
+                                  my={'auto'}
+                                  color={fillColor ? 'white' : 'black'}
+                                  style={{
+                                    textDecoration: `underline solid ${
+                                      fillColor ? 'white' : '#ff9a02'
+                                    } 20%`,
+                                    textUnderlinePosition: 'under',
+                                  }}
+                                >
                                   Solution
                                 </Text>
+                                <TiLightbulb
+                                  size={24}
+                                  color={fillColor ? 'white' : 'black'}
+                                />
                               </Flex>
+
                               {/* <textarea
                                 value={solution}
                                 onChange={(event) =>
@@ -1174,6 +1261,7 @@ const LeanCanvasGenerator: FC = () => {
                                     ...(fillColor && {
                                       borderBottomRightRadius: '20px',
                                       borderBottomLeftRadius: '20px',
+                                      color: 'white',
                                     }),
                                   },
                                 }}
@@ -1215,10 +1303,18 @@ const LeanCanvasGenerator: FC = () => {
                                       borderTop: '1px solid',
                                     }),
                               }}
-                              bg={fillColor ? '#fb6b25' : 'transparent'}
+                              bg={
+                                fillColor
+                                  ? '#fb6b25'
+                                  : hoveredBox == 'key_metrics'
+                                  ? '#f7effe'
+                                  : 'transparent'
+                              }
+                              onMouseEnter={() => setHoveredBox('key_metrics')}
+                              onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'start'}
+                                justify={'space-between'}
                                 gap={4}
                                 align={'center'}
                                 w={'100%'}
@@ -1227,10 +1323,24 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <HiOutlinePresentationChartLine size={24} />
-                                <Text align="center" weight={500} my={'auto'}>
+                                <Text
+                                  align="center"
+                                  weight={500}
+                                  my={'auto'}
+                                  color={fillColor ? 'white' : 'black'}
+                                  style={{
+                                    textDecoration: `underline solid ${
+                                      fillColor ? 'white' : '#fb6b25'
+                                    } 20%`,
+                                    textUnderlinePosition: 'under',
+                                  }}
+                                >
                                   Key Metrics
                                 </Text>
+                                <HiOutlinePresentationChartLine
+                                  size={24}
+                                  color={fillColor ? 'white' : 'black'}
+                                />
                               </Flex>
                               {/* <textarea
                                 value={keyMetrics}
@@ -1280,6 +1390,7 @@ const LeanCanvasGenerator: FC = () => {
                                     ...(fillColor && {
                                       borderBottomRightRadius: '20px',
                                       borderBottomLeftRadius: '20px',
+                                      color: 'white',
                                     }),
                                   },
                                 }}
@@ -1315,14 +1426,28 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
-                            ...(fillColor && {
-                              borderRadius: '20px',
-                            }),
+                            ...(fillColor
+                              ? {
+                                  borderRadius: '20px',
+                                }
+                              : {
+                                  borderTop: '2px solid',
+                                }),
                           }}
-                          bg={fillColor ? '#00aa44' : 'transparent'}
+                          bg={
+                            fillColor
+                              ? '#00aa44'
+                              : hoveredBox == 'unique_value_proposition'
+                              ? '#f7effe'
+                              : 'transparent'
+                          }
+                          onMouseEnter={() =>
+                            setHoveredBox('unique_value_proposition')
+                          }
+                          onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'start'}
+                            justify={'space-between'}
                             gap={4}
                             align={'center'}
                             w={'100%'}
@@ -1331,10 +1456,24 @@ const LeanCanvasGenerator: FC = () => {
                             h={'80px'}
                             p={padding}
                           >
-                            <AiOutlineGift size={31} />
-                            <Text align="start" weight={500} my={'auto'}>
+                            <Text
+                              align="start"
+                              weight={500}
+                              my={'auto'}
+                              color={fillColor ? 'white' : 'black'}
+                              style={{
+                                textDecoration: `underline solid ${
+                                  fillColor ? 'white' : '#00aa44'
+                                } 20%`,
+                                textUnderlinePosition: 'under',
+                              }}
+                            >
                               Unique Value Proposition
                             </Text>
+                            <AiOutlineGift
+                              size={31}
+                              color={fillColor ? 'white' : 'black'}
+                            />
                           </Flex>
                           {/* <textarea
                             value={uniqueValueProposition.replaceAll(
@@ -1392,6 +1531,7 @@ const LeanCanvasGenerator: FC = () => {
                                 ...(fillColor && {
                                   borderBottomRightRadius: '20px',
                                   borderBottomLeftRadius: '20px',
+                                  color: 'white',
                                 }),
                               },
                             }}
@@ -1421,7 +1561,10 @@ const LeanCanvasGenerator: FC = () => {
                     <Grid.Col
                       span={2}
                       style={{
-                        border: !fillColor ? '1px solid' : 'none',
+                        ...(!fillColor && {
+                          border: '1px solid',
+                          borderTop: '2px solid',
+                        }),
                       }}
                     >
                       <Grid>
@@ -1440,10 +1583,20 @@ const LeanCanvasGenerator: FC = () => {
                                       borderBottom: '1px solid',
                                     }),
                               }}
-                              bg={fillColor ? '#7fcf2e' : 'transparent'}
+                              bg={
+                                fillColor
+                                  ? '#7fcf2e'
+                                  : hoveredBox == 'unfair_advantage'
+                                  ? '#f7effe'
+                                  : 'transparent'
+                              }
+                              onMouseEnter={() =>
+                                setHoveredBox('unfair_advantage')
+                              }
+                              onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'start'}
+                                justify={'space-between'}
                                 gap={4}
                                 align={'center'}
                                 w={'100%'}
@@ -1452,10 +1605,24 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <GrAchievement size={24} />
-                                <Text align="center" weight={500} my={'auto'}>
+                                <Text
+                                  align="center"
+                                  weight={500}
+                                  my={'auto'}
+                                  color={fillColor ? 'white' : 'black'}
+                                  style={{
+                                    textDecoration: `underline solid ${
+                                      fillColor ? 'white' : '#7fcf2e'
+                                    } 20%`,
+                                    textUnderlinePosition: 'under',
+                                  }}
+                                >
                                   Unfair Advantage
                                 </Text>
+                                <GrAchievement
+                                  size={24}
+                                  color={fillColor ? 'white' : 'black'}
+                                />
                               </Flex>
                               {/* <textarea
                                 value={unfairAdvantage}
@@ -1506,6 +1673,7 @@ const LeanCanvasGenerator: FC = () => {
                                     ...(fillColor && {
                                       borderBottomRightRadius: '20px',
                                       borderBottomLeftRadius: '20px',
+                                      color: 'white',
                                     }),
                                   },
                                 }}
@@ -1547,10 +1715,18 @@ const LeanCanvasGenerator: FC = () => {
                                     }),
                                 padding: '0px',
                               }}
-                              bg={fillColor ? '#00b9a9' : 'transparent'}
+                              bg={
+                                fillColor
+                                  ? '#00b9a9'
+                                  : hoveredBox == 'channels'
+                                  ? '#f7effe'
+                                  : 'transparent'
+                              }
+                              onMouseEnter={() => setHoveredBox('channels')}
+                              onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'start'}
+                                justify={'space-between'}
                                 gap={4}
                                 align={'center'}
                                 w={'100%'}
@@ -1559,10 +1735,24 @@ const LeanCanvasGenerator: FC = () => {
                                 h={'60px'}
                                 p={padding}
                               >
-                                <BiNetworkChart size={24} />
-                                <Text align="center" weight={500} my={'auto'}>
+                                <Text
+                                  align="center"
+                                  weight={500}
+                                  my={'auto'}
+                                  color={fillColor ? 'white' : 'black'}
+                                  style={{
+                                    textDecoration: `underline solid ${
+                                      fillColor ? 'white' : '#00b9a9'
+                                    } 20%`,
+                                    textUnderlinePosition: 'under',
+                                  }}
+                                >
                                   Channels
                                 </Text>
+                                <BiNetworkChart
+                                  size={24}
+                                  color={fillColor ? 'white' : 'black'}
+                                />
                               </Flex>
                               {/* <textarea
                                 value={channels}
@@ -1613,6 +1803,7 @@ const LeanCanvasGenerator: FC = () => {
                                     ...(fillColor && {
                                       borderBottomRightRadius: '20px',
                                       borderBottomLeftRadius: '20px',
+                                      color: 'white',
                                     }),
                                   },
                                 }}
@@ -1648,14 +1839,28 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             padding: '0px',
                             border: fillColor ? '5px solid #ffff' : '1px solid',
-                            ...(fillColor && {
-                              borderRadius: '20px',
-                            }),
+                            ...(fillColor
+                              ? {
+                                  borderRadius: '20px',
+                                }
+                              : {
+                                  borderRight: '2px solid',
+                                  borderTop: '2px solid',
+                                }),
                           }}
-                          bg={fillColor ? '#029fc8' : 'transparent'}
+                          bg={
+                            fillColor
+                              ? '#029fc8'
+                              : hoveredBox == 'customer_segments'
+                              ? '#f7effe'
+                              : 'transparent'
+                          }
+                          onMouseEnter={() =>
+                            setHoveredBox('customer_segments')
+                          }
                         >
                           <Flex
-                            justify={'start'}
+                            justify={'space-between'}
                             gap={4}
                             align={'center'}
                             w={'100%'}
@@ -1664,10 +1869,24 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <GoPeople size={24} />
-                            <Text align="center" weight={500} my={'auto'}>
+                            <Text
+                              align="center"
+                              weight={500}
+                              my={'auto'}
+                              color={fillColor ? 'white' : 'black'}
+                              style={{
+                                textDecoration: `underline solid ${
+                                  fillColor ? 'white' : '#029fc8'
+                                } 20%`,
+                                textUnderlinePosition: 'under',
+                              }}
+                            >
                               Customer Segments
                             </Text>
+                            <GoPeople
+                              size={24}
+                              color={fillColor ? 'white' : 'black'}
+                            />
                           </Flex>
                           {/* <textarea
                             value={customerSegments}
@@ -1718,6 +1937,7 @@ const LeanCanvasGenerator: FC = () => {
                                 ...(fillColor && {
                                   borderBottomRightRadius: '20px',
                                   borderBottomLeftRadius: '20px',
+                                  color: 'white',
                                 }),
                               },
                             }}
@@ -1751,15 +1971,28 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
-                            ...(fillColor && {
-                              borderRadius: '20px',
-                            }),
+                            ...(fillColor
+                              ? {
+                                  borderRadius: '20px',
+                                }
+                              : {
+                                  borderLeft: '2px solid',
+                                  borderBottom: '2px solid',
+                                }),
                           }}
                           mih={150}
-                          bg={fillColor ? '#5d51cf' : 'transparent'}
+                          bg={
+                            fillColor
+                              ? '#5d51cf'
+                              : hoveredBox == 'cost_structure'
+                              ? '#f7effe'
+                              : 'transparent'
+                          }
+                          onMouseEnter={() => setHoveredBox('cost_structure')}
+                          onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'start'}
+                            justify={'space-between'}
                             gap={4}
                             align={'center'}
                             w={'100%'}
@@ -1768,10 +2001,24 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <LiaFileInvoiceDollarSolid size={24} />
-                            <Text align="center" weight={500} my={'auto'}>
+                            <Text
+                              align="center"
+                              weight={500}
+                              my={'auto'}
+                              color={fillColor ? 'white' : 'black'}
+                              style={{
+                                textDecoration: `underline solid ${
+                                  fillColor ? 'white' : '#5d51cf'
+                                } 20%`,
+                                textUnderlinePosition: 'under',
+                              }}
+                            >
                               Cost Structure
                             </Text>
+                            <LiaFileInvoiceDollarSolid
+                              size={24}
+                              color={fillColor ? 'white' : 'black'}
+                            />
                           </Flex>
                           {/* <textarea
                           id='cost_structure'
@@ -1817,10 +2064,14 @@ const LeanCanvasGenerator: FC = () => {
                                   | 'center'
                                   | 'left'
                                   | 'right',
+                                backgroundColor: fillColor
+                                  ? '#5d51cf'
+                                  : 'transparent',
                                 ...(fillColor && {
                                   borderBottomRightRadius: '20px',
                                   borderBottomLeftRadius: '20px',
                                   backgroundColor: '#5d51cf',
+                                  color: 'white',
                                   //color:'white'
                                 }),
                               },
@@ -1855,15 +2106,28 @@ const LeanCanvasGenerator: FC = () => {
                           style={{
                             border: fillColor ? '5px solid #ffff' : '1px solid',
                             padding: '0px',
-                            ...(fillColor && {
-                              borderRadius: '20px',
-                            }),
+                            ...(fillColor
+                              ? {
+                                  borderRadius: '20px',
+                                }
+                              : {
+                                  borderRight: '2px solid',
+                                  borderBottom: '2px solid',
+                                }),
                           }}
                           mih={150}
-                          bg={fillColor ? '#670fb9' : 'transparent'}
+                          bg={
+                            fillColor
+                              ? '#670fb9'
+                              : hoveredBox == 'revenue_streams'
+                              ? '#f7effe'
+                              : 'transparent'
+                          }
+                          onMouseEnter={() => setHoveredBox('revenue_streams')}
+                          onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'start'}
+                            justify={'space-between'}
                             gap={4}
                             align={'center'}
                             w={'100%'}
@@ -1872,10 +2136,24 @@ const LeanCanvasGenerator: FC = () => {
                             h={'60px'}
                             p={padding}
                           >
-                            <FaMoneyBillTrendUp size={24} />
-                            <Text align="center" weight={500} my={'auto'}>
+                            <Text
+                              align="center"
+                              weight={500}
+                              my={'auto'}
+                              color={fillColor ? 'white' : 'black'}
+                              style={{
+                                textDecoration: `underline solid ${
+                                  fillColor ? 'white' : '#670fb9'
+                                } 20%`,
+                                textUnderlinePosition: 'under',
+                              }}
+                            >
                               Revenue Streams
-                            </Text>
+                            </Text>{' '}
+                            <FaMoneyBillTrendUp
+                              size={24}
+                              color={fillColor ? 'white' : 'black'}
+                            />
                           </Flex>
                           {/* <textarea
                             value={revenueStreams}
@@ -1920,10 +2198,14 @@ const LeanCanvasGenerator: FC = () => {
                                   | 'center'
                                   | 'left'
                                   | 'right',
+                                backgroundColor: fillColor
+                                  ? '#670fb9'
+                                  : 'transparent',
                                 ...(fillColor && {
                                   borderBottomRightRadius: '20px',
                                   borderBottomLeftRadius: '20px',
                                   backgroundColor: '#670fb9',
+                                  color: 'white',
                                   //color:'white'
                                 }),
                               },
