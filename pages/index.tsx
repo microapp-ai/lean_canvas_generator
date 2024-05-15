@@ -1010,120 +1010,93 @@ const LeanCanvasGenerator: FC = () => {
                       <HoverCard.Target>
                         <Grid.Col
                           span={2}
-                          style={{
-                            padding: '0px',
-                            border: fillColor ? '5px solid #ffff' : '1px solid',
-                            ...(fillColor
-                              ? {
-                                  borderRadius: '20px',
-                                }
-                              : {
-                                  borderLeft: '2px solid',
-                                  borderTop: '2px solid',
-                                }),
-                          }}
-                          bg={
-                            fillColor
-                              ? '#dd052e'
-                              : hoveredBox == 'problem'
-                              ? '#f7effe'
-                              : 'transparent'
-                          }
-                          onMouseEnter={() => setHoveredBox('problem')}
-                          onMouseLeave={() => setHoveredBox('')}
+                          p={0}
+                          // onMouseEnter={() => setHoveredBox('problem')}
+                          // onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'space-between'}
-                            gap={4}
-                            align={'start'}
-                            w={'100%'}
-                            // mx={8}
-                            p={padding}
-                            mt={4}
-                            // h={'60px'}
-                          >
-                            <Text
-                              weight={500}
-                              my={'auto'}
-                              color={fillColor ? 'white' : 'black'}
-                              style={{
-                                textDecoration: `underline solid ${
-                                  fillColor ? 'white' : '#dd052e'
-                                } 20%`,
-                                textUnderlinePosition: 'under',
-                              }}
-                            >
-                              Problem
-                            </Text>
-                            <MdReportProblem
-                              size={24}
-                              color={fillColor ? 'white' : 'black'}
-                            />
-                          </Flex>
-                          {/* {!fillColor && (
-                            <Box
-                              w={'calc(40%)'}
-                              h={'4px'}
-                              bg='blue'
-                            >
-                            </Box>
-                          )} */}
-                          {/* <textarea
-                            value={problem}
-                            onChange={(event) =>
-                              setProblem(event.currentTarget.value)
+                            m={fillColor ? 4 : 0}
+                            mt={0}
+                            h={'100%'}
+                            direction={'column'}
+                            bg={
+                              fillColor
+                                ? '#dd052e'
+                                : hoveredBox == 'problem'
+                                ? '#f7effe'
+                                : 'transparent'
                             }
                             style={{
-                              width: '100%',
-                              height: 'calc(100% - 64px)',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              border: 'none',
-                              padding: padding,
-                              fontSize: fontSize + 'px',
-                              resize: 'none',
-                              backgroundColor: fillColor
-                                ? '#dd052e'
-                                : 'transparent',
-                              textAlign: textAlignment as
-                                | 'center'
-                                | 'left'
-                                | 'right',
-                              ...(fillColor && {
-                                borderBottomRightRadius: '20px',
-                                borderBottomLeftRadius: '20px',
-                              })
+                              padding: '0px',
+                              border: fillColor ? 'none' : '1px solid',
+                              ...(fillColor
+                                ? {
+                                    borderRadius: '20px',
+                                  }
+                                : {
+                                    borderLeft: '2px solid',
+                                    borderTop: '2px solid',
+                                  }),
                             }}
-                          /> */}
-                          <Textarea
-                            value={problem}
-                            onChange={(event) =>
-                              setProblem(event.currentTarget.value)
-                            }
-                            id="problem"
-                            minRows={largerRows}
-                            autosize
-                            styles={{
-                              input: {
-                                border: 'none',
-                                fontSize: fontSize + 'px',
-                                backgroundColor: fillColor
-                                  ? '#dd052e'
-                                  : 'transparent',
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                                ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                  color: 'white',
-                                  // fontWeight:'bold'
-                                }),
-                              },
-                            }}
-                          />
+                          >
+                            <Flex
+                              justify={'space-between'}
+                              gap={4}
+                              align={'start'}
+                              w={'calc(100%-8px)'}
+                              // mx={8}
+                              p={padding}
+                              mt={4}
+                              mx={8}
+                              // h={'60px'}
+                            >
+                              <Text
+                                weight={500}
+                                my={'auto'}
+                                color={fillColor ? 'white' : 'black'}
+                                style={{
+                                  textDecoration: `underline solid ${
+                                    fillColor ? 'white' : '#dd052e'
+                                  } 20%`,
+                                  textUnderlinePosition: 'under',
+                                }}
+                              >
+                                Problem
+                              </Text>
+                              <MdReportProblem
+                                size={24}
+                                color={fillColor ? 'white' : 'black'}
+                              />
+                            </Flex>
+                            <Textarea
+                              value={problem}
+                              onChange={(event) =>
+                                setProblem(event.currentTarget.value)
+                              }
+                              id="problem"
+                              minRows={largerRows}
+                              autosize
+                              styles={{
+                                input: {
+                                  border: 'none',
+                                  fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#dd052e'
+                                    : 'transparent',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    color: 'white',
+                                    // fontWeight:'bold'
+                                  }),
+                                },
+                              }}
+                            />
+                          </Flex>
                         </Grid.Col>
                       </HoverCard.Target>
                       {problem.length > 0 && (
@@ -1162,110 +1135,93 @@ const LeanCanvasGenerator: FC = () => {
                               span={12}
                               style={{
                                 padding: '0px',
-                                ...(fillColor
-                                  ? {
-                                      borderRadius: '20px',
-                                      border: '5px solid #ffff',
-                                    }
-                                  : {
-                                      borderBottom: '1px solid',
-                                    }),
                               }}
-                              bg={
-                                fillColor
-                                  ? '#ff9a02'
-                                  : hoveredBox == 'solution'
-                                  ? '#f7effe'
-                                  : 'transparent'
-                              }
-                              onMouseEnter={() => setHoveredBox('solution')}
-                              onMouseLeave={() => setHoveredBox('')}
+
+                              // onMouseEnter={() => setHoveredBox('solution')}
+                              // onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'space-between'}
-                                gap={4}
-                                align={'center'}
-                                w={'100%'}
-                                mx={4}
-                                mt={4}
-                                h={'60px'}
-                                p={padding}
-                              >
-                                <Text
-                                  align="center"
-                                  weight={500}
-                                  my={'auto'}
-                                  color={fillColor ? 'white' : 'black'}
-                                  style={{
-                                    textDecoration: `underline solid ${
-                                      fillColor ? 'white' : '#ff9a02'
-                                    } 20%`,
-                                    textUnderlinePosition: 'under',
-                                  }}
-                                >
-                                  Solution
-                                </Text>
-                                <TiLightbulb
-                                  size={24}
-                                  color={fillColor ? 'white' : 'black'}
-                                />
-                              </Flex>
-
-                              {/* <textarea
-                                value={solution}
-                                onChange={(event) =>
-                                  setSolution(event.currentTarget.value)
+                                m={fillColor ? 4 : 0}
+                                mt={0}
+                                mb={fillColor ? 8 : 0}
+                                direction={'column'}
+                                bg={
+                                  fillColor
+                                    ? '#ff9a02'
+                                    : hoveredBox == 'solution'
+                                    ? '#f7effe'
+                                    : 'transparent'
                                 }
                                 style={{
-                                  width: '100%',
-                                  height: 'calc(100% - 64px)',
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  border: 'none',
-                                  padding: padding,
-                                  resize: 'none',
+                                  padding: '0px',
+                                  ...(fillColor
+                                    ? {
+                                        borderRadius: '20px',
+                                        border: 'none',
+                                      }
+                                    : {
+                                        borderBottom: '1px solid',
+                                      }),
+                                }}
+                              >
+                                <Flex
+                                  justify={'space-between'}
+                                  gap={4}
+                                  align={'start'}
+                                  w={'calc(100%-8px)'}
+                                  // mx={8}
+                                  p={padding}
+                                  mt={4}
+                                  mx={8}
+                                  // h={'60px'}
+                                >
+                                  <Text
+                                    weight={500}
+                                    my={'auto'}
+                                    color={fillColor ? 'white' : 'black'}
+                                    style={{
+                                      textDecoration: `underline solid ${
+                                        fillColor ? 'white' : '#ff9a02'
+                                      } 20%`,
+                                      textUnderlinePosition: 'under',
+                                    }}
+                                  >
+                                    Solution
+                                  </Text>
+                                  <TiLightbulb
+                                    size={24}
+                                    color={fillColor ? 'white' : 'black'}
+                                  />
+                                </Flex>
 
-                                  fontSize: fontSize + 'px',
-                                  backgroundColor: fillColor
-                                    ? '#ff9a02'
-                                    : 'transparent',
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right', ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                    })
-                                }}
-                              /> */}
-                              <Textarea
-                                value={solution}
-                                onChange={(event) =>
-                                  setSolution(event.currentTarget.value)
-                                }
-                                id="solution"
-                                minRows={smallerRows}
-                                autosize
-                                styles={{
-                                  input: {
-                                    border: 'none',
-                                    fontSize: fontSize + 'px',
-                                    backgroundColor: fillColor
-                                      ? '#ff9a02'
-                                      : 'transparent',
-                                    textAlign: textAlignment as
-                                      | 'center'
-                                      | 'left'
-                                      | 'right',
-                                    ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                      color: 'white',
-                                    }),
-                                  },
-                                }}
-                              />
+                                <Textarea
+                                  value={solution}
+                                  onChange={(event) =>
+                                    setSolution(event.currentTarget.value)
+                                  }
+                                  id="solution"
+                                  minRows={smallerRows}
+                                  autosize
+                                  styles={{
+                                    input: {
+                                      border: 'none',
+                                      fontSize: fontSize + 'px',
+                                      backgroundColor: fillColor
+                                        ? '#ff9a02'
+                                        : 'transparent',
+                                      textAlign: textAlignment as
+                                        | 'center'
+                                        | 'left'
+                                        | 'right',
+                                      ...(fillColor && {
+                                        borderBottomRightRadius: '20px',
+                                        borderBottomLeftRadius: '20px',
+                                        color: 'white',
+                                      }),
+                                    },
+                                  }}
+                                />
+                              </Flex>
                             </Grid.Col>
                           </HoverCard.Target>
                           {solution.length > 0 && (
@@ -1292,109 +1248,90 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              style={{
-                                padding: '0px',
-                                ...(fillColor
-                                  ? {
-                                      borderRadius: '20px',
-                                      border: '5px solid #ffff',
-                                    }
-                                  : {
-                                      borderTop: '1px solid',
-                                    }),
-                              }}
-                              bg={
-                                fillColor
-                                  ? '#fb6b25'
-                                  : hoveredBox == 'key_metrics'
-                                  ? '#f7effe'
-                                  : 'transparent'
-                              }
-                              onMouseEnter={() => setHoveredBox('key_metrics')}
-                              onMouseLeave={() => setHoveredBox('')}
+                              p={0}
+
+                              // onMouseEnter={() => setHoveredBox('key_metrics')}
+                              // onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'space-between'}
-                                gap={4}
-                                align={'center'}
-                                w={'100%'}
-                                mx={4}
-                                mt={4}
-                                h={'60px'}
-                                p={padding}
-                              >
-                                <Text
-                                  align="center"
-                                  weight={500}
-                                  my={'auto'}
-                                  color={fillColor ? 'white' : 'black'}
-                                  style={{
-                                    textDecoration: `underline solid ${
-                                      fillColor ? 'white' : '#fb6b25'
-                                    } 20%`,
-                                    textUnderlinePosition: 'under',
-                                  }}
-                                >
-                                  Key Metrics
-                                </Text>
-                                <HiOutlinePresentationChartLine
-                                  size={24}
-                                  color={fillColor ? 'white' : 'black'}
-                                />
-                              </Flex>
-                              {/* <textarea
-                                value={keyMetrics}
-                                onChange={(event) =>
-                                  setKeyMetrics(event.currentTarget.value)
+                                m={fillColor ? 4 : 0}
+                                direction={'column'}
+                                bg={
+                                  fillColor
+                                    ? '#fb6b25'
+                                    : hoveredBox == 'key_metrics'
+                                    ? '#f7effe'
+                                    : 'transparent'
                                 }
                                 style={{
-                                  width: '100%',
-                                  height: 'calc(100% - 64px)',
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  border: 'none',
-                                  padding: padding,
-                                  fontSize: fontSize + 'px',
-                                  resize: 'none',
-                                  backgroundColor: fillColor
-                                    ? '#fb6b25'
-                                    : 'transparent',
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right', ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                    })
+                                  padding: '0px',
+                                  ...(fillColor
+                                    ? {
+                                        borderRadius: '20px',
+                                        border: 'none',
+                                      }
+                                    : {
+                                        borderTop: '1px solid',
+                                      }),
                                 }}
-                              /> */}
-                              <Textarea
-                                value={keyMetrics}
-                                onChange={(event) =>
-                                  setKeyMetrics(event.currentTarget.value)
-                                }
-                                minRows={smallerRows}
-                                autosize
-                                styles={{
-                                  input: {
-                                    border: 'none',
-                                    fontSize: fontSize + 'px',
-                                    backgroundColor: fillColor
-                                      ? '#fb6b25'
-                                      : 'transparent',
-                                    textAlign: textAlignment as
-                                      | 'center'
-                                      | 'left'
-                                      | 'right',
-                                    ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                      color: 'white',
-                                    }),
-                                  },
-                                }}
-                              />
+                              >
+                                <Flex
+                                  justify={'space-between'}
+                                  gap={4}
+                                  align={'start'}
+                                  w={'calc(100%-8px)'}
+                                  // mx={8}
+                                  p={padding}
+                                  mt={4}
+                                  mx={8}
+                                  // h={'60px'}
+                                >
+                                  <Text
+                                    weight={500}
+                                    my={'auto'}
+                                    color={fillColor ? 'white' : 'black'}
+                                    style={{
+                                      textDecoration: `underline solid ${
+                                        fillColor ? 'white' : '#fb6b25'
+                                      } 20%`,
+                                      textUnderlinePosition: 'under',
+                                    }}
+                                  >
+                                    Key Metrics
+                                  </Text>
+                                  <HiOutlinePresentationChartLine
+                                    size={24}
+                                    color={fillColor ? 'white' : 'black'}
+                                  />
+                                </Flex>
+
+                                <Textarea
+                                  value={keyMetrics}
+                                  onChange={(event) =>
+                                    setKeyMetrics(event.currentTarget.value)
+                                  }
+                                  minRows={smallerRows}
+                                  autosize
+                                  styles={{
+                                    input: {
+                                      border: 'none',
+                                      fontSize: fontSize + 'px',
+                                      backgroundColor: fillColor
+                                        ? '#fb6b25'
+                                        : 'transparent',
+                                      textAlign: textAlignment as
+                                        | 'center'
+                                        | 'left'
+                                        | 'right',
+                                      ...(fillColor && {
+                                        borderBottomRightRadius: '20px',
+                                        borderBottomLeftRadius: '20px',
+                                        color: 'white',
+                                      }),
+                                    },
+                                  }}
+                                />
+                              </Flex>
                             </Grid.Col>
                           </HoverCard.Target>
                           {keyMetrics.length > 0 && (
@@ -1423,119 +1360,95 @@ const LeanCanvasGenerator: FC = () => {
                       <HoverCard.Target>
                         <Grid.Col
                           span={2}
-                          style={{
-                            border: fillColor ? '5px solid #ffff' : '1px solid',
-                            padding: '0px',
-                            ...(fillColor
-                              ? {
-                                  borderRadius: '20px',
-                                }
-                              : {
-                                  borderTop: '2px solid',
-                                }),
-                          }}
-                          bg={
-                            fillColor
-                              ? '#00aa44'
-                              : hoveredBox == 'unique_value_proposition'
-                              ? '#f7effe'
-                              : 'transparent'
-                          }
-                          onMouseEnter={() =>
-                            setHoveredBox('unique_value_proposition')
-                          }
-                          onMouseLeave={() => setHoveredBox('')}
+                          p={0}
+                          // onMouseEnter={() =>
+                          //   setHoveredBox('unique_value_proposition')
+                          // }
+                          // onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'space-between'}
-                            gap={4}
-                            align={'center'}
-                            w={'100%'}
-                            mx={4}
-                            mt={4}
-                            h={'80px'}
-                            p={padding}
+                            m={fillColor ? 4 : 0}
+                            mt={0}
+                            direction={'column'}
+                            style={{
+                              border: fillColor ? 'none' : '1px solid',
+                              padding: '0px',
+                              ...(fillColor
+                                ? {
+                                    borderRadius: '20px',
+                                  }
+                                : {
+                                    borderTop: '2px solid',
+                                  }),
+                            }}
+                            bg={
+                              fillColor
+                                ? '#00aa44'
+                                : hoveredBox == 'unique_value_proposition'
+                                ? '#f7effe'
+                                : 'transparent'
+                            }
                           >
-                            <Text
-                              align="start"
-                              weight={500}
-                              my={'auto'}
-                              color={fillColor ? 'white' : 'black'}
-                              style={{
-                                textDecoration: `underline solid ${
-                                  fillColor ? 'white' : '#00aa44'
-                                } 20%`,
-                                textUnderlinePosition: 'under',
-                              }}
+                            <Flex
+                              justify={'space-between'}
+                              gap={4}
+                              align={'start'}
+                              w={'calc(100%-8px)'}
+                              // mx={8}
+                              p={padding}
+                              mt={4}
+                              mx={8}
+                              // h={'60px'}
                             >
-                              Unique Value Proposition
-                            </Text>
-                            <AiOutlineGift
-                              size={31}
-                              color={fillColor ? 'white' : 'black'}
+                              <Text
+                                weight={500}
+                                my={'auto'}
+                                color={fillColor ? 'white' : 'black'}
+                                style={{
+                                  textDecoration: `underline solid ${
+                                    fillColor ? 'white' : '#00aa44'
+                                  } 20%`,
+                                  textUnderlinePosition: 'under',
+                                }}
+                              >
+                                Unique Value Proposition
+                              </Text>
+                              <AiOutlineGift
+                                size={31}
+                                color={fillColor ? 'white' : 'black'}
+                              />
+                            </Flex>
+
+                            <Textarea
+                              value={uniqueValueProposition}
+                              onChange={(event) =>
+                                setUniqueValueProposition(
+                                  event.currentTarget.value
+                                )
+                              }
+                              id="uniqueValueProposition"
+                              minRows={largerRows}
+                              autosize
+                              styles={{
+                                input: {
+                                  border: 'none',
+                                  fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#00aa44'
+                                    : 'transparent',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    color: 'white',
+                                  }),
+                                },
+                              }}
                             />
                           </Flex>
-                          {/* <textarea
-                            value={uniqueValueProposition.replaceAll(
-                              '\n',
-                              '\n\n'
-                            )}
-                            onChange={(event) =>
-                              setUniqueValueProposition(
-                                event.currentTarget.value
-                              )
-                            }
-                            style={{
-                              width: '100%',
-                              height: 'calc(100% - 64px)',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              border: 'none',
-                              padding: padding,
-                              fontSize: fontSize + 'px',
-                              backgroundColor: fillColor
-                                ? '#00aa44'
-                                : 'transparent',
-                              resize: 'none',
-                              textAlign: textAlignment as
-                                | 'center'
-                                | 'left'
-                                | 'right', ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                })
-                            }}
-                          /> */}
-                          <Textarea
-                            value={uniqueValueProposition}
-                            onChange={(event) =>
-                              setUniqueValueProposition(
-                                event.currentTarget.value
-                              )
-                            }
-                            id="uniqueValueProposition"
-                            minRows={largerRows}
-                            autosize
-                            styles={{
-                              input: {
-                                border: 'none',
-                                fontSize: fontSize + 'px',
-                                backgroundColor: fillColor
-                                  ? '#00aa44'
-                                  : 'transparent',
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                                ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                  color: 'white',
-                                }),
-                              },
-                            }}
-                          />
                         </Grid.Col>
                       </HoverCard.Target>
                       {uniqueValueProposition.length > 0 && (
@@ -1574,110 +1487,96 @@ const LeanCanvasGenerator: FC = () => {
                               span={12}
                               style={{
                                 padding: '0px',
-                                ...(fillColor
-                                  ? {
-                                      borderRadius: '20px',
-                                      border: '5px solid #ffff',
-                                    }
-                                  : {
-                                      borderBottom: '1px solid',
-                                    }),
                               }}
-                              bg={
-                                fillColor
-                                  ? '#7fcf2e'
-                                  : hoveredBox == 'unfair_advantage'
-                                  ? '#f7effe'
-                                  : 'transparent'
-                              }
-                              onMouseEnter={() =>
-                                setHoveredBox('unfair_advantage')
-                              }
-                              onMouseLeave={() => setHoveredBox('')}
+                              // onMouseEnter={() =>
+                              //   setHoveredBox('unfair_advantage')
+                              // }
+                              // onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'space-between'}
-                                gap={4}
-                                align={'center'}
-                                w={'100%'}
-                                mx={4}
-                                mt={4}
-                                h={'60px'}
-                                p={padding}
+                                m={fillColor ? 4 : 0}
+                                mt={0}
+                                mb={fillColor ? 8 : 0}
+                                direction={'column'}
+                                style={{
+                                  padding: '0px',
+                                  ...(fillColor
+                                    ? {
+                                        borderRadius: '20px',
+                                        border: 'none',
+                                      }
+                                    : {
+                                        borderBottom: '1px solid',
+                                      }),
+                                }}
+                                bg={
+                                  fillColor
+                                    ? '#7fcf2e'
+                                    : hoveredBox == 'unfair_advantage'
+                                    ? '#f7effe'
+                                    : 'transparent'
+                                }
                               >
-                                <Text
-                                  align="center"
-                                  weight={500}
-                                  my={'auto'}
-                                  color={fillColor ? 'white' : 'black'}
-                                  style={{
-                                    textDecoration: `underline solid ${
-                                      fillColor ? 'white' : '#7fcf2e'
-                                    } 20%`,
-                                    textUnderlinePosition: 'under',
-                                  }}
+                                <Flex
+                                  justify={'space-between'}
+                                  gap={4}
+                                  align={'start'}
+                                  w={'calc(100%-8px)'}
+                                  // mx={8}
+                                  p={padding}
+                                  mt={4}
+                                  mx={8}
+                                  // h={'60px'}
                                 >
-                                  Unfair Advantage
-                                </Text>
-                                <GrAchievement
-                                  size={24}
-                                  color={fillColor ? 'white' : 'black'}
+                                  <Text
+                                    weight={500}
+                                    my={'auto'}
+                                    color={fillColor ? 'white' : 'black'}
+                                    style={{
+                                      textDecoration: `underline solid ${
+                                        fillColor ? 'white' : '#7fcf2e'
+                                      } 20%`,
+                                      textUnderlinePosition: 'under',
+                                    }}
+                                  >
+                                    Unfair Advantage
+                                  </Text>
+                                  <GrAchievement
+                                    size={24}
+                                    color={fillColor ? 'white' : 'black'}
+                                  />
+                                </Flex>
+
+                                <Textarea
+                                  value={unfairAdvantage}
+                                  onChange={(event) =>
+                                    setUnfairAdvantage(
+                                      event.currentTarget.value
+                                    )
+                                  }
+                                  id="unfairAdvantage"
+                                  minRows={smallerRows}
+                                  autosize
+                                  styles={{
+                                    input: {
+                                      border: 'none',
+                                      fontSize: fontSize + 'px',
+                                      backgroundColor: fillColor
+                                        ? '#7fcf2e'
+                                        : 'transparent',
+                                      textAlign: textAlignment as
+                                        | 'center'
+                                        | 'left'
+                                        | 'right',
+                                      ...(fillColor && {
+                                        borderBottomRightRadius: '20px',
+                                        borderBottomLeftRadius: '20px',
+                                        color: 'white',
+                                      }),
+                                    },
+                                  }}
                                 />
                               </Flex>
-                              {/* <textarea
-                                value={unfairAdvantage}
-                                onChange={(event) =>
-                                  setUnfairAdvantage(event.currentTarget.value)
-                                }
-                                style={{
-                                  width: '100%',
-                                  height: 'calc(100% - 64px)',
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  border: 'none',
-                                  padding: padding,
-                                  fontSize: fontSize + 'px',
-                                  backgroundColor: fillColor
-                                    ? '#7fcf2e'
-                                    : 'transparent',
-                                  resize: 'none',
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right', ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                    })
-                                }}
-                              /> */}
-                              <Textarea
-                                value={unfairAdvantage}
-                                onChange={(event) =>
-                                  setUnfairAdvantage(event.currentTarget.value)
-                                }
-                                id="unfairAdvantage"
-                                minRows={smallerRows}
-                                autosize
-                                styles={{
-                                  input: {
-                                    border: 'none',
-                                    fontSize: fontSize + 'px',
-                                    backgroundColor: fillColor
-                                      ? '#7fcf2e'
-                                      : 'transparent',
-                                    textAlign: textAlignment as
-                                      | 'center'
-                                      | 'left'
-                                      | 'right',
-                                    ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                      color: 'white',
-                                    }),
-                                  },
-                                }}
-                              />
                             </Grid.Col>
                           </HoverCard.Target>
                           {unfairAdvantage.length > 0 && (
@@ -1704,110 +1603,89 @@ const LeanCanvasGenerator: FC = () => {
                           <HoverCard.Target>
                             <Grid.Col
                               span={12}
-                              style={{
-                                ...(fillColor
-                                  ? {
-                                      borderRadius: '20px',
-                                      border: '5px solid #ffff',
-                                    }
-                                  : {
-                                      borderTop: '1px solid',
-                                    }),
-                                padding: '0px',
-                              }}
-                              bg={
-                                fillColor
-                                  ? '#00b9a9'
-                                  : hoveredBox == 'channels'
-                                  ? '#f7effe'
-                                  : 'transparent'
-                              }
-                              onMouseEnter={() => setHoveredBox('channels')}
-                              onMouseLeave={() => setHoveredBox('')}
+                              p={0}
+                              // onMouseEnter={() => setHoveredBox('channels')}
+                              // onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
-                                justify={'space-between'}
-                                gap={4}
-                                align={'center'}
-                                w={'100%'}
-                                mx={4}
-                                mt={4}
-                                h={'60px'}
-                                p={padding}
+                                m={fillColor ? 4 : 0}
+                                direction={'column'}
+                                style={{
+                                  ...(fillColor
+                                    ? {
+                                        borderRadius: '20px',
+                                        border: 'none',
+                                      }
+                                    : {
+                                        borderTop: '1px solid',
+                                      }),
+                                  padding: '0px',
+                                }}
+                                bg={
+                                  fillColor
+                                    ? '#00b9a9'
+                                    : hoveredBox == 'channels'
+                                    ? '#f7effe'
+                                    : 'transparent'
+                                }
                               >
-                                <Text
-                                  align="center"
-                                  weight={500}
-                                  my={'auto'}
-                                  color={fillColor ? 'white' : 'black'}
-                                  style={{
-                                    textDecoration: `underline solid ${
-                                      fillColor ? 'white' : '#00b9a9'
-                                    } 20%`,
-                                    textUnderlinePosition: 'under',
-                                  }}
+                                <Flex
+                                  justify={'space-between'}
+                                  gap={4}
+                                  align={'start'}
+                                  w={'calc(100%-8px)'}
+                                  // mx={8}
+                                  p={padding}
+                                  mt={4}
+                                  mx={8}
+                                  // h={'60px'}
                                 >
-                                  Channels
-                                </Text>
-                                <BiNetworkChart
-                                  size={24}
-                                  color={fillColor ? 'white' : 'black'}
+                                  <Text
+                                    weight={500}
+                                    my={'auto'}
+                                    color={fillColor ? 'white' : 'black'}
+                                    style={{
+                                      textDecoration: `underline solid ${
+                                        fillColor ? 'white' : '#00b9a9'
+                                      } 20%`,
+                                      textUnderlinePosition: 'under',
+                                    }}
+                                  >
+                                    Channels
+                                  </Text>
+                                  <BiNetworkChart
+                                    size={24}
+                                    color={fillColor ? 'white' : 'black'}
+                                  />
+                                </Flex>
+                                <Textarea
+                                  value={channels}
+                                  onChange={(event) =>
+                                    setChannels(event.currentTarget.value)
+                                  }
+                                  id="channels"
+                                  minRows={smallerRows}
+                                  autosize
+                                  styles={{
+                                    input: {
+                                      border: 'none',
+                                      fontSize: fontSize + 'px',
+                                      backgroundColor: fillColor
+                                        ? '#00b9a9'
+                                        : 'transparent',
+                                      textAlign: textAlignment as
+                                        | 'center'
+                                        | 'left'
+                                        | 'right',
+                                      ...(fillColor && {
+                                        borderBottomRightRadius: '20px',
+                                        borderBottomLeftRadius: '20px',
+                                        color: 'white',
+                                      }),
+                                    },
+                                  }}
                                 />
                               </Flex>
-                              {/* <textarea
-                                value={channels}
-                                onChange={(event) =>
-                                  setChannels(event.currentTarget.value)
-                                }
-                                style={{
-                                  width: '100%',
-                                  height: 'calc(100% - 64px)',
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  border: 'none',
-                                  padding: padding,
-                                  fontSize: fontSize + 'px',
-                                  backgroundColor: fillColor
-                                    ? '#00b9a9'
-                                    : 'transparent',
-                                  resize: 'none',
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right', ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                    })
-                                }}
-                              /> */}
-                              <Textarea
-                                value={channels}
-                                onChange={(event) =>
-                                  setChannels(event.currentTarget.value)
-                                }
-                                id="channels"
-                                minRows={smallerRows}
-                                autosize
-                                styles={{
-                                  input: {
-                                    border: 'none',
-                                    fontSize: fontSize + 'px',
-                                    backgroundColor: fillColor
-                                      ? '#00b9a9'
-                                      : 'transparent',
-                                    textAlign: textAlignment as
-                                      | 'center'
-                                      | 'left'
-                                      | 'right',
-                                    ...(fillColor && {
-                                      borderBottomRightRadius: '20px',
-                                      borderBottomLeftRadius: '20px',
-                                      color: 'white',
-                                    }),
-                                  },
-                                }}
-                              />
                             </Grid.Col>
                           </HoverCard.Target>
                           {channels.length > 0 && (
@@ -1836,113 +1714,94 @@ const LeanCanvasGenerator: FC = () => {
                       <HoverCard.Target>
                         <Grid.Col
                           span={2}
-                          style={{
-                            padding: '0px',
-                            border: fillColor ? '5px solid #ffff' : '1px solid',
-                            ...(fillColor
-                              ? {
-                                  borderRadius: '20px',
-                                }
-                              : {
-                                  borderRight: '2px solid',
-                                  borderTop: '2px solid',
-                                }),
-                          }}
-                          bg={
-                            fillColor
-                              ? '#029fc8'
-                              : hoveredBox == 'customer_segments'
-                              ? '#f7effe'
-                              : 'transparent'
-                          }
-                          onMouseEnter={() =>
-                            setHoveredBox('customer_segments')
-                          }
-                          onMouseLeave={() => setHoveredBox('')}
+                          p={0}
+                          // onMouseEnter={() =>
+                          //   setHoveredBox('customer_segments')
+                          // }
+                          // onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'space-between'}
-                            gap={4}
-                            align={'center'}
-                            w={'100%'}
-                            mx={4}
-                            mt={4}
-                            h={'60px'}
-                            p={padding}
+                            m={fillColor ? 4 : 0}
+                            mt={0}
+                            h={'100%'}
+                            direction={'column'}
+                            style={{
+                              padding: '0px',
+                              border: fillColor ? 'none' : '1px solid',
+                              ...(fillColor
+                                ? {
+                                    borderRadius: '20px',
+                                  }
+                                : {
+                                    borderRight: '2px solid',
+                                    borderTop: '2px solid',
+                                  }),
+                            }}
+                            bg={
+                              fillColor
+                                ? '#029fc8'
+                                : hoveredBox == 'customer_segments'
+                                ? '#f7effe'
+                                : 'transparent'
+                            }
                           >
-                            <Text
-                              align="center"
-                              weight={500}
-                              my={'auto'}
-                              color={fillColor ? 'white' : 'black'}
-                              style={{
-                                textDecoration: `underline solid ${
-                                  fillColor ? 'white' : '#029fc8'
-                                } 20%`,
-                                textUnderlinePosition: 'under',
-                              }}
+                            <Flex
+                              justify={'space-between'}
+                              gap={4}
+                              align={'start'}
+                              w={'calc(100%-8px)'}
+                              // mx={8}
+                              p={padding}
+                              mt={4}
+                              mx={8}
+                              // h={'60px'}
                             >
-                              Customer Segments
-                            </Text>
-                            <GoPeople
-                              size={24}
-                              color={fillColor ? 'white' : 'black'}
+                              <Text
+                                weight={500}
+                                my={'auto'}
+                                color={fillColor ? 'white' : 'black'}
+                                style={{
+                                  textDecoration: `underline solid ${
+                                    fillColor ? 'white' : '#029fc8'
+                                  } 20%`,
+                                  textUnderlinePosition: 'under',
+                                }}
+                              >
+                                Customer Segments
+                              </Text>
+                              <GoPeople
+                                size={24}
+                                color={fillColor ? 'white' : 'black'}
+                              />
+                            </Flex>
+                            <Textarea
+                              value={customerSegments}
+                              onChange={(event) =>
+                                setCustomerSegments(event.currentTarget.value)
+                              }
+                              id="customerSegments"
+                              minRows={largerRows}
+                              autosize
+                              styles={{
+                                input: {
+                                  border: 'none',
+                                  fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#029fc8'
+                                    : 'transparent',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    color: 'white',
+                                  }),
+                                },
+                              }}
                             />
                           </Flex>
-                          {/* <textarea
-                            value={customerSegments}
-                            onChange={(event) =>
-                              setCustomerSegments(event.currentTarget.value)
-                            }
-                            style={{
-                              width: '100%',
-                              height: 'calc(100% - 64px)',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              border: 'none',
-                              padding: padding,
-                              fontSize: fontSize + 'px',
-                              backgroundColor: fillColor
-                                ? '#029fc8'
-                                : 'transparent',
-                              resize: 'none',
-                              textAlign: textAlignment as
-                                | 'center'
-                                | 'left'
-                                | 'right', ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                })
-                            }}
-                          /> */}
-                          <Textarea
-                            value={customerSegments}
-                            onChange={(event) =>
-                              setCustomerSegments(event.currentTarget.value)
-                            }
-                            id="customerSegments"
-                            minRows={largerRows}
-                            autosize
-                            styles={{
-                              input: {
-                                border: 'none',
-                                fontSize: fontSize + 'px',
-                                backgroundColor: fillColor
-                                  ? '#029fc8'
-                                  : 'transparent',
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                                ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                  color: 'white',
-                                }),
-                              },
-                            }}
-                          />
                         </Grid.Col>
                       </HoverCard.Target>
                       {customerSegments.length > 0 && (
@@ -1969,115 +1828,94 @@ const LeanCanvasGenerator: FC = () => {
                       <HoverCard.Target>
                         <Grid.Col
                           span={5}
-                          style={{
-                            border: fillColor ? '5px solid #ffff' : '1px solid',
-                            padding: '0px',
-                            ...(fillColor
-                              ? {
-                                  borderRadius: '20px',
-                                }
-                              : {
-                                  borderLeft: '2px solid',
-                                  borderBottom: '2px solid',
-                                }),
-                          }}
-                          mih={150}
-                          bg={
-                            fillColor
-                              ? '#5d51cf'
-                              : hoveredBox == 'cost_structure'
-                              ? '#f7effe'
-                              : 'transparent'
-                          }
-                          onMouseEnter={() => setHoveredBox('cost_structure')}
-                          onMouseLeave={() => setHoveredBox('')}
+                          p={0}
+                          // onMouseEnter={() => setHoveredBox('cost_structure')}
+                          // onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'space-between'}
-                            gap={4}
-                            align={'center'}
-                            w={'100%'}
-                            mx={4}
-                            mt={4}
-                            h={'60px'}
-                            p={padding}
+                            m={fillColor ? 4 : 0}
+                            h={'100%'}
+                            direction={'column'}
+                            style={{
+                              border: fillColor ? 'none' : '1px solid',
+                              padding: '0px',
+                              ...(fillColor
+                                ? {
+                                    borderRadius: '20px',
+                                  }
+                                : {
+                                    borderLeft: '2px solid',
+                                    borderBottom: '2px solid',
+                                  }),
+                            }}
+                            mih={150}
+                            bg={
+                              fillColor
+                                ? '#5d51cf'
+                                : hoveredBox == 'cost_structure'
+                                ? '#f7effe'
+                                : 'transparent'
+                            }
                           >
-                            <Text
-                              align="center"
-                              weight={500}
-                              my={'auto'}
-                              color={fillColor ? 'white' : 'black'}
-                              style={{
-                                textDecoration: `underline solid ${
-                                  fillColor ? 'white' : '#5d51cf'
-                                } 20%`,
-                                textUnderlinePosition: 'under',
-                              }}
+                            <Flex
+                              justify={'space-between'}
+                              gap={4}
+                              align={'start'}
+                              w={'calc(100%-8px)'}
+                              // mx={8}
+                              p={padding}
+                              mt={4}
+                              mx={8}
+                              // h={'60px'}
                             >
-                              Cost Structure
-                            </Text>
-                            <LiaFileInvoiceDollarSolid
-                              size={24}
-                              color={fillColor ? 'white' : 'black'}
+                              <Text
+                                weight={500}
+                                my={'auto'}
+                                color={fillColor ? 'white' : 'black'}
+                                style={{
+                                  textDecoration: `underline solid ${
+                                    fillColor ? 'white' : '#5d51cf'
+                                  } 20%`,
+                                  textUnderlinePosition: 'under',
+                                }}
+                              >
+                                Cost Structure
+                              </Text>
+                              <LiaFileInvoiceDollarSolid
+                                size={24}
+                                color={fillColor ? 'white' : 'black'}
+                              />
+                            </Flex>
+                            <Textarea
+                              minRows={4}
+                              value={costStructure}
+                              onChange={(event) =>
+                                setCostStructure(event.currentTarget.value)
+                              }
+                              autosize
+                              styles={{
+                                input: {
+                                  border: 'none',
+                                  fontSize: fontSize + 'px',
+                                  padding: padding,
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  backgroundColor: fillColor
+                                    ? '#5d51cf'
+                                    : 'transparent',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    backgroundColor: '#5d51cf',
+                                    color: 'white',
+                                    //color:'white'
+                                  }),
+                                },
+                              }}
                             />
                           </Flex>
-                          {/* <textarea
-                          id='cost_structure'
-                            value={costStructure}
-                            onChange={(event) =>
-                              setCostStructure(event.currentTarget.value)
-                            }
-                            style={{
-                              width: '100%',
-                              height: 'calc(100% - 64px)',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              border: 'none',
-                              padding: padding,
-                              fontSize: fontSize + 'px',
-                              backgroundColor: fillColor
-                                ? '#5d51cf'
-                                : 'transparent',
-                              resize: 'none',
-                              textAlign: textAlignment as
-                                | 'center'
-                                | 'left'
-                                | 'right', ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                })
-                            }}
-                          /> */}
-                          <Textarea
-                            minRows={4}
-                            value={costStructure}
-                            onChange={(event) =>
-                              setCostStructure(event.currentTarget.value)
-                            }
-                            autosize
-                            styles={{
-                              input: {
-                                border: 'none',
-                                fontSize: fontSize + 'px',
-                                padding: padding,
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                                backgroundColor: fillColor
-                                  ? '#5d51cf'
-                                  : 'transparent',
-                                ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                  backgroundColor: '#5d51cf',
-                                  color: 'white',
-                                  //color:'white'
-                                }),
-                              },
-                            }}
-                          />
                         </Grid.Col>
                       </HoverCard.Target>
                       {costStructure.length > 0 && (
@@ -2104,114 +1942,94 @@ const LeanCanvasGenerator: FC = () => {
                       <HoverCard.Target>
                         <Grid.Col
                           span={5}
-                          style={{
-                            border: fillColor ? '5px solid #ffff' : '1px solid',
-                            padding: '0px',
-                            ...(fillColor
-                              ? {
-                                  borderRadius: '20px',
-                                }
-                              : {
-                                  borderRight: '2px solid',
-                                  borderBottom: '2px solid',
-                                }),
-                          }}
-                          mih={150}
-                          bg={
-                            fillColor
-                              ? '#670fb9'
-                              : hoveredBox == 'revenue_streams'
-                              ? '#f7effe'
-                              : 'transparent'
-                          }
-                          onMouseEnter={() => setHoveredBox('revenue_streams')}
-                          onMouseLeave={() => setHoveredBox('')}
+                          p={0}
+                          // onMouseEnter={() => setHoveredBox('revenue_streams')}
+                          // onMouseLeave={() => setHoveredBox('')}
                         >
                           <Flex
-                            justify={'space-between'}
-                            gap={4}
-                            align={'center'}
-                            w={'100%'}
-                            mx={4}
-                            mt={4}
-                            h={'60px'}
-                            p={padding}
+                            m={fillColor ? 4 : 0}
+                            h={'100%'}
+                            direction={'column'}
+                            style={{
+                              border: fillColor ? 'none' : '1px solid',
+                              padding: '0px',
+                              ...(fillColor
+                                ? {
+                                    borderRadius: '20px',
+                                  }
+                                : {
+                                    borderRight: '2px solid',
+                                    borderBottom: '2px solid',
+                                  }),
+                            }}
+                            mih={150}
+                            bg={
+                              fillColor
+                                ? '#670fb9'
+                                : hoveredBox == 'revenue_streams'
+                                ? '#f7effe'
+                                : 'transparent'
+                            }
                           >
-                            <Text
-                              align="center"
-                              weight={500}
-                              my={'auto'}
-                              color={fillColor ? 'white' : 'black'}
-                              style={{
-                                textDecoration: `underline solid ${
-                                  fillColor ? 'white' : '#670fb9'
-                                } 20%`,
-                                textUnderlinePosition: 'under',
-                              }}
+                            <Flex
+                              justify={'space-between'}
+                              gap={4}
+                              align={'start'}
+                              w={'calc(100%-8px)'}
+                              // mx={8}
+                              p={padding}
+                              mt={4}
+                              mx={8}
+                              // h={'60px'}
                             >
-                              Revenue Streams
-                            </Text>{' '}
-                            <FaMoneyBillTrendUp
-                              size={24}
-                              color={fillColor ? 'white' : 'black'}
+                              <Text
+                                weight={500}
+                                my={'auto'}
+                                color={fillColor ? 'white' : 'black'}
+                                style={{
+                                  textDecoration: `underline solid ${
+                                    fillColor ? 'white' : '#670fb9'
+                                  } 20%`,
+                                  textUnderlinePosition: 'under',
+                                }}
+                              >
+                                Revenue Streams
+                              </Text>{' '}
+                              <FaMoneyBillTrendUp
+                                size={24}
+                                color={fillColor ? 'white' : 'black'}
+                              />
+                            </Flex>
+                            <Textarea
+                              minRows={4}
+                              value={revenueStreams}
+                              onChange={(event) =>
+                                setRevenueStreams(event.currentTarget.value)
+                              }
+                              autosize
+                              styles={{
+                                input: {
+                                  border: 'none',
+                                  fontSize: fontSize + 'px',
+                                  padding: padding,
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  backgroundColor: fillColor
+                                    ? '#670fb9'
+                                    : 'transparent',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    backgroundColor: '#670fb9',
+                                    color: 'white',
+                                    //color:'white'
+                                  }),
+                                },
+                              }}
                             />
                           </Flex>
-                          {/* <textarea
-                            value={revenueStreams}
-                            onChange={(event) =>
-                              setRevenueStreams(event.currentTarget.value)
-                            }
-                            style={{
-                              width: '100%',
-                              height: 'calc(100% - 64px)',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              border: 'none',
-                              padding: padding,
-                              fontSize: fontSize + 'px',
-                              backgroundColor: fillColor
-                                ? '#670fb9'
-                                : 'transparent',
-                              resize: 'none',
-                              textAlign: textAlignment as
-                                | 'center'
-                                | 'left'
-                                | 'right', ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                })
-                            }}
-                          /> */}
-                          <Textarea
-                            minRows={4}
-                            value={revenueStreams}
-                            onChange={(event) =>
-                              setRevenueStreams(event.currentTarget.value)
-                            }
-                            autosize
-                            styles={{
-                              input: {
-                                border: 'none',
-                                fontSize: fontSize + 'px',
-                                padding: padding,
-                                textAlign: textAlignment as
-                                  | 'center'
-                                  | 'left'
-                                  | 'right',
-                                backgroundColor: fillColor
-                                  ? '#670fb9'
-                                  : 'transparent',
-                                ...(fillColor && {
-                                  borderBottomRightRadius: '20px',
-                                  borderBottomLeftRadius: '20px',
-                                  backgroundColor: '#670fb9',
-                                  color: 'white',
-                                  //color:'white'
-                                }),
-                              },
-                            }}
-                          />
                         </Grid.Col>
                       </HoverCard.Target>
                       {revenueStreams.length > 0 && (
