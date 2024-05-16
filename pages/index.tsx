@@ -49,6 +49,14 @@ import ComputerIcon from 'public/images/computer.svg';
 import { PDFDocument } from 'pdf-lib';
 // import html2canvas from 'html2canvas';
 // import jsPDF from 'jspdf';
+import { Document, Page } from 'react-pdf';
+import { pdfjs } from 'react-pdf';
+import { textDecorationLine } from 'html2canvas/dist/types/css/property-descriptors/text-decoration-line';
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.js',
+  import.meta.url
+).toString();
 
 const LeanCanvasGenerator: FC = () => {
   const [pdfFile, setPdfFile] = useState('');
@@ -87,6 +95,7 @@ const LeanCanvasGenerator: FC = () => {
   // const [height, setHeight] = useState(600);
   const [fontSize, setFontSize] = useState(16);
   const [textAlignment, setTextAlignment] = useState('left');
+  const [titleDecoration, setTitleDecoration] = useState('underline');
   const [sideBar, setSideBar] = useState(true);
   const [padding, setPadding] = useState(12);
   const [useBoxData, setUseBoxData] = useState(false);
@@ -427,6 +436,7 @@ const LeanCanvasGenerator: FC = () => {
     setPdfFile('');
   }, [
     orientation,
+    titleDecoration,
     fillColor,
     fontSize,
     textAlignment,
@@ -518,6 +528,19 @@ const LeanCanvasGenerator: FC = () => {
     }
     return scale;
   };
+  const getTitleDecoration = (color: string) => {
+    switch (titleDecoration) {
+      case 'underline':
+        return `underline solid ${color} 20%`;
+      case 'overline':
+        return `overline solid ${color} 20%`;
+      case 'line-through':
+        return `line-through solid ${color} 20%`;
+      default:
+        return 'none';
+    }
+  };
+
   return (
     <>
       <Grid h={'100%'} m={0}>
@@ -675,6 +698,17 @@ const LeanCanvasGenerator: FC = () => {
                   mx={24}
                   gap={12}
                 >
+                  <Select
+                    label="Title Decoration"
+                    placeholder="Select Title Decoration"
+                    value={titleDecoration}
+                    onChange={(value) => {
+                      setTitleDecoration(value as string);
+                    }}
+                    data={['underline', 'overline', 'line-through', 'none']}
+                    mb={20}
+                    color="violet"
+                  />
                   <label
                     style={{
                       fontSize: '16px',
@@ -685,7 +719,7 @@ const LeanCanvasGenerator: FC = () => {
                   </label>
                   <RangeSlider
                     defaultValue={[minChars, maxChars]}
-                    min={0}
+                    min={200}
                     max={1000}
                     step={100}
                     label={(value) => `${value} characters`}
@@ -695,7 +729,7 @@ const LeanCanvasGenerator: FC = () => {
                     }}
                     color="violet"
                     marks={[
-                      { value: 0, label: '0' },
+                      { value: 200, label: '200' },
                       { value: 500, label: '500' },
                       { value: 1000, label: '1000' },
                     ]}
@@ -757,7 +791,12 @@ const LeanCanvasGenerator: FC = () => {
                                 onMouseEnter={() => setHoveredAligMent('left')}
                                 onMouseLeave={() => setHoveredAligMent('')}
                               >
-                                <IconAlignLeft size={24} />
+                                <IconAlignLeft
+                                  size={24}
+                                  style={{
+                                    margin: 'auto 0',
+                                  }}
+                                />
                               </Box>
                             ),
                           },
@@ -787,7 +826,7 @@ const LeanCanvasGenerator: FC = () => {
                                 onMouseEnter={() => setHoveredAligMent('right')}
                                 onMouseLeave={() => setHoveredAligMent('')}
                               >
-                                <IconAlignRight size={30} />
+                                <IconAlignRight size={24} />
                               </Box>
                             ),
                           },
@@ -816,16 +855,23 @@ const LeanCanvasGenerator: FC = () => {
                     color="violet"
                   />
                   {pdfFile !== '' && (
-                    <>
-                      <iframe
-                        src={pdfFile}
-                        style={{
-                          width: '100%',
-                          height: '250px',
-                          border: 'none',
-                        }}
-                      ></iframe>
-                    </>
+                    <div
+                      style={{
+                        width: '400px',
+                        height: '250px',
+                        overflowY: 'hidden',
+                        overflowX: 'auto',
+                        boxShadow: '0 0 10px #f1e5ff',
+                        padding: '8px',
+                      }}
+                    >
+                      <Document
+                        file={pdfFile}
+                        // onLoadSuccess={onDocumentLoadSuccess}
+                      >
+                        <Page pageNumber={1} width={400} />
+                      </Document>
+                    </div>
                   )}
                   <Flex my={8} justify={'space-between'} gap={8}>
                     {pdfFile === '' && (
@@ -1025,9 +1071,7 @@ const LeanCanvasGenerator: FC = () => {
                                 my={'auto'}
                                 color={fillColor ? 'white' : 'black'}
                                 style={{
-                                  textDecoration: `underline solid ${
-                                    fillColor ? 'white' : '#dd052e'
-                                  } 20%`,
+                                  textDecoration: getTitleDecoration('#dd052e'),
                                   textUnderlinePosition: 'under',
                                 }}
                               >
@@ -1150,9 +1194,8 @@ const LeanCanvasGenerator: FC = () => {
                                     my={'auto'}
                                     color={fillColor ? 'white' : 'black'}
                                     style={{
-                                      textDecoration: `underline solid ${
-                                        fillColor ? 'white' : '#ff9a02'
-                                      } 20%`,
+                                      textDecoration:
+                                        getTitleDecoration('#ff9a02'),
                                       textUnderlinePosition: 'under',
                                     }}
                                   >
@@ -1261,9 +1304,8 @@ const LeanCanvasGenerator: FC = () => {
                                     my={'auto'}
                                     color={fillColor ? 'white' : 'black'}
                                     style={{
-                                      textDecoration: `underline solid ${
-                                        fillColor ? 'white' : '#fb6b25'
-                                      } 20%`,
+                                      textDecoration:
+                                        getTitleDecoration('#fb6b25'),
                                       textUnderlinePosition: 'under',
                                     }}
                                   >
@@ -1369,9 +1411,7 @@ const LeanCanvasGenerator: FC = () => {
                                 my={'auto'}
                                 color={fillColor ? 'white' : 'black'}
                                 style={{
-                                  textDecoration: `underline solid ${
-                                    fillColor ? 'white' : '#00aa44'
-                                  } 20%`,
+                                  textDecoration: getTitleDecoration('#00aa44'),
                                   textUnderlinePosition: 'under',
                                 }}
                               >
@@ -1493,9 +1533,8 @@ const LeanCanvasGenerator: FC = () => {
                                     my={'auto'}
                                     color={fillColor ? 'white' : 'black'}
                                     style={{
-                                      textDecoration: `underline solid ${
-                                        fillColor ? 'white' : '#7fcf2e'
-                                      } 20%`,
+                                      textDecoration:
+                                        getTitleDecoration('#7fcf2e'),
                                       textUnderlinePosition: 'under',
                                     }}
                                   >
@@ -1600,9 +1639,8 @@ const LeanCanvasGenerator: FC = () => {
                                     my={'auto'}
                                     color={fillColor ? 'white' : 'black'}
                                     style={{
-                                      textDecoration: `underline solid ${
-                                        fillColor ? 'white' : '#00b9a9'
-                                      } 20%`,
+                                      textDecoration:
+                                        getTitleDecoration('#00b9a9'),
                                       textUnderlinePosition: 'under',
                                     }}
                                   >
@@ -1709,9 +1747,7 @@ const LeanCanvasGenerator: FC = () => {
                                 my={'auto'}
                                 color={fillColor ? 'white' : 'black'}
                                 style={{
-                                  textDecoration: `underline solid ${
-                                    fillColor ? 'white' : '#029fc8'
-                                  } 20%`,
+                                  textDecoration: getTitleDecoration('#029fc8'),
                                   textUnderlinePosition: 'under',
                                 }}
                               >
@@ -1816,9 +1852,7 @@ const LeanCanvasGenerator: FC = () => {
                                 my={'auto'}
                                 color={fillColor ? 'white' : 'black'}
                                 style={{
-                                  textDecoration: `underline solid ${
-                                    fillColor ? 'white' : '#5d51cf'
-                                  } 20%`,
+                                  textDecoration: getTitleDecoration('#5d51cf'),
                                   textUnderlinePosition: 'under',
                                 }}
                               >
@@ -1925,9 +1959,7 @@ const LeanCanvasGenerator: FC = () => {
                                 my={'auto'}
                                 color={fillColor ? 'white' : 'black'}
                                 style={{
-                                  textDecoration: `underline solid ${
-                                    fillColor ? 'white' : '#670fb9'
-                                  } 20%`,
+                                  textDecoration: getTitleDecoration('#670fb9'),
                                   textUnderlinePosition: 'under',
                                 }}
                               >
