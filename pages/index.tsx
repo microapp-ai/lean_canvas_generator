@@ -20,6 +20,7 @@ import {
   Radio,
   Drawer,
   Checkbox,
+  Tooltip,
 } from '@mantine/core';
 import React, { FC, useEffect, useState } from 'react';
 import classes from 'styles/index.module.css';
@@ -33,14 +34,12 @@ import { AiOutlineGift } from 'react-icons/ai';
 import { GoPeople } from 'react-icons/go';
 import { FaMoneyBillTrendUp } from 'react-icons/fa6';
 import { LiaFileInvoiceDollarSolid } from 'react-icons/lia';
-
 import domtoimage from 'dom-to-image';
 
 import {
-  Icon123,
+  IconAlignCenter,
   IconAlignLeft,
-  IconArrowLeft,
-  IconArrowRight,
+  IconAlignRight,
   IconRefresh,
 } from '@tabler/icons-react';
 
@@ -48,10 +47,11 @@ import QuestionsGroupHeader from '@/components/QuestionGroupHeader';
 import ComputerIcon from 'public/images/computer.svg';
 
 import { PDFDocument } from 'pdf-lib';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+// import html2canvas from 'html2canvas';
+// import jsPDF from 'jspdf';
 
 const LeanCanvasGenerator: FC = () => {
+  const [pdfFile, setPdfFile] = useState('');
   const [title, setTitle] = useState('Lean Canvas');
   const [author, setAuthor] = useState('John Doe');
   const [date, setDate] = useState('2021-09-01');
@@ -84,14 +84,15 @@ const LeanCanvasGenerator: FC = () => {
 
   // styling parameters
   const [width, setWidth] = useState(1000);
-  const [height, setHeight] = useState(600);
+  // const [height, setHeight] = useState(600);
   const [fontSize, setFontSize] = useState(16);
   const [textAlignment, setTextAlignment] = useState('left');
   const [sideBar, setSideBar] = useState(true);
-  const [padding, setPadding] = useState(8);
+  const [padding, setPadding] = useState(12);
   const [useBoxData, setUseBoxData] = useState(false);
   const [fillColor, setFillColor] = useState(false);
   const [advanced, setAdvanced] = useState(false);
+  const [orientation, setOrientation] = useState('A3');
 
   const writeData = async (
     text: string,
@@ -113,6 +114,11 @@ const LeanCanvasGenerator: FC = () => {
   };
 
   const handleGenerateLeanCanvas = async () => {
+    const doc = document.getElementById('canvas');
+    // set canvas on focus
+    doc?.scrollIntoView({
+      behavior: 'smooth',
+    });
     setLoading(true);
     try {
       const resp = await fetch(
@@ -188,44 +194,6 @@ const LeanCanvasGenerator: FC = () => {
   };
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
-
-  const handleDownload = () => {
-    try {
-      var node = document.getElementById('canvas');
-      if (!node) {
-        return;
-      }
-      let scale = 4;
-      domtoimage
-        .toPng(node as HTMLElement, {
-          width: node.scrollWidth * scale,
-          height: node.clientHeight * scale,
-          style: {
-            transform: 'scale(' + scale + ')',
-            transformOrigin: 'top left',
-          },
-        })
-        .then(async function (dataUrl) {
-          // convert it to pdf
-          const pdfDoc = await PDFDocument.create();
-          const pdfImage = await pdfDoc.embedPng(dataUrl);
-          const page = pdfDoc.addPage([pdfImage.width, pdfImage.height]);
-          page.drawImage(pdfImage, {
-            x: 0,
-            y: 0,
-            width: pdfImage.width,
-          });
-          const pdfBytes = await pdfDoc.save();
-          const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-          const link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = 'lean_canvas.pdf';
-          link.click();
-        });
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleRegenerate = (field: string) => {
     setLoading(true);
@@ -329,7 +297,6 @@ const LeanCanvasGenerator: FC = () => {
   };
 
   const [loading, setLoading] = useState(false);
-  const [advancedStyling, setAdvancedStyling] = useState(false);
   const listOfIndustries = [
     'Agriculture',
     'Automotive',
@@ -424,6 +391,19 @@ const LeanCanvasGenerator: FC = () => {
     console.log('largerBoxRows', largerBoxRows);
     setSmallerRows(smallerBoxRows);
     setLargerRows(largerBoxRows);
+    setTimeout(() => {
+      const doc = document.getElementById('canvas');
+      // set width of canvas with respect to scrollHeight in landscape
+      if (orientation === 'A3') {
+        if (doc?.scrollHeight) {
+          setWidth(doc.scrollHeight * 1.414);
+        }
+      } else {
+        if (doc?.scrollHeight) {
+          setWidth(doc.scrollHeight * 1.189);
+        }
+      }
+    }, 100);
   };
 
   useEffect(() => {
@@ -438,6 +418,106 @@ const LeanCanvasGenerator: FC = () => {
     customerSegments,
   ]);
   const [hoveredBox, setHoveredBox] = useState('');
+  const [hoveredAlignMent, setHoveredAligMent] = useState('');
+  useEffect(() => {
+    getUpperRows();
+  }, [orientation]);
+
+  useEffect(() => {
+    setPdfFile('');
+  }, [
+    orientation,
+    fillColor,
+    fontSize,
+    textAlignment,
+    author,
+    date,
+    problem,
+    solution,
+    keyMetrics,
+    uniqueValueProposition,
+    unfairAdvantage,
+    channels,
+    customerSegments,
+    costStructure,
+    revenueStreams,
+  ]);
+
+  const handleDownload = (download: boolean) => {
+    try {
+      var node = document.getElementById('canvas');
+      if (!node) {
+        return;
+      }
+      let scale = 4;
+      domtoimage
+        .toPng(node as HTMLElement, {
+          width: node.scrollWidth * scale,
+          height: node.clientHeight * scale,
+          style: {
+            transform: 'scale(' + scale + ')',
+            transformOrigin: 'top left',
+          },
+        })
+        .then(async function (dataUrl) {
+          // convert it to pdf
+          const pdfDoc = await PDFDocument.create();
+          const pdfImage = await pdfDoc.embedPng(dataUrl);
+          const page = pdfDoc.addPage([pdfImage.width, pdfImage.height]);
+          page.drawImage(pdfImage, {
+            x: 0,
+            y: 0,
+            width: pdfImage.width,
+          });
+          const pdfBytes = await pdfDoc.save();
+          const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+          setPdfFile(URL.createObjectURL(blob));
+          if (download) {
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'lean_canvas.pdf';
+            link.click();
+          }
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const [previewCode, setPreviewCode] = useState('');
+  useEffect(() => {
+    setPreviewCode(document.getElementById('canvas')?.innerHTML as string);
+  }, [
+    orientation,
+    fillColor,
+    fontSize,
+    textAlignment,
+    author,
+    date,
+    problem,
+    solution,
+    keyMetrics,
+    uniqueValueProposition,
+    unfairAdvantage,
+    channels,
+    customerSegments,
+    costStructure,
+    revenueStreams,
+  ]);
+  const getPreviewScale = () => {
+    let scale = 0.5;
+    if (typeof document === 'undefined') {
+      return scale;
+    }
+    if (document.getElementById('canvas')) {
+      const canvasWidth = document.getElementById('canvas')
+        ?.scrollWidth as number;
+      const previewWidth = document.getElementById('preview')
+        ?.clientWidth as number;
+      scale = previewWidth / canvasWidth;
+      console.log('scale', scale);
+    }
+    return scale;
+  };
   return (
     <>
       <Grid h={'100%'} m={0}>
@@ -488,14 +568,6 @@ const LeanCanvasGenerator: FC = () => {
                   )}
                   {advanced && (
                     <Flex direction={'column'} gap={8} my={8}>
-                      {/* <TextInput
-                        label="Company Name (Optional)"
-                        placeholder="Company Name"
-                        value={companyName}
-                        onChange={(event) =>
-                          setCompanyName(event.currentTarget.value)
-                        }
-                      /> */}
                       <Autocomplete
                         label="Industry"
                         placeholder="Which industry sector does your company belong to?"
@@ -507,62 +579,6 @@ const LeanCanvasGenerator: FC = () => {
                         }}
                         onChange={(value) => setIndustry(value)}
                       />
-                      {/* <Text
-                        style={{
-                          fontSize: '16px',
-                          fontWeight: 400,
-                        }}
-                      >
-                        Is your company product or service based?
-                        <span
-                          style={{
-                            color: 'red',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                          }}
-                        >
-                          {` * `}
-                        </span>
-                      </Text>
-                      <Radio.Group
-                        value={prodOrService}
-                        onChange={(value) => setProdOrService(value)}
-                      >
-                        <Radio
-                          value={'product'}
-                          checked={prodOrService === 'product'}
-                          onClick={() => {
-                            setProdOrService('product');
-                          }}
-                          label="Product based"
-                          m={8}
-                          color="violet"
-                        />
-                        <Radio
-                          value={'service'}
-                          checked={prodOrService === 'service'}
-                          onClick={() => {
-                            setProdOrService('service');
-                          }}
-                          label="Service based"
-                          m={8}
-                          color="violet"
-                        />
-                      </Radio.Group> */}
-                      {/* <Textarea
-                        label="Product or Service Description"
-                        placeholder="Briefly describe your product or service. What problem does it solve?"
-                        value={prodOrServiceDesc}
-                        onChange={(event) =>
-                          setProdOrServiceDesc(event.currentTarget.value)
-                        }
-                        minRows={2}
-                        autosize
-                        required
-                        classNames={{
-                          required: classes.required,
-                        }}
-                      /> */}
                       <Textarea
                         label="Company Description"
                         placeholder="Briefly describe your company and its products or services."
@@ -605,35 +621,6 @@ const LeanCanvasGenerator: FC = () => {
                           required: classes.required,
                         }}
                       />
-                      {/* <Textarea
-                        label="Target Market"
-                        placeholder="Who is your target market? Describe your ideal customer."
-                        value={targetMarket}
-                        onChange={(event) =>
-                          setTargetMarket(event.currentTarget.value)
-                        }
-                        minRows={2}
-                        autosize
-                        required
-                        classNames={{
-                          required: classes.required,
-                        }}
-                      /> */}
-
-                      {/* <Textarea
-                        label="Existing Alternatives"
-                        placeholder="What are the existing alternatives to your product or service? Briefly describe them."
-                        value={existingAlternatives}
-                        onChange={(event) =>
-                          setExistingAlternatives(event.currentTarget.value)
-                        }
-                        minRows={2}
-                        autosize
-                        required
-                        classNames={{
-                          required: classes.required,
-                        }}
-                      /> */}
                       <Textarea
                         label="Communication Channels (Optional)"
                         placeholder="How do your company communicates with your customers? List your Communication Channels."
@@ -646,6 +633,30 @@ const LeanCanvasGenerator: FC = () => {
                       />
                     </Flex>
                   )}
+                  <Checkbox
+                    label="Use Data in Boxes as Inputs"
+                    checked={useBoxData}
+                    onChange={() => setUseBoxData(!useBoxData)}
+                    mb={16}
+                    mt={12}
+                    color="violet"
+                  />
+                  <Flex w={'100%'} justify={'center'} my={16}>
+                    <Button
+                      miw={250}
+                      color="violet"
+                      variant="light"
+                      style={{
+                        margin: '0 auto',
+                        border: '1px solid',
+                      }}
+                      onClick={handleGenerateLeanCanvas}
+                      loading={loading}
+                      disabled={!valid}
+                    >
+                      Generate
+                    </Button>
+                  </Flex>
                 </Box>
               }
             </Grid.Col>
@@ -716,131 +727,120 @@ const LeanCanvasGenerator: FC = () => {
                     ]}
                     mb={20}
                   />
+                  <Flex align={'center'} gap={16} my={16}>
+                    <Text>Text Alignment</Text>
+                    <Tooltip
+                      label={
+                        hoveredAlignMent === ''
+                          ? textAlignment
+                          : hoveredAlignMent
+                      }
+                    >
+                      <SegmentedControl
+                        // fullWidth
+                        color="violet"
+                        value={textAlignment}
+                        onChange={setTextAlignment}
+                        styles={{
+                          label: {
+                            padding: '0px',
+                          },
+                        }}
+                        data={[
+                          {
+                            value: 'left',
+                            label: (
+                              <Box
+                                style={{
+                                  padding: '0.3125rem 0.625rem',
+                                }}
+                                onMouseEnter={() => setHoveredAligMent('left')}
+                                onMouseLeave={() => setHoveredAligMent('')}
+                              >
+                                <IconAlignLeft size={24} />
+                              </Box>
+                            ),
+                          },
+                          {
+                            value: 'center',
+                            label: (
+                              <Box
+                                style={{
+                                  padding: '0.3125rem 0.625rem',
+                                }}
+                                onMouseEnter={() =>
+                                  setHoveredAligMent('center')
+                                }
+                                onMouseLeave={() => setHoveredAligMent('')}
+                              >
+                                <IconAlignCenter />
+                              </Box>
+                            ),
+                          },
+                          {
+                            value: 'right',
+                            label: (
+                              <Box
+                                style={{
+                                  padding: '0.3125rem 0.625rem',
+                                }}
+                                onMouseEnter={() => setHoveredAligMent('right')}
+                                onMouseLeave={() => setHoveredAligMent('')}
+                              >
+                                <IconAlignRight size={30} />
+                              </Box>
+                            ),
+                          },
+                        ]}
+                        size="sm"
+                      />
+                    </Tooltip>
+                  </Flex>
+                  <Flex align={'center'} gap={16} my={16}>
+                    <Text>Canvas Shape</Text>
+                    <SegmentedControl
+                      fullWidth
+                      color="violet"
+                      value={orientation}
+                      onChange={setOrientation}
+                      data={['A3', 'A4']}
+                      size="sm"
+                    />
+                  </Flex>
 
-                  <label
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 400,
-                    }}
-                  >
-                    Text Alignment
-                  </label>
-                  <SegmentedControl
-                    fullWidth
-                    color="violet"
-                    value={textAlignment}
-                    onChange={setTextAlignment}
-                    data={[
-                      { value: 'left', label: 'Left' },
-                      { value: 'center', label: 'Center' },
-                      { value: 'right', label: 'Right' },
-                    ]}
-                    mb={20}
-                    size="sm"
-                  />
-                  <label
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 400,
-                    }}
-                  >
-                    Padding Inside Boxes
-                  </label>
-                  <Slider
-                    defaultValue={padding}
-                    w={'100%'}
-                    min={4}
-                    max={16}
-                    step={4}
-                    label={`${padding}px`}
-                    onChange={(value) => setPadding(value)}
-                    color="violet"
-                    marks={[
-                      { value: 4, label: '4px' },
-                      { value: 8, label: '8px' },
-                      { value: 16, label: '16px' },
-                    ]}
-                    mb={20}
-                  />
-
-                  <label
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 400,
-                    }}
-                  >
-                    Canvas Width
-                  </label>
-                  <Slider
-                    defaultValue={width}
-                    w={'100%'}
-                    min={700}
-                    max={1500}
-                    step={100}
-                    label={`${width}px`}
-                    onChange={(value) => setWidth(value)}
-                    color="violet"
-                    marks={[
-                      { value: 700, label: '700px' },
-                      { value: 1000, label: '1000px' },
-                      { value: 1500, label: '1500px' },
-                    ]}
-                    mb={16}
-                  />
-                  {/* <label
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 400,
-                    }}
-                  >
-                    Canvas Height
-                  </label>
-                  <Slider
-                    defaultValue={height}
-                    w={'100%'}
-                    min={500}
-                    max={1000}
-                    step={50}
-                    label={`${height}px`}
-                    onChange={(value) => setHeight(value)}
-                    color="violet"
-                    marks={[
-                      { value: 500, label: '500px' },
-                      { value: 700, label: '700px' },
-                      { value: 1000, label: '1000px' },
-                    ]}
-                    mb={16}
-                  /> */}
                   <Checkbox
-                    label="Fill Color in Boxes"
+                    label="Use Colored Canvas Model"
                     checked={fillColor}
                     onChange={() => setFillColor(!fillColor)}
                     mb={16}
                     color="violet"
                   />
-                  <Checkbox
-                    label="Use Data in Boxes as Inputs"
-                    checked={useBoxData}
-                    onChange={() => setUseBoxData(!useBoxData)}
-                    mb={16}
-                    mt={12}
-                    color="violet"
-                  />
-
+                  {pdfFile !== '' && (
+                    <>
+                      <iframe
+                        src={pdfFile}
+                        style={{
+                          width: '100%',
+                          height: '250px',
+                          border: 'none',
+                        }}
+                      ></iframe>
+                    </>
+                  )}
                   <Flex my={8} justify={'space-between'} gap={8}>
-                    <Button
-                      color="violet"
-                      variant="light"
-                      style={{
-                        margin: '0 auto',
-                        border: '1px solid',
-                      }}
-                      onClick={handleGenerateLeanCanvas}
-                      loading={loading}
-                      disabled={!valid}
-                    >
-                      Generate
-                    </Button>
+                    {pdfFile === '' && (
+                      <Button
+                        color="violet"
+                        variant="light"
+                        style={{
+                          margin: '0 auto',
+                          border: '1px solid',
+                        }}
+                        onClick={() => handleDownload(false)}
+                      >
+                        Load Preview
+                      </Button>
+                    )}
                     <Button
                       color="green"
                       variant="light"
@@ -848,7 +848,7 @@ const LeanCanvasGenerator: FC = () => {
                         margin: '0 auto',
                         border: '1px solid',
                       }}
-                      onClick={handleDownload}
+                      onClick={() => handleDownload(true)}
                       disabled={loading || problem === ''}
                     >
                       Download as PDF
@@ -860,40 +860,7 @@ const LeanCanvasGenerator: FC = () => {
           </Grid>
         </Grid.Col>
         <Grid.Col sm={12} md={12}>
-          <Flex justify={'flex-end'}>
-            {/* <Button
-              onClick={() => setAdvancedStyling(true)}
-              color="violet"
-              variant="light"
-              style={{
-                margin: '16px',
-                border: '1px solid',
-              }}
-            >
-              Show advanced styling options
-            </Button> */}
-          </Flex>
           <Flex justify={'center'}>
-            {/* <div
-              onClick={() => setSideBar(!sideBar)}
-              style={{
-                cursor: 'pointer',
-                height: '100px',
-                width: '20px',
-                backgroundColor: '#a0aaff',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '0px 10px 10px 0px',
-                margin: 'auto 0',
-              }}
-            >
-              {sideBar ? (
-                <IconArrowLeft size={24} color="#ffffff" />
-              ) : (
-                <IconArrowRight size={24} color="#ffffff" />
-              )}
-            </div> */}
             <Box
               // w={'100%'}
               // ref={canvasRef}
@@ -955,9 +922,13 @@ const LeanCanvasGenerator: FC = () => {
                       }
                       w={'100%'}
                       justify={'center'}
+                      onClick={() => {
+                        document.getElementById('author_input')?.focus();
+                      }}
                     >
                       <label>Author:</label>
                       <input
+                        id="author_input"
                         value={author}
                         onChange={(event) =>
                           setAuthor(event.currentTarget.value)
@@ -980,9 +951,13 @@ const LeanCanvasGenerator: FC = () => {
                       bg={'#f0f0f0'}
                       w={'100%'}
                       justify={'center'}
+                      onClick={() => {
+                        document.getElementById('date_input')?.focus();
+                      }}
                     >
                       <label>Date:</label>
                       <input
+                        id="date_input"
                         value={date}
                         onChange={(event) => setDate(event.currentTarget.value)}
                         placeholder="Date"
@@ -1008,12 +983,7 @@ const LeanCanvasGenerator: FC = () => {
                   >
                     <HoverCard>
                       <HoverCard.Target>
-                        <Grid.Col
-                          span={2}
-                          p={0}
-                          // onMouseEnter={() => setHoveredBox('problem')}
-                          // onMouseLeave={() => setHoveredBox('')}
-                        >
+                        <Grid.Col span={2} p={0}>
                           <Flex
                             m={fillColor ? 4 : 0}
                             mt={0}
@@ -1358,26 +1328,20 @@ const LeanCanvasGenerator: FC = () => {
                     </Grid.Col>
                     <HoverCard>
                       <HoverCard.Target>
-                        <Grid.Col
-                          span={2}
-                          p={0}
-                          // onMouseEnter={() =>
-                          //   setHoveredBox('unique_value_proposition')
-                          // }
-                          // onMouseLeave={() => setHoveredBox('')}
-                        >
+                        <Grid.Col span={2} p={0}>
                           <Flex
                             m={fillColor ? 4 : 0}
                             mt={0}
+                            h={'100%'}
                             direction={'column'}
                             style={{
                               border: fillColor ? 'none' : '1px solid',
-                              padding: '0px',
                               ...(fillColor
                                 ? {
                                     borderRadius: '20px',
                                   }
                                 : {
+                                    borderLeft: '1px solid',
                                     borderTop: '2px solid',
                                   }),
                             }}
@@ -1488,10 +1452,6 @@ const LeanCanvasGenerator: FC = () => {
                               style={{
                                 padding: '0px',
                               }}
-                              // onMouseEnter={() =>
-                              //   setHoveredBox('unfair_advantage')
-                              // }
-                              // onMouseLeave={() => setHoveredBox('')}
                             >
                               <Flex
                                 m={fillColor ? 4 : 0}
@@ -1601,12 +1561,7 @@ const LeanCanvasGenerator: FC = () => {
                         </HoverCard>
                         <HoverCard>
                           <HoverCard.Target>
-                            <Grid.Col
-                              span={12}
-                              p={0}
-                              // onMouseEnter={() => setHoveredBox('channels')}
-                              // onMouseLeave={() => setHoveredBox('')}
-                            >
+                            <Grid.Col span={12} p={0}>
                               <Flex
                                 m={fillColor ? 4 : 0}
                                 direction={'column'}
@@ -1712,14 +1667,7 @@ const LeanCanvasGenerator: FC = () => {
                     </Grid.Col>
                     <HoverCard>
                       <HoverCard.Target>
-                        <Grid.Col
-                          span={2}
-                          p={0}
-                          // onMouseEnter={() =>
-                          //   setHoveredBox('customer_segments')
-                          // }
-                          // onMouseLeave={() => setHoveredBox('')}
-                        >
+                        <Grid.Col span={2} p={0}>
                           <Flex
                             m={fillColor ? 4 : 0}
                             mt={0}
@@ -1826,12 +1774,7 @@ const LeanCanvasGenerator: FC = () => {
                     </HoverCard>
                     <HoverCard>
                       <HoverCard.Target>
-                        <Grid.Col
-                          span={5}
-                          p={0}
-                          // onMouseEnter={() => setHoveredBox('cost_structure')}
-                          // onMouseLeave={() => setHoveredBox('')}
-                        >
+                        <Grid.Col span={5} p={0}>
                           <Flex
                             m={fillColor ? 4 : 0}
                             h={'100%'}
@@ -1940,12 +1883,7 @@ const LeanCanvasGenerator: FC = () => {
                     </HoverCard>
                     <HoverCard>
                       <HoverCard.Target>
-                        <Grid.Col
-                          span={5}
-                          p={0}
-                          // onMouseEnter={() => setHoveredBox('revenue_streams')}
-                          // onMouseLeave={() => setHoveredBox('')}
-                        >
+                        <Grid.Col span={5} p={0}>
                           <Flex
                             m={fillColor ? 4 : 0}
                             h={'100%'}
@@ -2011,7 +1949,7 @@ const LeanCanvasGenerator: FC = () => {
                                 input: {
                                   border: 'none',
                                   fontSize: fontSize + 'px',
-                                  padding: padding,
+                                  padding: padding + 'px',
                                   textAlign: textAlignment as
                                     | 'center'
                                     | 'left'
