@@ -101,7 +101,7 @@ const LeanCanvasGenerator: FC = () => {
   const [padding, setPadding] = useState(12);
   const [useBoxData, setUseBoxData] = useState(false);
   const [fillColor, setFillColor] = useState(false);
-  const [advanced, setAdvanced] = useState(false);
+  const [advanced, setAdvanced] = useState(true);
   const [orientation, setOrientation] = useState('A3');
 
   const writeData = async (
@@ -250,46 +250,31 @@ const LeanCanvasGenerator: FC = () => {
         console.log(data);
         switch (field) {
           case 'problem':
-            writeData(data.problem.replaceAll('\n', '\n\n'), setProblem);
+            writeData(data.problem, setProblem);
             break;
           case 'solution':
-            writeData(data.solution.replaceAll('\n', '\n\n'), setSolution);
+            writeData(data.solution, setSolution);
             break;
           case 'key_metrics':
-            writeData(data.key_metrics.replaceAll('\n', '\n\n'), setKeyMetrics);
+            writeData(data.key_metrics, setKeyMetrics);
             break;
           case 'unique_value_proposition':
-            writeData(
-              data.unique_value_proposition.replaceAll('\n', '\n\n'),
-              setUniqueValueProposition
-            );
+            writeData(data.unique_value_proposition, setUniqueValueProposition);
             break;
           case 'unfair_advantage':
-            writeData(
-              data.unfair_advantage.replaceAll('\n', '\n\n'),
-              setUnfairAdvantage
-            );
+            writeData(data.unfair_advantage, setUnfairAdvantage);
             break;
           case 'channels':
-            writeData(data.channels.replaceAll('\n', '\n\n'), setChannels);
+            writeData(data.channels, setChannels);
             break;
           case 'customer_segments':
-            writeData(
-              data.customer_segments.replaceAll('\n', '\n\n'),
-              setCustomerSegments
-            );
+            writeData(data.customer_segments, setCustomerSegments);
             break;
           case 'cost_structure':
-            writeData(
-              data.cost_structure.replaceAll('\n', '\n\n'),
-              setCostStructure
-            );
+            writeData(data.cost_structure, setCostStructure);
             break;
           case 'revenue_streams':
-            writeData(
-              data.revenue_streams.replaceAll('\n', '\n\n'),
-              setRevenueStreams
-            );
+            writeData(data.revenue_streams, setRevenueStreams);
             break;
           default:
             break;
@@ -543,6 +528,17 @@ const LeanCanvasGenerator: FC = () => {
     }
   };
 
+  const getPreviewHeight = () => {
+    let height = 300;
+    if (!document.getElementById('canvas')) {
+      return height;
+    }
+    let origH = document.getElementById('canvas')?.scrollHeight as number;
+    let origW = document.getElementById('canvas')?.scrollWidth as number;
+    height = (origH * 400) / origW;
+    return height;
+  };
+
   return (
     <>
       <Grid h={'100%'} m={0}>
@@ -574,7 +570,7 @@ const LeanCanvasGenerator: FC = () => {
                     title={'Lean Canvas Generator'}
                     subtitle={'Generate a Lean Canvas for your company'}
                     icon={ComputerIcon}
-                    onToggle={() => setAdvanced(!advanced)}
+                    // onToggle={() => setAdvanced(!advanced)}
                   />
                   {!advanced && (
                     <Textarea
@@ -658,14 +654,20 @@ const LeanCanvasGenerator: FC = () => {
                       />
                     </Flex>
                   )}
-                  <Checkbox
-                    label="Use Data in Boxes as Inputs"
-                    checked={useBoxData}
-                    onChange={() => setUseBoxData(!useBoxData)}
-                    mb={16}
-                    mt={12}
-                    color="violet"
-                  />
+                  <Tooltip label="The AI will take the Information you write on the canvas boxes in consideration to generate the output">
+                    <Checkbox
+                      label={
+                        <Tooltip label="The AI will take the Information you write on the canvas boxes in consideration to generate the output">
+                          <Text>Use Data in Boxes as Inputs</Text>
+                        </Tooltip>
+                      }
+                      checked={useBoxData}
+                      onChange={() => setUseBoxData(!useBoxData)}
+                      mb={16}
+                      mt={12}
+                      color="violet"
+                    />
+                  </Tooltip>
                   <Flex w={'100%'} justify={'center'} my={16}>
                     <Button
                       miw={250}
@@ -700,6 +702,7 @@ const LeanCanvasGenerator: FC = () => {
                   mx={24}
                   gap={12}
                 >
+                  <Text>Canvas Settings</Text>
                   <Select
                     label="Title Decoration"
                     placeholder="Select Title Decoration"
@@ -786,50 +789,54 @@ const LeanCanvasGenerator: FC = () => {
                           {
                             value: 'left',
                             label: (
-                              <Box
-                                style={{
-                                  padding: '0.3125rem 0.625rem',
-                                }}
+                              <Flex
+                                px={8}
+                                py={8}
                                 onMouseEnter={() => setHoveredAligMent('left')}
                                 onMouseLeave={() => setHoveredAligMent('')}
                               >
                                 <IconAlignLeft
-                                  size={24}
                                   style={{
-                                    margin: 'auto 0',
+                                    margin: '0 auto',
                                   }}
                                 />
-                              </Box>
+                              </Flex>
                             ),
                           },
                           {
                             value: 'center',
                             label: (
-                              <Box
-                                style={{
-                                  padding: '0.3125rem 0.625rem',
-                                }}
+                              <Flex
+                                px={8}
+                                py={8}
                                 onMouseEnter={() =>
                                   setHoveredAligMent('center')
                                 }
                                 onMouseLeave={() => setHoveredAligMent('')}
                               >
-                                <IconAlignCenter />
-                              </Box>
+                                <IconAlignCenter
+                                  style={{
+                                    margin: '0 auto',
+                                  }}
+                                />
+                              </Flex>
                             ),
                           },
                           {
                             value: 'right',
                             label: (
-                              <Box
-                                style={{
-                                  padding: '0.3125rem 0.625rem',
-                                }}
+                              <Flex
+                                px={8}
+                                py={8}
                                 onMouseEnter={() => setHoveredAligMent('right')}
                                 onMouseLeave={() => setHoveredAligMent('')}
                               >
-                                <IconAlignRight size={24} />
-                              </Box>
+                                <IconAlignRight
+                                  style={{
+                                    margin: '0 auto',
+                                  }}
+                                />
+                              </Flex>
                             ),
                           },
                         ]}
@@ -859,8 +866,8 @@ const LeanCanvasGenerator: FC = () => {
                   {pdfFile !== '' && (
                     <div
                       style={{
-                        width: '400px',
-                        height: '250px',
+                        width: '420px',
+                        height: `${getPreviewHeight() + 10}px`,
                         overflowY: 'hidden',
                         overflowX: 'auto',
                         boxShadow: '0 0 10px #f1e5ff',
@@ -886,7 +893,7 @@ const LeanCanvasGenerator: FC = () => {
                         }}
                         onClick={() => handleDownload(false)}
                       >
-                        Load Preview
+                        Load PDF Preview
                       </Button>
                     )}
                     <Button
