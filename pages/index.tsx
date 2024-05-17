@@ -21,6 +21,7 @@ import {
   Drawer,
   Checkbox,
   Tooltip,
+  ActionIcon,
 } from '@mantine/core';
 import React, { FC, useEffect, useState } from 'react';
 import classes from 'styles/index.module.css';
@@ -207,48 +208,46 @@ const LeanCanvasGenerator: FC = () => {
   const handleRegenerate = (field: string) => {
     setLoading(true);
     try {
-      const resp = fetch(
-        'https://lean-canvas-generator.vercel.app/api/regenerate',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+      const resp = fetch('/api/regenerate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          companyDescription: !advanced
+            ? companyDescription
+            : JSON.stringify({
+                industry,
+                problems,
+                advantage,
+                companyDescription,
+                // add optional fields if they are not empty
+                ...(communicationChannels
+                  ? { communicationChannels }
+                  : {
+                      communicationChannels:
+                        'Please assume the communication channels as per requirement and other fields as well.',
+                    }),
+              }),
+          fieldToBeRegenerated: field,
+          previousResponse: {
+            problem,
+            solution,
+            keyMetrics,
+            uniqueValueProposition,
+            unfairAdvantage,
+            channels,
+            customerSegments,
+            costStructure,
+            revenueStreams,
           },
-          body: JSON.stringify({
-            companyDescription: !advanced
-              ? companyDescription
-              : JSON.stringify({
-                  industry,
-                  problems,
-                  advantage,
-                  companyDescription,
-                  // add optional fields if they are not empty
-                  ...(communicationChannels
-                    ? { communicationChannels }
-                    : {
-                        communicationChannels:
-                          'Please assume the communication channels as per requirement and other fields as well.',
-                      }),
-                }),
-            fieldToBeRegenerated: field,
-            previousResponse: {
-              problem,
-              solution,
-              keyMetrics,
-              uniqueValueProposition,
-              unfairAdvantage,
-              channels,
-              customerSegments,
-              costStructure,
-              revenueStreams,
-            },
-            minChars,
-            maxChars,
-          }),
-        }
-      );
+          minChars,
+          maxChars,
+        }),
+      });
       resp.then(async (response) => {
         const data = await response.json();
+        console.log(data);
         switch (field) {
           case 'problem':
             writeData(data.problem.replaceAll('\n', '\n\n'), setProblem);
@@ -529,6 +528,9 @@ const LeanCanvasGenerator: FC = () => {
     return scale;
   };
   const getTitleDecoration = (color: string) => {
+    if (fillColor) {
+      color = '#ffff';
+    }
     switch (titleDecoration) {
       case 'underline':
         return `underline solid ${color} 20%`;
@@ -705,7 +707,7 @@ const LeanCanvasGenerator: FC = () => {
                     onChange={(value) => {
                       setTitleDecoration(value as string);
                     }}
-                    data={['underline', 'overline', 'line-through', 'none']}
+                    data={['underline', 'overline', 'none']}
                     mb={20}
                     color="violet"
                   />
@@ -1027,31 +1029,134 @@ const LeanCanvasGenerator: FC = () => {
                     style={{}}
                     // ref={canvasRef}
                   >
-                    <HoverCard>
-                      <HoverCard.Target>
-                        <Grid.Col span={2} p={0}>
-                          <Flex
-                            m={fillColor ? 4 : 0}
-                            mt={0}
-                            h={'100%'}
-                            direction={'column'}
-                            bg={
-                              fillColor
+                    <Grid.Col
+                      span={2}
+                      p={0}
+                      onMouseEnter={() => setHoveredBox('problem')}
+                      onMouseLeave={() => setHoveredBox('')}
+                    >
+                      <Flex
+                        m={fillColor ? 4 : 0}
+                        mt={0}
+                        h={'100%'}
+                        direction={'column'}
+                        bg={fillColor ? '#dd052e' : 'transparent'}
+                        style={{
+                          padding: '0px',
+                          border: fillColor ? 'none' : '1px solid',
+                          ...(fillColor
+                            ? {
+                                borderRadius: '20px',
+                              }
+                            : {
+                                borderLeft: '2px solid',
+                                borderTop: '2px solid',
+                              }),
+                        }}
+                      >
+                        <Flex
+                          justify={'space-between'}
+                          gap={4}
+                          align={'start'}
+                          w={'calc(100%-8px)'}
+                          // mx={8}
+                          p={padding}
+                          mt={4}
+                          mx={8}
+                        >
+                          <Text
+                            weight={500}
+                            my={'auto'}
+                            color={fillColor ? 'white' : 'black'}
+                            style={{
+                              textDecoration: getTitleDecoration('#dd052e'),
+                              textUnderlinePosition: 'under',
+                            }}
+                          >
+                            Problem
+                          </Text>
+                          <MdReportProblem
+                            size={24}
+                            color={fillColor ? 'white' : 'black'}
+                          />
+                        </Flex>
+                        <Textarea
+                          value={problem}
+                          onChange={(event) =>
+                            setProblem(event.currentTarget.value)
+                          }
+                          id="problem"
+                          minRows={largerRows}
+                          autosize
+                          styles={{
+                            input: {
+                              border: 'none',
+                              fontSize: fontSize + 'px',
+                              backgroundColor: fillColor
                                 ? '#dd052e'
-                                : hoveredBox == 'problem'
-                                ? '#f7effe'
-                                : 'transparent'
-                            }
+                                : 'transparent',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                                color: 'white',
+                                // fontWeight:'bold'
+                              }),
+                            },
+                          }}
+                        />
+                        <Flex w={'100%'}>
+                          {problem.length > 0 && hoveredBox === 'problem' && (
+                            <Tooltip label="Regenerate This Field">
+                              <ActionIcon
+                                mx={4}
+                                onClick={() => {
+                                  handleRegenerate('problem');
+                                }}
+                              >
+                                <IconRefresh color="#0fb802" />
+                              </ActionIcon>
+                            </Tooltip>
+                          )}
+                        </Flex>
+                      </Flex>
+                    </Grid.Col>
+                    <Grid.Col
+                      span={2}
+                      style={{
+                        ...(!fillColor && {
+                          border: '1px solid',
+                          borderTop: '2px solid',
+                        }),
+                      }}
+                    >
+                      <Grid>
+                        <Grid.Col
+                          span={12}
+                          style={{
+                            padding: '0px',
+                          }}
+                          onMouseEnter={() => setHoveredBox('solution')}
+                          onMouseLeave={() => setHoveredBox('')}
+                        >
+                          <Flex
+                            m={fillColor ? 4 : 0}
+                            mt={0}
+                            mb={fillColor ? 8 : 0}
+                            direction={'column'}
+                            bg={fillColor ? '#ff9a02' : 'transparent'}
                             style={{
                               padding: '0px',
-                              border: fillColor ? 'none' : '1px solid',
                               ...(fillColor
                                 ? {
                                     borderRadius: '20px',
+                                    border: 'none',
                                   }
                                 : {
-                                    borderLeft: '2px solid',
-                                    borderTop: '2px solid',
+                                    borderBottom: '1px solid',
                                   }),
                             }}
                           >
@@ -1071,329 +1176,83 @@ const LeanCanvasGenerator: FC = () => {
                                 my={'auto'}
                                 color={fillColor ? 'white' : 'black'}
                                 style={{
-                                  textDecoration: getTitleDecoration('#dd052e'),
+                                  textDecoration: getTitleDecoration('#ff9a02'),
                                   textUnderlinePosition: 'under',
                                 }}
                               >
-                                Problem
+                                Solution
                               </Text>
-                              <MdReportProblem
+                              <TiLightbulb
                                 size={24}
                                 color={fillColor ? 'white' : 'black'}
                               />
                             </Flex>
+
                             <Textarea
-                              value={problem}
+                              value={solution}
                               onChange={(event) =>
-                                setProblem(event.currentTarget.value)
+                                setSolution(event.currentTarget.value)
                               }
-                              id="problem"
-                              minRows={largerRows}
+                              id="solution"
+                              minRows={smallerRows}
                               autosize
                               styles={{
                                 input: {
                                   border: 'none',
                                   fontSize: fontSize + 'px',
                                   backgroundColor: fillColor
-                                    ? '#dd052e'
-                                    : 'transparent',
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                    color: 'white',
-                                    // fontWeight:'bold'
-                                  }),
-                                },
-                              }}
-                            />
-                          </Flex>
-                        </Grid.Col>
-                      </HoverCard.Target>
-                      {problem.length > 0 && (
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('problem');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
-                            style={{
-                              width: '100%',
-                              border: '1px solid',
-                            }}
-                            loading={loading}
-                          >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
-                      )}
-                    </HoverCard>
-                    <Grid.Col
-                      span={2}
-                      style={{
-                        ...(!fillColor && {
-                          border: '1px solid',
-                          borderTop: '2px solid',
-                        }),
-                      }}
-                    >
-                      <Grid>
-                        <HoverCard>
-                          <HoverCard.Target>
-                            <Grid.Col
-                              span={12}
-                              style={{
-                                padding: '0px',
-                              }}
-
-                              // onMouseEnter={() => setHoveredBox('solution')}
-                              // onMouseLeave={() => setHoveredBox('')}
-                            >
-                              <Flex
-                                m={fillColor ? 4 : 0}
-                                mt={0}
-                                mb={fillColor ? 8 : 0}
-                                direction={'column'}
-                                bg={
-                                  fillColor
                                     ? '#ff9a02'
-                                    : hoveredBox == 'solution'
-                                    ? '#f7effe'
-                                    : 'transparent'
-                                }
-                                style={{
-                                  padding: '0px',
-                                  ...(fillColor
-                                    ? {
-                                        borderRadius: '20px',
-                                        border: 'none',
-                                      }
-                                    : {
-                                        borderBottom: '1px solid',
-                                      }),
-                                }}
-                              >
-                                <Flex
-                                  justify={'space-between'}
-                                  gap={4}
-                                  align={'start'}
-                                  w={'calc(100%-8px)'}
-                                  // mx={8}
-                                  p={padding}
-                                  mt={4}
-                                  mx={8}
-                                  // h={'60px'}
-                                >
-                                  <Text
-                                    weight={500}
-                                    my={'auto'}
-                                    color={fillColor ? 'white' : 'black'}
-                                    style={{
-                                      textDecoration:
-                                        getTitleDecoration('#ff9a02'),
-                                      textUnderlinePosition: 'under',
-                                    }}
-                                  >
-                                    Solution
-                                  </Text>
-                                  <TiLightbulb
-                                    size={24}
-                                    color={fillColor ? 'white' : 'black'}
-                                  />
-                                </Flex>
-
-                                <Textarea
-                                  value={solution}
-                                  onChange={(event) =>
-                                    setSolution(event.currentTarget.value)
-                                  }
-                                  id="solution"
-                                  minRows={smallerRows}
-                                  autosize
-                                  styles={{
-                                    input: {
-                                      border: 'none',
-                                      fontSize: fontSize + 'px',
-                                      backgroundColor: fillColor
-                                        ? '#ff9a02'
-                                        : 'transparent',
-                                      textAlign: textAlignment as
-                                        | 'center'
-                                        | 'left'
-                                        | 'right',
-                                      ...(fillColor && {
-                                        borderBottomRightRadius: '20px',
-                                        borderBottomLeftRadius: '20px',
-                                        color: 'white',
-                                      }),
-                                    },
-                                  }}
-                                />
-                              </Flex>
-                            </Grid.Col>
-                          </HoverCard.Target>
-                          {solution.length > 0 && (
-                            <HoverCard.Dropdown>
-                              <Button
-                                onClick={() => {
-                                  handleRegenerate('solution');
-                                }}
-                                color="green"
-                                variant="light"
-                                leftIcon={<IconRefresh />}
-                                style={{
-                                  width: '100%',
-                                  border: '1px solid',
-                                }}
-                                loading={loading}
-                              >
-                                Regenerate This Field
-                              </Button>
-                            </HoverCard.Dropdown>
-                          )}
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCard.Target>
-                            <Grid.Col
-                              span={12}
-                              p={0}
-
-                              // onMouseEnter={() => setHoveredBox('key_metrics')}
-                              // onMouseLeave={() => setHoveredBox('')}
-                            >
-                              <Flex
-                                m={fillColor ? 4 : 0}
-                                direction={'column'}
-                                bg={
-                                  fillColor
-                                    ? '#fb6b25'
-                                    : hoveredBox == 'key_metrics'
-                                    ? '#f7effe'
-                                    : 'transparent'
-                                }
-                                style={{
-                                  padding: '0px',
-                                  ...(fillColor
-                                    ? {
-                                        borderRadius: '20px',
-                                        border: 'none',
-                                      }
-                                    : {
-                                        borderTop: '1px solid',
-                                      }),
-                                }}
-                              >
-                                <Flex
-                                  justify={'space-between'}
-                                  gap={4}
-                                  align={'start'}
-                                  w={'calc(100%-8px)'}
-                                  // mx={8}
-                                  p={padding}
-                                  mt={4}
-                                  mx={8}
-                                  // h={'60px'}
-                                >
-                                  <Text
-                                    weight={500}
-                                    my={'auto'}
-                                    color={fillColor ? 'white' : 'black'}
-                                    style={{
-                                      textDecoration:
-                                        getTitleDecoration('#fb6b25'),
-                                      textUnderlinePosition: 'under',
-                                    }}
-                                  >
-                                    Key Metrics
-                                  </Text>
-                                  <HiOutlinePresentationChartLine
-                                    size={24}
-                                    color={fillColor ? 'white' : 'black'}
-                                  />
-                                </Flex>
-
-                                <Textarea
-                                  value={keyMetrics}
-                                  onChange={(event) =>
-                                    setKeyMetrics(event.currentTarget.value)
-                                  }
-                                  minRows={smallerRows}
-                                  autosize
-                                  styles={{
-                                    input: {
-                                      border: 'none',
-                                      fontSize: fontSize + 'px',
-                                      backgroundColor: fillColor
-                                        ? '#fb6b25'
-                                        : 'transparent',
-                                      textAlign: textAlignment as
-                                        | 'center'
-                                        | 'left'
-                                        | 'right',
-                                      ...(fillColor && {
-                                        borderBottomRightRadius: '20px',
-                                        borderBottomLeftRadius: '20px',
-                                        color: 'white',
-                                      }),
-                                    },
-                                  }}
-                                />
-                              </Flex>
-                            </Grid.Col>
-                          </HoverCard.Target>
-                          {keyMetrics.length > 0 && (
-                            <HoverCard.Dropdown>
-                              <Button
-                                onClick={() => {
-                                  handleRegenerate('key_metrics');
-                                }}
-                                color="green"
-                                variant="light"
-                                leftIcon={<IconRefresh />}
-                                style={{
-                                  width: '100%',
-                                  border: '1px solid',
-                                }}
-                                loading={loading}
-                              >
-                                Regenerate This Field
-                              </Button>
-                            </HoverCard.Dropdown>
-                          )}
-                        </HoverCard>
-                      </Grid>
-                    </Grid.Col>
-                    <HoverCard>
-                      <HoverCard.Target>
-                        <Grid.Col span={2} p={0}>
+                                    : 'transparent',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    color: 'white',
+                                  }),
+                                },
+                              }}
+                            />
+                            <Flex w={'100%'}>
+                              {solution.length > 0 &&
+                                hoveredBox === 'solution' && (
+                                  <Tooltip label="Regenerate This Field">
+                                    <ActionIcon
+                                      mx={4}
+                                      onClick={() => {
+                                        handleRegenerate('solution');
+                                      }}
+                                    >
+                                      <IconRefresh color="#0fb802" />
+                                    </ActionIcon>
+                                  </Tooltip>
+                                )}
+                            </Flex>
+                          </Flex>
+                        </Grid.Col>
+                        <Grid.Col
+                          span={12}
+                          p={0}
+                          onMouseEnter={() => setHoveredBox('key_metrics')}
+                          onMouseLeave={() => setHoveredBox('')}
+                        >
                           <Flex
                             m={fillColor ? 4 : 0}
-                            mt={0}
-                            h={'100%'}
                             direction={'column'}
+                            bg={fillColor ? '#fb6b25' : 'transparent'}
                             style={{
-                              border: fillColor ? 'none' : '1px solid',
+                              padding: '0px',
                               ...(fillColor
                                 ? {
                                     borderRadius: '20px',
+                                    border: 'none',
                                   }
                                 : {
-                                    borderLeft: '1px solid',
-                                    borderTop: '2px solid',
+                                    borderTop: '1px solid',
                                   }),
                             }}
-                            bg={
-                              fillColor
-                                ? '#00aa44'
-                                : hoveredBox == 'unique_value_proposition'
-                                ? '#f7effe'
-                                : 'transparent'
-                            }
                           >
                             <Flex
                               justify={'space-between'}
@@ -1411,34 +1270,31 @@ const LeanCanvasGenerator: FC = () => {
                                 my={'auto'}
                                 color={fillColor ? 'white' : 'black'}
                                 style={{
-                                  textDecoration: getTitleDecoration('#00aa44'),
+                                  textDecoration: getTitleDecoration('#fb6b25'),
                                   textUnderlinePosition: 'under',
                                 }}
                               >
-                                Unique Value Proposition
+                                Key Metrics
                               </Text>
-                              <AiOutlineGift
-                                size={31}
+                              <HiOutlinePresentationChartLine
+                                size={24}
                                 color={fillColor ? 'white' : 'black'}
                               />
                             </Flex>
 
                             <Textarea
-                              value={uniqueValueProposition}
+                              value={keyMetrics}
                               onChange={(event) =>
-                                setUniqueValueProposition(
-                                  event.currentTarget.value
-                                )
+                                setKeyMetrics(event.currentTarget.value)
                               }
-                              id="uniqueValueProposition"
-                              minRows={largerRows}
+                              minRows={smallerRows}
                               autosize
                               styles={{
                                 input: {
                                   border: 'none',
                                   fontSize: fontSize + 'px',
                                   backgroundColor: fillColor
-                                    ? '#00aa44'
+                                    ? '#fb6b25'
                                     : 'transparent',
                                   textAlign: textAlignment as
                                     | 'center'
@@ -1452,29 +1308,125 @@ const LeanCanvasGenerator: FC = () => {
                                 },
                               }}
                             />
+                            <Flex w={'100%'}>
+                              {keyMetrics.length > 0 &&
+                                hoveredBox === 'key_metrics' && (
+                                  <Tooltip label="Regenerate This Field">
+                                    <ActionIcon
+                                      mx={4}
+                                      onClick={() => {
+                                        handleRegenerate('key_metrics');
+                                      }}
+                                    >
+                                      <IconRefresh color="#0fb802" />
+                                    </ActionIcon>
+                                  </Tooltip>
+                                )}
+                            </Flex>
                           </Flex>
                         </Grid.Col>
-                      </HoverCard.Target>
-                      {uniqueValueProposition.length > 0 && (
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('unique_value_proposition');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
+                      </Grid>
+                    </Grid.Col>
+                    <Grid.Col
+                      span={2}
+                      p={0}
+                      onMouseEnter={() =>
+                        setHoveredBox('unique_value_proposition')
+                      }
+                      onMouseLeave={() => setHoveredBox('')}
+                    >
+                      <Flex
+                        m={fillColor ? 4 : 0}
+                        mt={0}
+                        h={'100%'}
+                        direction={'column'}
+                        style={{
+                          border: fillColor ? 'none' : '1px solid',
+                          ...(fillColor
+                            ? {
+                                borderRadius: '20px',
+                              }
+                            : {
+                                borderLeft: '1px solid',
+                                borderTop: '2px solid',
+                              }),
+                        }}
+                        bg={fillColor ? '#00aa44' : 'transparent'}
+                      >
+                        <Flex
+                          justify={'space-between'}
+                          gap={4}
+                          align={'start'}
+                          w={'calc(100%-8px)'}
+                          // mx={8}
+                          p={padding}
+                          mt={4}
+                          mx={8}
+                          // h={'60px'}
+                        >
+                          <Text
+                            weight={500}
+                            my={'auto'}
+                            color={fillColor ? 'white' : 'black'}
                             style={{
-                              width: '100%',
-                              border: '1px solid',
+                              textDecoration: getTitleDecoration('#00aa44'),
+                              textUnderlinePosition: 'under',
                             }}
-                            loading={loading}
                           >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
-                      )}
-                    </HoverCard>
+                            Unique Value Proposition
+                          </Text>
+                          <AiOutlineGift
+                            size={31}
+                            color={fillColor ? 'white' : 'black'}
+                          />
+                        </Flex>
+
+                        <Textarea
+                          value={uniqueValueProposition}
+                          onChange={(event) =>
+                            setUniqueValueProposition(event.currentTarget.value)
+                          }
+                          id="uniqueValueProposition"
+                          minRows={largerRows}
+                          autosize
+                          styles={{
+                            input: {
+                              border: 'none',
+                              fontSize: fontSize + 'px',
+                              backgroundColor: fillColor
+                                ? '#00aa44'
+                                : 'transparent',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                                color: 'white',
+                              }),
+                            },
+                          }}
+                        />
+                        <Flex w={'100%'}>
+                          {uniqueValueProposition.length > 0 &&
+                            hoveredBox === 'unique_value_proposition' && (
+                              <Tooltip label="Regenerate This Field">
+                                <ActionIcon
+                                  mx={4}
+                                  onClick={() => {
+                                    handleRegenerate(
+                                      'unique_value_proposition'
+                                    );
+                                  }}
+                                >
+                                  <IconRefresh color="#0fb802" />
+                                </ActionIcon>
+                              </Tooltip>
+                            )}
+                        </Flex>
+                      </Flex>
+                    </Grid.Col>
                     <Grid.Col
                       span={2}
                       style={{
@@ -1485,543 +1437,491 @@ const LeanCanvasGenerator: FC = () => {
                       }}
                     >
                       <Grid>
-                        <HoverCard>
-                          <HoverCard.Target>
-                            <Grid.Col
-                              span={12}
-                              style={{
-                                padding: '0px',
-                              }}
-                            >
-                              <Flex
-                                m={fillColor ? 4 : 0}
-                                mt={0}
-                                mb={fillColor ? 8 : 0}
-                                direction={'column'}
-                                style={{
-                                  padding: '0px',
-                                  ...(fillColor
-                                    ? {
-                                        borderRadius: '20px',
-                                        border: 'none',
-                                      }
-                                    : {
-                                        borderBottom: '1px solid',
-                                      }),
-                                }}
-                                bg={
-                                  fillColor
-                                    ? '#7fcf2e'
-                                    : hoveredBox == 'unfair_advantage'
-                                    ? '#f7effe'
-                                    : 'transparent'
-                                }
-                              >
-                                <Flex
-                                  justify={'space-between'}
-                                  gap={4}
-                                  align={'start'}
-                                  w={'calc(100%-8px)'}
-                                  // mx={8}
-                                  p={padding}
-                                  mt={4}
-                                  mx={8}
-                                  // h={'60px'}
-                                >
-                                  <Text
-                                    weight={500}
-                                    my={'auto'}
-                                    color={fillColor ? 'white' : 'black'}
-                                    style={{
-                                      textDecoration:
-                                        getTitleDecoration('#7fcf2e'),
-                                      textUnderlinePosition: 'under',
-                                    }}
-                                  >
-                                    Unfair Advantage
-                                  </Text>
-                                  <GrAchievement
-                                    size={24}
-                                    color={fillColor ? 'white' : 'black'}
-                                  />
-                                </Flex>
-
-                                <Textarea
-                                  value={unfairAdvantage}
-                                  onChange={(event) =>
-                                    setUnfairAdvantage(
-                                      event.currentTarget.value
-                                    )
-                                  }
-                                  id="unfairAdvantage"
-                                  minRows={smallerRows}
-                                  autosize
-                                  styles={{
-                                    input: {
-                                      border: 'none',
-                                      fontSize: fontSize + 'px',
-                                      backgroundColor: fillColor
-                                        ? '#7fcf2e'
-                                        : 'transparent',
-                                      textAlign: textAlignment as
-                                        | 'center'
-                                        | 'left'
-                                        | 'right',
-                                      ...(fillColor && {
-                                        borderBottomRightRadius: '20px',
-                                        borderBottomLeftRadius: '20px',
-                                        color: 'white',
-                                      }),
-                                    },
-                                  }}
-                                />
-                              </Flex>
-                            </Grid.Col>
-                          </HoverCard.Target>
-                          {unfairAdvantage.length > 0 && (
-                            <HoverCard.Dropdown>
-                              <Button
-                                onClick={() => {
-                                  handleRegenerate('unfair_advantage');
-                                }}
-                                color="green"
-                                variant="light"
-                                leftIcon={<IconRefresh />}
-                                style={{
-                                  width: '100%',
-                                  border: '1px solid',
-                                }}
-                                loading={loading}
-                              >
-                                Regenerate This Field
-                              </Button>
-                            </HoverCard.Dropdown>
-                          )}
-                        </HoverCard>
-                        <HoverCard>
-                          <HoverCard.Target>
-                            <Grid.Col span={12} p={0}>
-                              <Flex
-                                m={fillColor ? 4 : 0}
-                                direction={'column'}
-                                style={{
-                                  ...(fillColor
-                                    ? {
-                                        borderRadius: '20px',
-                                        border: 'none',
-                                      }
-                                    : {
-                                        borderTop: '1px solid',
-                                      }),
-                                  padding: '0px',
-                                }}
-                                bg={
-                                  fillColor
-                                    ? '#00b9a9'
-                                    : hoveredBox == 'channels'
-                                    ? '#f7effe'
-                                    : 'transparent'
-                                }
-                              >
-                                <Flex
-                                  justify={'space-between'}
-                                  gap={4}
-                                  align={'start'}
-                                  w={'calc(100%-8px)'}
-                                  // mx={8}
-                                  p={padding}
-                                  mt={4}
-                                  mx={8}
-                                  // h={'60px'}
-                                >
-                                  <Text
-                                    weight={500}
-                                    my={'auto'}
-                                    color={fillColor ? 'white' : 'black'}
-                                    style={{
-                                      textDecoration:
-                                        getTitleDecoration('#00b9a9'),
-                                      textUnderlinePosition: 'under',
-                                    }}
-                                  >
-                                    Channels
-                                  </Text>
-                                  <BiNetworkChart
-                                    size={24}
-                                    color={fillColor ? 'white' : 'black'}
-                                  />
-                                </Flex>
-                                <Textarea
-                                  value={channels}
-                                  onChange={(event) =>
-                                    setChannels(event.currentTarget.value)
-                                  }
-                                  id="channels"
-                                  minRows={smallerRows}
-                                  autosize
-                                  styles={{
-                                    input: {
-                                      border: 'none',
-                                      fontSize: fontSize + 'px',
-                                      backgroundColor: fillColor
-                                        ? '#00b9a9'
-                                        : 'transparent',
-                                      textAlign: textAlignment as
-                                        | 'center'
-                                        | 'left'
-                                        | 'right',
-                                      ...(fillColor && {
-                                        borderBottomRightRadius: '20px',
-                                        borderBottomLeftRadius: '20px',
-                                        color: 'white',
-                                      }),
-                                    },
-                                  }}
-                                />
-                              </Flex>
-                            </Grid.Col>
-                          </HoverCard.Target>
-                          {channels.length > 0 && (
-                            <HoverCard.Dropdown>
-                              <Button
-                                onClick={() => {
-                                  handleRegenerate('channels');
-                                }}
-                                color="green"
-                                variant="light"
-                                leftIcon={<IconRefresh />}
-                                style={{
-                                  width: '100%',
-                                  border: '1px solid',
-                                }}
-                                loading={loading}
-                              >
-                                Regenerate This Field
-                              </Button>
-                            </HoverCard.Dropdown>
-                          )}
-                        </HoverCard>
-                      </Grid>
-                    </Grid.Col>
-                    <HoverCard>
-                      <HoverCard.Target>
-                        <Grid.Col span={2} p={0}>
+                        <Grid.Col
+                          span={12}
+                          style={{
+                            padding: '0px',
+                          }}
+                          onMouseEnter={() => setHoveredBox('unfair_advantage')}
+                          onMouseLeave={() => setHoveredBox('')}
+                        >
                           <Flex
                             m={fillColor ? 4 : 0}
                             mt={0}
-                            h={'100%'}
+                            mb={fillColor ? 8 : 0}
                             direction={'column'}
                             style={{
                               padding: '0px',
-                              border: fillColor ? 'none' : '1px solid',
                               ...(fillColor
                                 ? {
                                     borderRadius: '20px',
+                                    border: 'none',
                                   }
                                 : {
-                                    borderRight: '2px solid',
-                                    borderTop: '2px solid',
+                                    borderBottom: '1px solid',
                                   }),
                             }}
-                            bg={
-                              fillColor
+                            bg={fillColor ? '#7fcf2e' : 'transparent'}
+                          >
+                            <Flex
+                              justify={'space-between'}
+                              gap={4}
+                              align={'start'}
+                              w={'calc(100%-8px)'}
+                              // mx={8}
+                              p={padding}
+                              mt={4}
+                              mx={8}
+                              // h={'60px'}
+                            >
+                              <Text
+                                weight={500}
+                                my={'auto'}
+                                color={fillColor ? 'white' : 'black'}
+                                style={{
+                                  textDecoration: getTitleDecoration('#7fcf2e'),
+                                  textUnderlinePosition: 'under',
+                                }}
+                              >
+                                Unfair Advantage
+                              </Text>
+                              <GrAchievement
+                                size={24}
+                                color={fillColor ? 'white' : 'black'}
+                              />
+                            </Flex>
+
+                            <Textarea
+                              value={unfairAdvantage}
+                              onChange={(event) =>
+                                setUnfairAdvantage(event.currentTarget.value)
+                              }
+                              id="unfairAdvantage"
+                              minRows={smallerRows}
+                              autosize
+                              styles={{
+                                input: {
+                                  border: 'none',
+                                  fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#7fcf2e'
+                                    : 'transparent',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    color: 'white',
+                                  }),
+                                },
+                              }}
+                            />
+                            <Flex w={'100%'}>
+                              {unfairAdvantage.length > 0 &&
+                                hoveredBox === 'unfair_advantage' && (
+                                  <Tooltip label="Regenerate This Field">
+                                    <ActionIcon
+                                      mx={4}
+                                      onClick={() => {
+                                        handleRegenerate('unfair_advantage');
+                                      }}
+                                    >
+                                      <IconRefresh color="#0fb802" />
+                                    </ActionIcon>
+                                  </Tooltip>
+                                )}
+                            </Flex>
+                          </Flex>
+                        </Grid.Col>
+                        <Grid.Col
+                          span={12}
+                          p={0}
+                          onMouseEnter={() => setHoveredBox('channel')}
+                          onMouseLeave={() => setHoveredBox('')}
+                        >
+                          <Flex
+                            m={fillColor ? 4 : 0}
+                            direction={'column'}
+                            style={{
+                              ...(fillColor
+                                ? {
+                                    borderRadius: '20px',
+                                    border: 'none',
+                                  }
+                                : {
+                                    borderTop: '1px solid',
+                                  }),
+                              padding: '0px',
+                            }}
+                            bg={fillColor ? '#00b9a9' : 'transparent'}
+                          >
+                            <Flex
+                              justify={'space-between'}
+                              gap={4}
+                              align={'start'}
+                              w={'calc(100%-8px)'}
+                              // mx={8}
+                              p={padding}
+                              mt={4}
+                              mx={8}
+                              // h={'60px'}
+                            >
+                              <Text
+                                weight={500}
+                                my={'auto'}
+                                color={fillColor ? 'white' : 'black'}
+                                style={{
+                                  textDecoration: getTitleDecoration('#00b9a9'),
+                                  textUnderlinePosition: 'under',
+                                }}
+                              >
+                                Channels
+                              </Text>
+                              <BiNetworkChart
+                                size={24}
+                                color={fillColor ? 'white' : 'black'}
+                              />
+                            </Flex>
+                            <Textarea
+                              value={channels}
+                              onChange={(event) =>
+                                setChannels(event.currentTarget.value)
+                              }
+                              id="channels"
+                              minRows={smallerRows}
+                              autosize
+                              styles={{
+                                input: {
+                                  border: 'none',
+                                  fontSize: fontSize + 'px',
+                                  backgroundColor: fillColor
+                                    ? '#00b9a9'
+                                    : 'transparent',
+                                  textAlign: textAlignment as
+                                    | 'center'
+                                    | 'left'
+                                    | 'right',
+                                  ...(fillColor && {
+                                    borderBottomRightRadius: '20px',
+                                    borderBottomLeftRadius: '20px',
+                                    color: 'white',
+                                  }),
+                                },
+                              }}
+                            />
+                            <Flex w={'100%'}>
+                              {channels.length > 0 &&
+                                hoveredBox === 'channel' && (
+                                  <Tooltip label="Regenerate This Field">
+                                    <ActionIcon
+                                      mx={4}
+                                      onClick={() => {
+                                        handleRegenerate('channels');
+                                      }}
+                                    >
+                                      <IconRefresh color="#0fb802" />
+                                    </ActionIcon>
+                                  </Tooltip>
+                                )}
+                            </Flex>
+                          </Flex>
+                        </Grid.Col>
+                      </Grid>
+                    </Grid.Col>
+                    <Grid.Col
+                      span={2}
+                      p={0}
+                      onMouseEnter={() => setHoveredBox('customer_segments')}
+                      onMouseLeave={() => setHoveredBox('')}
+                    >
+                      <Flex
+                        m={fillColor ? 4 : 0}
+                        mt={0}
+                        h={'100%'}
+                        direction={'column'}
+                        style={{
+                          padding: '0px',
+                          border: fillColor ? 'none' : '1px solid',
+                          ...(fillColor
+                            ? {
+                                borderRadius: '20px',
+                              }
+                            : {
+                                borderRight: '2px solid',
+                                borderTop: '2px solid',
+                              }),
+                        }}
+                        bg={fillColor ? '#029fc8' : 'transparent'}
+                      >
+                        <Flex
+                          justify={'space-between'}
+                          gap={4}
+                          align={'start'}
+                          w={'calc(100%-8px)'}
+                          // mx={8}
+                          p={padding}
+                          mt={4}
+                          mx={8}
+                          // h={'60px'}
+                        >
+                          <Text
+                            weight={500}
+                            my={'auto'}
+                            color={fillColor ? 'white' : 'black'}
+                            style={{
+                              textDecoration: getTitleDecoration('#029fc8'),
+                              textUnderlinePosition: 'under',
+                            }}
+                          >
+                            Customer Segments
+                          </Text>
+                          <GoPeople
+                            size={24}
+                            color={fillColor ? 'white' : 'black'}
+                          />
+                        </Flex>
+                        <Textarea
+                          value={customerSegments}
+                          onChange={(event) =>
+                            setCustomerSegments(event.currentTarget.value)
+                          }
+                          id="customerSegments"
+                          minRows={largerRows}
+                          autosize
+                          styles={{
+                            input: {
+                              border: 'none',
+                              fontSize: fontSize + 'px',
+                              backgroundColor: fillColor
                                 ? '#029fc8'
-                                : hoveredBox == 'customer_segments'
-                                ? '#f7effe'
-                                : 'transparent'
-                            }
-                          >
-                            <Flex
-                              justify={'space-between'}
-                              gap={4}
-                              align={'start'}
-                              w={'calc(100%-8px)'}
-                              // mx={8}
-                              p={padding}
-                              mt={4}
-                              mx={8}
-                              // h={'60px'}
-                            >
-                              <Text
-                                weight={500}
-                                my={'auto'}
-                                color={fillColor ? 'white' : 'black'}
-                                style={{
-                                  textDecoration: getTitleDecoration('#029fc8'),
-                                  textUnderlinePosition: 'under',
-                                }}
-                              >
-                                Customer Segments
-                              </Text>
-                              <GoPeople
-                                size={24}
-                                color={fillColor ? 'white' : 'black'}
-                              />
-                            </Flex>
-                            <Textarea
-                              value={customerSegments}
-                              onChange={(event) =>
-                                setCustomerSegments(event.currentTarget.value)
+                                : 'transparent',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                                color: 'white',
+                              }),
+                            },
+                          }}
+                        />
+                        <Flex w={'100%'}>
+                          {customerSegments.length > 0 &&
+                            hoveredBox === 'customer_segments' && (
+                              <Tooltip label="Regenerate This Field">
+                                <ActionIcon
+                                  mx={4}
+                                  onClick={() => {
+                                    handleRegenerate('customer_segments');
+                                  }}
+                                >
+                                  <IconRefresh color="#0fb802" />
+                                </ActionIcon>
+                              </Tooltip>
+                            )}
+                        </Flex>
+                      </Flex>
+                    </Grid.Col>
+                    <Grid.Col
+                      span={5}
+                      p={0}
+                      onMouseEnter={() => setHoveredBox('cost_structure')}
+                      onMouseLeave={() => setHoveredBox('')}
+                    >
+                      <Flex
+                        m={fillColor ? 4 : 0}
+                        h={'100%'}
+                        direction={'column'}
+                        style={{
+                          border: fillColor ? 'none' : '1px solid',
+                          padding: '0px',
+                          ...(fillColor
+                            ? {
+                                borderRadius: '20px',
                               }
-                              id="customerSegments"
-                              minRows={largerRows}
-                              autosize
-                              styles={{
-                                input: {
-                                  border: 'none',
-                                  fontSize: fontSize + 'px',
-                                  backgroundColor: fillColor
-                                    ? '#029fc8'
-                                    : 'transparent',
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                    color: 'white',
-                                  }),
-                                },
-                              }}
-                            />
-                          </Flex>
-                        </Grid.Col>
-                      </HoverCard.Target>
-                      {customerSegments.length > 0 && (
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('customer_segments');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
+                            : {
+                                borderLeft: '2px solid',
+                                borderBottom: '2px solid',
+                              }),
+                        }}
+                        mih={150}
+                        bg={fillColor ? '#5d51cf' : 'transparent'}
+                      >
+                        <Flex
+                          justify={'space-between'}
+                          gap={4}
+                          align={'start'}
+                          w={'calc(100%-8px)'}
+                          // mx={8}
+                          p={padding}
+                          mt={4}
+                          mx={8}
+                          // h={'60px'}
+                        >
+                          <Text
+                            weight={500}
+                            my={'auto'}
+                            color={fillColor ? 'white' : 'black'}
                             style={{
-                              width: '100%',
-                              border: '1px solid',
+                              textDecoration: getTitleDecoration('#5d51cf'),
+                              textUnderlinePosition: 'under',
                             }}
-                            loading={loading}
                           >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
-                      )}
-                    </HoverCard>
-                    <HoverCard>
-                      <HoverCard.Target>
-                        <Grid.Col span={5} p={0}>
-                          <Flex
-                            m={fillColor ? 4 : 0}
-                            h={'100%'}
-                            direction={'column'}
-                            style={{
-                              border: fillColor ? 'none' : '1px solid',
-                              padding: '0px',
-                              ...(fillColor
-                                ? {
-                                    borderRadius: '20px',
-                                  }
-                                : {
-                                    borderLeft: '2px solid',
-                                    borderBottom: '2px solid',
-                                  }),
-                            }}
-                            mih={150}
-                            bg={
-                              fillColor
+                            Cost Structure
+                          </Text>
+                          <LiaFileInvoiceDollarSolid
+                            size={24}
+                            color={fillColor ? 'white' : 'black'}
+                          />
+                        </Flex>
+                        <Textarea
+                          minRows={4}
+                          value={costStructure}
+                          onChange={(event) =>
+                            setCostStructure(event.currentTarget.value)
+                          }
+                          autosize
+                          styles={{
+                            input: {
+                              border: 'none',
+                              fontSize: fontSize + 'px',
+                              padding: padding,
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                              backgroundColor: fillColor
                                 ? '#5d51cf'
-                                : hoveredBox == 'cost_structure'
-                                ? '#f7effe'
-                                : 'transparent'
-                            }
-                          >
-                            <Flex
-                              justify={'space-between'}
-                              gap={4}
-                              align={'start'}
-                              w={'calc(100%-8px)'}
-                              // mx={8}
-                              p={padding}
-                              mt={4}
-                              mx={8}
-                              // h={'60px'}
-                            >
-                              <Text
-                                weight={500}
-                                my={'auto'}
-                                color={fillColor ? 'white' : 'black'}
-                                style={{
-                                  textDecoration: getTitleDecoration('#5d51cf'),
-                                  textUnderlinePosition: 'under',
-                                }}
-                              >
-                                Cost Structure
-                              </Text>
-                              <LiaFileInvoiceDollarSolid
-                                size={24}
-                                color={fillColor ? 'white' : 'black'}
-                              />
-                            </Flex>
-                            <Textarea
-                              minRows={4}
-                              value={costStructure}
-                              onChange={(event) =>
-                                setCostStructure(event.currentTarget.value)
+                                : 'transparent',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                                backgroundColor: '#5d51cf',
+                                color: 'white',
+                                //color:'white'
+                              }),
+                            },
+                          }}
+                        />
+                        <Flex w={'100%'}>
+                          {costStructure.length > 0 &&
+                            hoveredBox === 'cost_structure' && (
+                              <Tooltip label="Regenerate This Field">
+                                <ActionIcon
+                                  mx={4}
+                                  onClick={() => {
+                                    handleRegenerate('cost_structure');
+                                  }}
+                                >
+                                  <IconRefresh color="#0fb802" />
+                                </ActionIcon>
+                              </Tooltip>
+                            )}
+                        </Flex>
+                      </Flex>
+                    </Grid.Col>
+                    <Grid.Col
+                      span={5}
+                      p={0}
+                      onMouseEnter={() => setHoveredBox('revenue_streams')}
+                      onMouseLeave={() => setHoveredBox('')}
+                    >
+                      <Flex
+                        m={fillColor ? 4 : 0}
+                        h={'100%'}
+                        direction={'column'}
+                        style={{
+                          border: fillColor ? 'none' : '1px solid',
+                          padding: '0px',
+                          ...(fillColor
+                            ? {
+                                borderRadius: '20px',
                               }
-                              autosize
-                              styles={{
-                                input: {
-                                  border: 'none',
-                                  fontSize: fontSize + 'px',
-                                  padding: padding,
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right',
-                                  backgroundColor: fillColor
-                                    ? '#5d51cf'
-                                    : 'transparent',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                    backgroundColor: '#5d51cf',
-                                    color: 'white',
-                                    //color:'white'
-                                  }),
-                                },
-                              }}
-                            />
-                          </Flex>
-                        </Grid.Col>
-                      </HoverCard.Target>
-                      {costStructure.length > 0 && (
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('cost_structure');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
+                            : {
+                                borderRight: '2px solid',
+                                borderBottom: '2px solid',
+                              }),
+                        }}
+                        mih={150}
+                        bg={fillColor ? '#670fb9' : 'transparent'}
+                      >
+                        <Flex
+                          justify={'space-between'}
+                          gap={4}
+                          align={'start'}
+                          w={'calc(100%-8px)'}
+                          // mx={8}
+                          p={padding}
+                          mt={4}
+                          mx={8}
+                          // h={'60px'}
+                        >
+                          <Text
+                            weight={500}
+                            my={'auto'}
+                            color={fillColor ? 'white' : 'black'}
                             style={{
-                              width: '100%',
-                              border: '1px solid',
+                              textDecoration: getTitleDecoration('#670fb9'),
+                              textUnderlinePosition: 'under',
                             }}
-                            loading={loading}
                           >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
-                      )}
-                    </HoverCard>
-                    <HoverCard>
-                      <HoverCard.Target>
-                        <Grid.Col span={5} p={0}>
-                          <Flex
-                            m={fillColor ? 4 : 0}
-                            h={'100%'}
-                            direction={'column'}
-                            style={{
-                              border: fillColor ? 'none' : '1px solid',
-                              padding: '0px',
-                              ...(fillColor
-                                ? {
-                                    borderRadius: '20px',
-                                  }
-                                : {
-                                    borderRight: '2px solid',
-                                    borderBottom: '2px solid',
-                                  }),
-                            }}
-                            mih={150}
-                            bg={
-                              fillColor
+                            Revenue Streams
+                          </Text>{' '}
+                          <FaMoneyBillTrendUp
+                            size={24}
+                            color={fillColor ? 'white' : 'black'}
+                          />
+                        </Flex>
+                        <Textarea
+                          minRows={4}
+                          value={revenueStreams}
+                          onChange={(event) =>
+                            setRevenueStreams(event.currentTarget.value)
+                          }
+                          autosize
+                          styles={{
+                            input: {
+                              border: 'none',
+                              fontSize: fontSize + 'px',
+                              padding: padding + 'px',
+                              textAlign: textAlignment as
+                                | 'center'
+                                | 'left'
+                                | 'right',
+                              backgroundColor: fillColor
                                 ? '#670fb9'
-                                : hoveredBox == 'revenue_streams'
-                                ? '#f7effe'
-                                : 'transparent'
-                            }
-                          >
-                            <Flex
-                              justify={'space-between'}
-                              gap={4}
-                              align={'start'}
-                              w={'calc(100%-8px)'}
-                              // mx={8}
-                              p={padding}
-                              mt={4}
-                              mx={8}
-                              // h={'60px'}
-                            >
-                              <Text
-                                weight={500}
-                                my={'auto'}
-                                color={fillColor ? 'white' : 'black'}
-                                style={{
-                                  textDecoration: getTitleDecoration('#670fb9'),
-                                  textUnderlinePosition: 'under',
-                                }}
-                              >
-                                Revenue Streams
-                              </Text>{' '}
-                              <FaMoneyBillTrendUp
-                                size={24}
-                                color={fillColor ? 'white' : 'black'}
-                              />
-                            </Flex>
-                            <Textarea
-                              minRows={4}
-                              value={revenueStreams}
-                              onChange={(event) =>
-                                setRevenueStreams(event.currentTarget.value)
-                              }
-                              autosize
-                              styles={{
-                                input: {
-                                  border: 'none',
-                                  fontSize: fontSize + 'px',
-                                  padding: padding + 'px',
-                                  textAlign: textAlignment as
-                                    | 'center'
-                                    | 'left'
-                                    | 'right',
-                                  backgroundColor: fillColor
-                                    ? '#670fb9'
-                                    : 'transparent',
-                                  ...(fillColor && {
-                                    borderBottomRightRadius: '20px',
-                                    borderBottomLeftRadius: '20px',
-                                    backgroundColor: '#670fb9',
-                                    color: 'white',
-                                    //color:'white'
-                                  }),
-                                },
-                              }}
-                            />
-                          </Flex>
-                        </Grid.Col>
-                      </HoverCard.Target>
-                      {revenueStreams.length > 0 && (
-                        <HoverCard.Dropdown>
-                          <Button
-                            onClick={() => {
-                              handleRegenerate('revenue_streams');
-                            }}
-                            color="green"
-                            variant="light"
-                            leftIcon={<IconRefresh />}
-                            style={{
-                              width: '100%',
-                              border: '1px solid',
-                            }}
-                            loading={loading}
-                          >
-                            Regenerate This Field
-                          </Button>
-                        </HoverCard.Dropdown>
-                      )}
-                    </HoverCard>
+                                : 'transparent',
+                              ...(fillColor && {
+                                borderBottomRightRadius: '20px',
+                                borderBottomLeftRadius: '20px',
+                                backgroundColor: '#670fb9',
+                                color: 'white',
+                                //color:'white'
+                              }),
+                            },
+                          }}
+                        />
+                        <Flex w={'100%'}>
+                          {revenueStreams.length > 0 &&
+                            hoveredBox === 'revenue_streams' && (
+                              <Tooltip label="Regenerate This Field">
+                                <ActionIcon
+                                  mx={4}
+                                  onClick={() => {
+                                    handleRegenerate('revenue_streams');
+                                  }}
+                                >
+                                  <IconRefresh color="#0fb802" />
+                                </ActionIcon>
+                              </Tooltip>
+                            )}
+                        </Flex>
+                      </Flex>
+                    </Grid.Col>
                   </Grid>
                 </Box>
               </Flex>
